@@ -107,9 +107,34 @@ def evaluate(folder,
 
 
 def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14, size='small', smt_max_time=800):
+
+    def uniformize_levels(pool):
+        max_level=25
+        max_size_pool=200
+        npool = []
+        num_eqs_per_lvl_npool = [0 for _ in range(4,max_level+1)]
+        num_eqs_per_lvl_oldpool = [0 for _ in range(4,max_level+1)]
+        for e in pool:
+            num_eqs_per_lvl_oldpool[e.level - 4] += 1
+        for l in range(4,max_level+1):
+            for e in pool:
+                if len(npool) > max_size_pool:
+                    break
+                if e.level == l and num_eqs_per_lvl_npool[l - 4] < 4 + min(1, l % 4):
+                    npool.append(e)
+                    num_eqs_per_lvl_npool[l - 4] += 1
+            if len(npool) > max_size_pool:
+                break
+        print(num_eqs_per_lvl_oldpool)
+        print(num_eqs_per_lvl_npool)
+        assert len(npool) >= max_size_pool
+        pool = npool
+        return pool
+
     with open(pool_filepath, 'rb+') as f:
         pool = Unpickler(f).load()
-    pool = pool[:200]
+    if 'pool' in pool_filepath:
+        pool = uniformize_levels(pool)
     if '02_track' in pool_filepath:
         new_pool = []
         for x in pool:
@@ -150,11 +175,12 @@ if __name__ == "__main__":
 
     #simple_evaluate(f'benchmarks/pool_30_10_5.pth.tar', folders[0], 'uniform', 'sloth')
     #for i in
-    for solver in ['Z3', 'seq', 'woorpje', 'CVC4']:
-        simple_evaluate(f'benchmarks/pool_30_10_5_v3.pth.tar', folders[0], 'uniform', solver=solver)
+    for solver in ['Z3', 'seq', 'CVC4']:
+        for track in [1,2,3]:
+            simple_evaluate(f'benchmarks/0{track}_track/transformed', folders[0], 'uniform', solver=solver)
 
-    for solver in ['Z3', 'seq',  'woorpje', 'CVC4']:
-        simple_evaluate(f'benchmarks/pool_50_20_10.pth.tar', folders[0], 'uniform', solver=solver)
+    # for solver in ['Z3', 'seq',  'woorpje', 'CVC4']:
+    #     simple_evaluate(f'benchmarks/pool_50_20_10.pth.tar', folders[0], 'uniform', solver=solver)
 
     assert False
     for seed in [14,15,16]:
