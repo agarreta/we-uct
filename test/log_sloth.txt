@@ -1,0 +1,6 @@
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.235, Time avg: 10471.48936170213, Solver score: 0.32, Solver time avg: 1543.3564054965973
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8

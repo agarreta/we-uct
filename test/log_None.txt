@@ -1,0 +1,54 @@
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/model_plays_0.pth.tar
+Score: 0.245, Time avg: 532.6530612244898, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/model_plays_50.pth.tar
+Score: 0.135, Time avg: 266.66666666666663, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/model_plays_100.pth.tar
+Score: 0.25, Time avg: 422.4, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/model_plays_150.pth.tar
+Score: 0.3, Time avg: 519.6666666666667, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/model_plays_200.pth.tar
+Score: 0.3, Time avg: 591.3333333333333, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/model_plays_250.pth.tar
+Score: 0.315, Time avg: 451.1111111111111, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/model_plays_300.pth.tar
+Score: 0.27, Time avg: 370.00000000000006, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 15
+Model: we_alpha0_disc90_smaller_seed15/model_plays_0.pth.tar
+Score: 0.245, Time avg: 544.4897959183673, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8
+
+Pool benchmarks/pool_30_10_5.pth.tar, Seed: 15
+Model: we_alpha0_disc90_smaller_seed15/model_plays_50.pth.tar
+Score: 0.17, Time avg: 280.5882352941176, Solver score: -1, Solver time avg: -1
+SIDE_MAX_LEN: 30, num_vars: 10, num_letters: 5
+num_channels: 128, num_residual_blocks: 8

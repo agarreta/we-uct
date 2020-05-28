@@ -1,0 +1,249 @@
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 1.0, Time avg: 303.70000000000005, Num steps avg: 218.0
+Solver score: 0.945, Solver time avg: 141.64371490478516
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+Date: 2020-05-09 18:54:38.031535
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.667, Time avg: 23.999999999999996, Num steps avg: 9.0
+Solver score: 0.667, Solver time avg: 3.717160940170288
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+Date: 2020-05-09 18:57:31.706908
+
+Pool benchmarks/03_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.93, Time avg: 4433.599999999999, Num steps avg: 198.0
+Solver score: 0.73, Solver time avg: 101.68806409835815
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+Date: 2020-05-09 19:23:51.831589
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 1.0, Time avg: 298.20000000000005, Num steps avg: 206.0
+Solver score: 0.99, Solver time avg: 144.32682037353516
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-10 16:21:17.822943
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 1.0, Time avg: 20.4, Num steps avg: 9.0
+Solver score: 1.0, Solver time avg: 9.434362411499023
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-10 17:01:56.930301
+
+Pool benchmarks/03_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.955, Time avg: 4458.299999999999, Num steps avg: 213.0
+Solver score: 0.755, Solver time avg: 90.44887089729309
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-10 17:26:40.071022
+
+Pool benchmarks/pool_30_10_5_v3.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.85, Time avg: 5238.4, Num steps avg: 653.0
+Solver score: 0.902, Solver time avg: 3491.878714799881
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-10 18:27:35.704833
+
+Pool benchmarks/pool_18_5_3.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 1.0, Time avg: 518.2, Num steps avg: 513.0
+Solver score: 0.996, Solver time avg: 260.0309031009674
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-11 02:36:25.356372
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 1.0, Time avg: 109.19999999999999, Num steps avg: 1.015 (200)
+Solver score: 0.99, Solver time avg: 104.45557427406311
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-12 00:43:26.237881
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.444, Time avg: 3.3, Num steps avg: 1.0 (4)
+Solver score: 0.444, Solver time avg: 3.054391860961914
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-12 00:46:53.723022
+
+Pool benchmarks/03_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.745, Time avg: 146.1, Num steps avg: 1.0469798657718121 (149)
+Solver score: 0.795, Solver time avg: 95.95876216888428
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-12 01:08:11.501057
+
+Pool benchmarks/pool_18_5_3.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 1.0, Time avg: 123.29999999999997, Num steps avg: 1.03 (200)
+Solver score: 0.97, Solver time avg: 126.88329339027405
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-12 01:10:17.578056
+
+Pool benchmarks/pool_30_10_5_v3.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.85, Time avg: 545.3, Num steps avg: 1.1470588235294117 (170)
+Solver score: 0.895, Solver time avg: 1278.9957778453827
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-12 06:04:54.766107
+
+Pool benchmarks/pool_50_20_10.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0.7, Time avg: 547.2999999999997, Num steps avg: 1.1857142857142857 (140)
+Solver score: 0.775, Solver time avg: 1537.4818501472473
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Date: 2020-05-12 10:46:01.260194
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 200, Time avg: 0.4577009999999997, Intersection time avg: 0.458172361809045, Num steps avg: 1.01 (200)
+Solver score: 199, Solver time avg: 0.426152793606322, Intersection time avg: 0.426152793606322,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Comments: allowing repetitions
+Date: 2020-05-14 20:13:50.758648
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 4, Time avg: 1.8712250000000001, Intersection time avg: 1.8712250000000001, Num steps avg: 1.25 (4)
+Solver score: 6, Solver time avg: 31.398132642110188, Intersection time avg: 16.142659604549408,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Comments: allowing repetitions
+Date: 2020-05-14 20:18:06.345020
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 200, Time avg: 0.608796, Intersection time avg: 0.6096683417085427, Num steps avg: 1.02 (200)
+Solver score: 199, Solver time avg: 0.6129811361207435, Intersection time avg: 0.6129811361207435,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Comments: allowing repetitions
+Date: 2020-05-14 22:00:37.304058
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 5, Time avg: 1.50394, Intersection time avg: 1.50394, Num steps avg: 1.2 (5)
+Solver score: 6, Solver time avg: 0.5873285531997681, Intersection time avg: 0.6441667079925537,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Comments: allowing repetitions
+Date: 2020-05-14 22:02:39.503009
+
+Pool benchmarks/03_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 148, Time avg: 0.7002499999999999, Intersection time avg: 0.6632818181818181, Num steps avg: 1.027027027027027 (148)
+Solver score: 151, Solver time avg: 0.60877771251249, Intersection time avg: 0.5447447633409833,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Comments: allowing repetitions
+Date: 2020-05-14 22:28:12.655589
+
+Pool benchmarks/pool_18_5_3.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 200, Time avg: 0.37159449999999994, Intersection time avg: 0.3735671717171717, Num steps avg: 1.0 (200)
+Solver score: 198, Solver time avg: 0.5911467809869786, Intersection time avg: 0.5911467809869786,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Comments: allowing repetitions
+Date: 2020-05-14 23:59:56.911047
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 200, Time avg: 0.6120585000000002, Intersection time avg: 0.6165238578680204, Num steps avg: 1.005 (200)
+Solver score: 197, Solver time avg: 0.6241904200636191, Intersection time avg: 0.6241904200636191,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Max solver time in mcts: 1200
+Comments: allowing repetitions
+Date: 2020-05-15 02:34:23.086895
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 4, Time avg: 0.9423, Intersection time avg: 1.0106666666666666, Num steps avg: 1.0 (4)
+Solver score: 3, Solver time avg: 0.9074676831563314, Intersection time avg: 0.9074676831563314,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Max solver time in mcts: 1200
+Comments: allowing repetitions
+Date: 2020-05-15 03:00:10.688427
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 200, Time avg: 0.5633360000000004, Intersection time avg: 0.5633360000000004, Num steps avg: 1.005 (200)
+Solver score: 200, Solver time avg: 0.5957396626472473, Intersection time avg: 0.5957396626472473,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Max solver time in mcts: 1200
+Comments: not allowing repetitions
+Date: 2020-05-15 11:59:53.851433
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 7, Time avg: 5.420457142857144, Intersection time avg: 5.420457142857144, Num steps avg: 1.5714285714285714 (7)
+Solver score: 9, Solver time avg: 1.1565154128604465, Intersection time avg: 0.9031067575727191,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Max solver time in mcts: 1200
+Comments: not allowing repetitions
+Date: 2020-05-15 12:00:26.750632
+
+Pool benchmarks/pool_30_10_5_v3.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 158, Time avg: 2.1654316455696216, Intersection time avg: 2.1733980645161295, Num steps avg: 1.1772151898734178 (158)
+Solver score: 179, Solver time avg: 6.943801267187022, Intersection time avg: 4.073879123503162,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Max solver time in mcts: 800
+Comments: allowing repetitions
+Date: 2020-05-15 14:39:18.387633
+
+Pool benchmarks/pool_50_20_10.pth.tar, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 135, Time avg: 3.714042222222223, Intersection time avg: 3.1644580645161295, Num steps avg: 1.3037037037037038 (135)
+Solver score: 154, Solver time avg: 9.695441442650633, Intersection time avg: 5.1390143402161135,
+SIDE_MAX_LEN: 300, num_vars: 26, num_letters: 26
+num_channels: 128, num_residual_blocks: 8
+num mcts simulations: 10
+Max solver time in mcts: 800
+Comments: allowing repetitions
+Date: 2020-05-15 18:37:49.494604
