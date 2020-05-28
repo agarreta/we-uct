@@ -339,33 +339,37 @@ class MCTS():
 
         self.num_times_visited_state[state_w] += 1
 
-
-
-
         for a in range(num_actions):
             if valid_actions[a] != 0.:
-                if (state_w, a) in self.state_action_values and (state_w, a) in self.num_times_taken_state_action:
-                    #print('hi', cpuct)
+                if state_w in self.num_times_visited_state:
                     if self.args.mcts_type=='alpha0': # False: #not self.args.oracle:
                         UCT = cpuct * math.sqrt(self.prior_probs_state[state_w][a]) * \
                               math.sqrt(np.log(self.num_times_visited_state[state_w]))
-                        UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
                     elif self.args.mcts_type=='alpha0np':
                         UCT = cpuct * math.sqrt(np.log(self.num_times_visited_state[state_w]))
-                        UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
                     else:
                         #UCT = math.sqrt(2*np.log(self.num_times_visited_state[state_w])/
                         #                (1 + self.num_times_taken_state_action[(state_w, a)]))
                         UCT = cpuct * math.sqrt(np.log(self.num_times_visited_state[state_w]))
-                        UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
+                    if (state_w, a) in self.num_times_taken_state_action:
+                        #print('hi', cpuct)
+                        if self.args.mcts_type=='alpha0': # False: #not self.args.oracle:
+                            UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
+                        elif self.args.mcts_type=='alpha0np':
+                            UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
+                        else:
+                            UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
 
-                    u = self.state_action_values[(state_w, a)]
-                    #u = 1. + (u-1.)/2.
-                    u = u + UCT
+                    if (state_w, a) in self.state_action_values:
+                        u = self.state_action_values[(state_w, a)]
+                        u = u + UCT
+                    else:
+                        u = 0
+                        u = u + UCT
                 else:
                     if not self.args.oracle:
                         if self.args.mcts_type != 'alpha0':
-                            u = cpuct *  1/self.args.num_actions #math.sqrt(self.prior_probs_state[state_w][a])
+                            u = cpuct *  1/self.args.num_actions   # math.sqrt(self.prior_probs_state[state_w][a])
                         else:
                             u = cpuct * math.sqrt(self.prior_probs_state[state_w][a])
                     else:
