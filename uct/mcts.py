@@ -16,6 +16,7 @@ from .utils import seed_everything
 from .SMTSolver import SMT_eval
 # torch.set_default_tensor_type(torch.HalfTensor)
 EPS = 1e-8
+cpuct = 1.25  # math.((self.num_times_visited_state[state_w] + self.args.pb_c_base + 1) /
 
 
 class MCTS():
@@ -123,6 +124,7 @@ class MCTS():
                    proportional to num_times_taken_state_action[(s,a)]**(1./temp)
 
         """
+        # return [1/8 for _ in range(8)]
         if self.args.use_clears:  # True: #self.mode == 'train':
             self.clear()
         self.num_rec = 0
@@ -158,10 +160,11 @@ class MCTS():
             return 'already_sat'
 
         if temp == 0:
-            bestA = np.argmax(counts)
-            probs = [0] * len(counts)
-            probs[int(bestA)] = 1
-            return probs
+            a=np.argwhere(counts == np.max(counts)).flatten()
+            probs = np.array([0] * len(counts))
+            probs[a] = 1
+            probs = probs/probs.sum()
+            return probs.tolist()
 
 
         su = float(sum(counts))
@@ -187,7 +190,10 @@ class MCTS():
                 next_state = child_state
                 return next_state
         self.edges[state.id].append(next_state)
-        self.edges[next_state.id] = []
+        try:
+            self.edges[next_state.id] = []
+        except:
+            print('h')
         return next_state
 
     #def network_output(self, eq_name, eq_s, smt = None, ctx=None):
@@ -213,8 +219,8 @@ class MCTS():
         else:
             output_pi, output_v = self.nnet.predict(eq_s, smt, ctx)
             # print(self.args.oracle)
-            if self.args.oracle:
-                output_v = self.oracle_rollout(eq)
+            #            if self.args.oracle:
+            #             output_v = self.oracle_rollout(eq)
             output = (output_pi, output_v)
             self.nn_outputs[eq_name] = output
             return output
@@ -330,9 +336,8 @@ class MCTS():
 
         valid_actions = self.valid_moves_in_state[state_w]
         cur_best = -float('inf')
-        best_act = -1
+        best_acts = []
 
-        cpuct = 1.25 #math.((self.num_times_visited_state[state_w] + self.args.pb_c_base + 1) /
                   #       self.args.pb_c_base) + self.args.pb_c_init
 
         num_actions = self.args.num_actions
@@ -341,7 +346,7 @@ class MCTS():
 
         for a in range(num_actions):
             if valid_actions[a] != 0.:
-                if state_w in self.num_times_visited_state:
+                if (state_w, a) in self.num_times_taken_state_action:
                     if self.args.mcts_type=='alpha0': # False: #not self.args.oracle:
                         UCT = cpuct * math.sqrt(self.prior_probs_state[state_w][a]) * \
                               math.sqrt(np.log(self.num_times_visited_state[state_w]))
@@ -351,25 +356,21 @@ class MCTS():
                         #UCT = math.sqrt(2*np.log(self.num_times_visited_state[state_w])/
                         #                (1 + self.num_times_taken_state_action[(state_w, a)]))
                         UCT = cpuct * math.sqrt(np.log(self.num_times_visited_state[state_w]))
-                    if (state_w, a) in self.num_times_taken_state_action:
-                        #print('hi', cpuct)
-                        if self.args.mcts_type=='alpha0': # False: #not self.args.oracle:
-                            UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
-                        elif self.args.mcts_type=='alpha0np':
-                            UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
-                        else:
-                            UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
-
-                    if (state_w, a) in self.state_action_values:
-                        u = self.state_action_values[(state_w, a)]
-                        u = u + UCT
+                    #print('hi', cpuct)
+                    if self.args.mcts_type=='alpha0': # False: #not self.args.oracle:
+                        UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
+                    elif self.args.mcts_type=='alpha0np':
+                        UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
                     else:
-                        u = 0
-                        u = u + UCT
+                        UCT = UCT / math.sqrt((1 + self.num_times_taken_state_action[(state_w, a)]))
+
+                    u = self.state_action_values[(state_w, a)]
+                    u = u + UCT
+
                 else:
-                    if not self.args.oracle:
+                    if True:  # not self.args.oracle:
                         if self.args.mcts_type != 'alpha0':
-                            u = cpuct *  1/self.args.num_actions   # math.sqrt(self.prior_probs_state[state_w][a])
+                            u = cpuct   * 0.2  # 1/self.args.num_actions   # math.sqrt(self.prior_probs_state[state_w][a])
                         else:
                             u = cpuct * math.sqrt(self.prior_probs_state[state_w][a])
                     else:
@@ -378,9 +379,15 @@ class MCTS():
 
                 if u > cur_best:
                     cur_best = u
-                    best_act = a
-
-        a = best_act
+                    best_acts=[]
+                    best_acts.append(a)
+                elif u == cur_best:
+                    best_acts.append(a)
+        #del_best_acts = [x for x in best_acts if x < 4]
+        #if len(del_best_acts) > 0:
+        #    a = random.choice(del_best_acts)
+        # else:
+        a = random.choice(best_acts)
         if self.num_rec == 1:
             self.root_action = a
 
@@ -401,7 +408,6 @@ class MCTS():
         if self.use_leafs:
             if (state_id, a) not in self.leaf_values:
                 self.leaf_values[(state_id, a)] = {new_leaf: v}
-                #self.set_of_equations.update({state_w})
             else:
                 self.leaf_values[(state_id, a)].update({new_leaf: v})
                 if type(old_leaf) == str:
