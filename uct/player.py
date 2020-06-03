@@ -248,12 +248,12 @@ class Player(object):
             print(pool)
         else:
             if self.pool_filename is None:  # or (not self.args.test_mode):
-                level_list = 10*[self.level] if level_list is None else level_list
+                level_list = 10 * [self.level] if level_list is None else level_list
                 print(self.args.VARIABLES)
                 print('Generating pool..')
-                self.we.generator.generate_pool(self.num_equations, level_list)#, self.seed)
-                pool=self.we.generator.pool
-                #pool = self.transform_failed_pool() + list(self.we.generator.pool)[len(self.failed_pool):]
+                self.we.generator.generate_pool(self.num_equations, level_list)  # , self.seed)
+                pool = self.we.generator.pool
+                # pool = self.transform_failed_pool() + list(self.we.generator.pool)[len(self.failed_pool):]
                 self.pool_generation_time = self.we.generator.pool_generation_time
                 print('pool generated')
             else:
@@ -263,10 +263,55 @@ class Player(object):
                     with open(file_name, "rb") as f:
                         pool = Unpickler(f).load()
                         self.pool_generation_time = 0
+                npool = []
+                num_eqs_per_lvl_npool = [0 for _ in range(4, 41)]
+                num_eqs_per_lvl_oldpool = [0 for _ in range(4, 41)]
+                for e in pool[:100]:
+                    num_eqs_per_lvl_oldpool[e.level - 4] += 1
+                for l in range(4, 41):
+                    for e in pool:
+                        if len(npool) > 100:
+                            break
+                        if e.level == l and num_eqs_per_lvl_npool[l - 4] < 2 + min(1, l % 4):
+                            npool.append(e)
+                            num_eqs_per_lvl_npool[l - 4] += 1
+                    if len(npool) > 100:
+                        break
+                print(num_eqs_per_lvl_oldpool)
+                print(num_eqs_per_lvl_npool)
+                assert len(npool) >= 100
+                pool = npool
+        level_order = [[eq.level, i] for i, eq in enumerate(pool)]
+        level_order.sort(reverse=True)
+        pool = [pool[lvl[1]] for lvl in level_order]
 
-            level_order = [[eq.level, i] for i,eq in enumerate(pool)]
-            level_order.sort(reverse= True)
-            pool = [pool[lvl[1]] for lvl in level_order]
+        if self.mode == 'test':
+            file_name = self.args.pool_name_load
+            print('Loading {}'.format(file_name))
+            if os.path.exists(file_name):
+                with open(file_name, "rb") as f:
+                    pool = Unpickler(f).load()[:300]
+                    self.pool_generation_time = 0
+                print([x.level for x in pool[:100]])
+                max_level = 25
+                npool = []
+                num_eqs_per_lvl_npool = [0 for _ in range(4, max_level + 1)]
+                num_eqs_per_lvl_oldpool = [0 for _ in range(4, max_level + 1)]
+                # for e in pool[:100]:
+                #    num_eqs_per_lvl_oldpool[e.level-4] += 1
+                for l in range(4, max_level + 1):
+                    for e in pool:
+                        if len(npool) > 100:
+                            break
+                        if e.level == l and num_eqs_per_lvl_npool[l - 4] < (4 + min(1, l % 4)):
+                            npool.append(e)
+                            num_eqs_per_lvl_npool[l - 4] += 1
+                    if len(npool) > 100:
+                        break
+                # print(num_eqs_per_lvl_oldpool)
+                print(num_eqs_per_lvl_npool)
+                assert len(npool) >= 100
+                pool = npool
 
         self.execution_times_sat = self.initiate_container([])
         self.execution_times_unsat = self.initiate_container([])
