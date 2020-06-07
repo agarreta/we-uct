@@ -310,14 +310,14 @@ class Arcade(object):
                                 [self.args.evolution_train_eq[-100 * (i + 1)+30:-(100) * (i)+30 ] for i in
                                  range(1, len(self.args.evolution_scores) + 1)]]
                 if len(train_scores) > 0:
-                    a = np.max(train_scores)
+                    a = np.nanmax(train_scores)
                 else:
                     a = 0
                 print('\nTRAIN SCORES:', train_scores)
                 print(f'Last 50 train score: {train_score}\n')
                 self.args.training_performance_log.append([train_scores, train_score])
                 if train_score < a - 0.175:
-                    j = max(int(np.argmax(train_scores)), 1)
+                    j = max(int(np.nanargmax(train_scores)), 1)
                     self.model_play = self.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
                                                            training=True,
                                                            load=True,
