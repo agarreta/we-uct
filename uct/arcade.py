@@ -158,19 +158,26 @@ class Arcade(object):
             self.args.model_names = ['']
 
             self.args.iterations_test_eq = [0]
-            self.args.evolution_train_eq = [0]
+            self.args.evolution_train_eq = [[]]
+            self.args.evolution_train_eq_full = [[]]
+            self.args.training_performance_log = []
+            self.args.checkpoint_num_plays_being_tested = 0
+            self.args.evolution_scores = []
+            self.args.evolution_scores_full = []
+            self.args.checkpoint_train_intervals = []
 
         self.active_solved_test = 0
         self.active_total_eqs=0
         self.best_model = 'model_plays_0.pth.tar'
         self.best_score = 0
-        self.checkpoint_num_plays_being_tested = 0
         self.active_model_being_tested = 'model_plays_0.pth.tar'
-        self.args.evolution_scores=[]
         self.median_score = 0
         self.best_checkpoint_num_plays = 0
+
+
         self.name = name
-        self.args.training_performance_log = []
+
+
 
     def init_log(self, folder_name, mode='train'):
         import logging
@@ -219,7 +226,7 @@ class Arcade(object):
         return processes_play, pipes_play, modes, player_levels
 
     def run_play_mode(self, pools=None):
-        self.args.initial_level_time = time.time()
+
 
         if self.args.load_model:
             self.args.modification_when_loaded()
@@ -232,6 +239,25 @@ class Arcade(object):
         else:
             self.initiate_loop = True
         #processes_play, pipes_play, modes, player_levels = self.init_dict_of_process_and_queus()
+        if False:
+            self.args.checkpoint_num_plays = 600
+            self.args.checkpoint_num_plays_being_tested = 0
+            self.args.training_performance_log = []
+            self.args.training_performance_log_full = []
+            self.args.evolution_scores=[34.0, 34.0, 40.0, 46.0, 45.0, 47.0, 44.0, 50.0, 45.0][:7]
+            self.args.evolution_scores_full=[34.0, 34.0, 40.0, 46.0, 45.0, 47.0, 44.0, 50.0, 45.0][:7]
+            self.args.evolution_train_eq = [0.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 4.0, 6.0, 4.0, 1.0, 4.0, 3.0, 4.0, 3.0, 5.0, 4.0, 4.0, 2.0, 1.0, 6.0, 4.0, 4.0, 4.0, 2.0, 3.0, 6.0, 3.0, 3.0, 1.0, 4.0, 1.0, 3.0, 3.0, 2.0, 7.0, 0.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 3.0, 2.0, 4.0, 4.0, 4.0, 3.0, 3.0, 1.0, 3.0, 6.0, 1.0, 4.0, 4.0, 2.0, 3.0, 5.0, 5.0, 3.0, 3.0, 3.0, 1.0, 5.0, 4.0, 4.0, 4.0, 1.0, 5.0, 3.0, 7.0, 3.0, 2.0, 5.0, 2.0, 4.0, 4.0, 3.0, 3.0, 3.0, 3.0, 5.0, 6.0, 5.0, 4.0, 3.0, 6.0, 2.0, 3.0, 3.0, 4.0, 6.0, 4.0, 3.0, 3.0, 3.0, 5.0, 3.0, 4.0, 3.0, 1.0, 4.0, 6.0, 2.0, 3.0, 4.0, 4.0, 4.0, 2.0, 3.0, 4.0, 4.0, 4.0, 4.0, 4.0, 2.0, 3.0, 3.0, 3.0, 5.0, 3.0, 1.0, 3.0, 2.0, 2.0, 4.0, 5.0, 3.0, 3.0, 4.0, 3.0, 4.0, 2.0, 3.0, 5.0, 4.0, 3.0, 2.0, 3.0, 2.0, 2.0, 2.0, 4.0, 4.0, 3.0, 1.0, 3.0, 4.0, 3.0, 4.0, 4.0, 4.0, 3.0, 4.0, 3.0, 3.0, 1.0, 5.0, 4.0, 4.0, 6.0, 2.0, 2.0, 3.0, 4.0, 5.0, 1.0, 6.0, 4.0, 5.0, 2.0, 5.0, 2.0, 4.0, 3.0, 4.0, 4.0, 5.0, 3.0, 3.0, 3.0, 5.0, 2.0, 2.0, 2.0, 5.0, 2.0, 2.0, 2.0, 5.0, 1.0, 4.0, 2.0, 3.0, 5.0, 4.0, 4.0, 3.0, 6.0, 3.0, 5.0, 5.0, 6.0, 4.0, 4.0, 3.0, 3.0, 4.0, 4.0, 7.0, 4.0, 4.0, 2.0, 3.0, 3.0, 5.0, 4.0, 3.0, 3.0, 2.0, 3.0, 3.0, 2.0, 4.0, 4.0, 4.0, 6.0, 5.0, 5.0, 4.0, 5.0, 4.0, 2.0, 5.0, 5.0, 4.0, 2.0, 5.0, 2.0, 6.0, 3.0, 4.0, 3.0, 5.0, 3.0, 5.0, 6.0, 3.0, 4.0, 4.0, 4.0, 3.0, 5.0, 7.0, 3.0, 2.0, 3.0, 4.0, 4.0, 3.0, 6.0, 4.0, 2.0, 4.0, 4.0, 4.0, 3.0, 4.0, 4.0, 5.0, 6.0, 7.0, 2.0, 9.0, 4.0, 4.0, 3.0, 6.0, 4.0, 5.0, 4.0, 8.0, 3.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 5.0, 3.0, 6.0, 6.0, 4.0, 3.0, 4.0, 5.0, 2.0, 2.0, 6.0, 5.0, 4.0, 2.0, 4.0, 4.0, 3.0, 4.0, 4.0, 5.0, 3.0, 3.0, 1.0, 4.0, 4.0, 5.0, 3.0, 6.0, 4.0, 4.0, 4.0, 6.0, 5.0, 5.0, 4.0, 3.0, 5.0, 5.0, 4.0, 4.0, 4.0, 4.0, 3.0, 7.0, 4.0, 5.0, 3.0, 4.0, 4.0, 5.0, 3.0, 4.0, 6.0, 5.0, 4.0, 3.0, 6.0, 4.0, 6.0, 3.0, 5.0, 3.0, 2.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 3.0, 3.0, 5.0, 1.0, 4.0, 4.0, 5.0, 2.0, 6.0, 6.0, 5.0, 4.0, 5.0, 3.0, 3.0, 3.0, 3.0, 3.0, 6.0, 4.0, 3.0, 4.0, 3.0, 5.0, 4.0, 5.0, 3.0, 4.0, 4.0, 1.0, 4.0, 4.0, 5.0, 4.0, 4.0, 5.0, 4.0, 3.0, 6.0, 5.0, 2.0, 4.0, 4.0, 4.0, 3.0, 4.0, 4.0, 4.0, 5.0, 3.0, 2.0, 2.0, 4.0, 7.0, 6.0, 6.0, 4.0, 5.0, 5.0, 4.0, 4.0, 6.0, 2.0, 4.0, 3.0, 4.0, 4.0, 5.0, 5.0, 5.0, 4.0, 4.0, 4.0, 5.0, 3.0, 4.0, 5.0, 3.0, 7.0, 4.0, 4.0, 2.0, 5.0, 4.0, 4.0, 5.0, 4.0, 4.0, 4.0, 5.0, 4.0, 5.0, 5.0, 5.0, 4.0, 3.0, 2.0, 4.0, 5.0, 4.0, 7.0, 5.0, 4.0, 3.0, 4.0, 6.0, 6.0, 2.0, 7.0, 2.0, 5.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 3.0, 2.0, 4.0, 5.0, 2.0, 5.0, 4.0, 5.0, 4.0, 4.0, 2.0, 5.0, 4.0, 6.0, 5.0, 4.0, 6.0, 6.0, 5.0, 4.0, 2.0, 1.0, 5.0, 4.0, 5.0, 4.0, 4.0, 3.0, 2.0, 3.0, 4.0, 6.0, 3.0, 5.0, 3.0, 6.0, 5.0, 5.0, 2.0, 4.0, 6.0, 5.0, 4.0, 4.0, 4.0, 6.0, 4.0, 3.0, 3.0, 5.0, 2.0, 2.0, 5.0, 3.0, 7.0, 5.0, 6.0, 5.0, 6.0, 4.0, 3.0, 6.0, 3.0, 4.0, 7.0, 3.0, 3.0, 4.0, 4.0, 5.0, 3.0, 6.0, 7.0, 1.0, 5.0, 3.0, 5.0, 4.0, 6.0, 3.0, 6.0, 2.0, 5.0, 6.0, 4.0, 5.0, 5.0, 2.0, 5.0, 4.0, 1.0, 3.0, 5.0, 2.0, 6.0, 4.0, 5.0, 4.0, 5.0, 5.0, 5.0, 4.0, 7.0, 4.0, 4.0, 5.0, 7.0, 5.0, 5.0, 3.0, 5.0, 4.0, 5.0, 4.0, 3.0, 5.0, 4.0, 4.0, 7.0, 3.0, 4.0, 3.0, 3.0, 3.0, 5.0, 4.0, 6.0, 2.0, 2.0, 5.0, 5.0, 4.0, 3.0, 5.0, 3.0, 6.0, 5.0, 5.0, 3.0, 5.0, 2.0, 5.0, 4.0, 5.0, 2.0, 7.0, 3.0, 2.0, 5.0, 6.0, 5.0, 4.0, 4.0, 5.0, 3.0, 4.0, 4.0, 4.0, 6.0, 4.0, 1.0, 4.0, 3.0, 6.0, 7.0, 3.0, 5.0, 4.0, 5.0, 6.0, 7.0, 4.0, 6.0, 4.0, 3.0, 6.0, 5.0, 5.0, 4.0, 4.0, 4.0, 5.0, 2.0, 3.0, 3.0, 5.0, 3.0, 7.0, 5.0, 5.0, 3.0, 5.0, 3.0, 6.0, 2.0, 4.0, 6.0, 6.0, 5.0, 4.0, 5.0, 3.0, 6.0, 5.0, 6.0, 4.0, 4.0, 6.0, 5.0, 3.0, 6.0, 5.0, 3.0, 4.0, 3.0, 4.0, 4.0, 3.0, 5.0, 5.0, 5.0, 5.0, 2.0, 5.0, 4.0, 1.0, 2.0, 3.0, 5.0, 6.0, 3.0, 5.0, 6.0, 5.0, 5.0, 5.0, 2.0, 6.0, 5.0, 3.0, 5.0, 4.0, 3.0, 8.0, 4.0, 5.0, 3.0, 5.0, 4.0, 4.0, 4.0, 5.0, 4.0, 5.0, 4.0, 5.0, 6.0, 3.0, 4.0, 7.0, 5.0, 3.0, 4.0, 4.0, 3.0, 5.0, 4.0, 5.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 4.0, 2.0, 5.0, 3.0, 6.0, 5.0, 2.0, 4.0, 4.0, 4.0, 5.0, 3.0, 3.0, 3.0, 3.0, 3.0, 4.0, 3.0, 4.0, 5.0, 4.0, 4.0, 5.0, 6.0, 2.0, 4.0, 5.0, 3.0, 5.0, 4.0, 1.0, 3.0, 4.0, 5.0, 4.0, 4.0, 3.0, 5.0, 6.0, 5.0, 6.0, 6.0, 4.0, 3.0, 5.0, 5.0, 4.0, 6.0, 5.0, 5.0, 3.0, 4.0, 5.0, 5.0, 3.0, 3.0, 4.0, 4.0, 3.0, 6.0, 5.0, 5.0, 5.0, 4.0, 4.0, 3.0, 4.0, 6.0, 4.0, 3.0, 4.0, 6.0, 4.0, 4.0, 4.0, 4.0, 5.0, 2.0, 3.0, 5.0, 4.0, 5.0, 3.0, 4.0, 3.0, 5.0, 4.0, 4.0, 3.0, 6.0, 4.0, 4.0, 3.0, 3.0, 5.0, 5.0, 6.0, 5.0, 5.0, 3.0, 3.0, 4.0, 4.0, 7.0, 4.0, 2.0, 3.0, 2.0, 5.0, 3.0, 7.0, 4.0, 4.0, 3.0, 5.0, 6.0, 4.0, 5.0, 5.0, 4.0, 4.0, 4.0, 3.0, 5.0, 4.0, 4.0, 4.0, 6.0, 5.0, 4.0, 4.0, 3.0, 3.0, 4.0, 6.0, 5.0, 5.0, 4.0, 4.0, 6.0, 6.0, 5.0, 5.0, 4.0, 5.0, 4.0, 3.0, 5.0, 5.0, 6.0, 4.0, 3.0, 5.0, 4.0, 3.0, 4.0, 6.0, 6.0, 5.0, 3.0, 6.0, 3.0, 3.0, 5.0, 5.0, 3.0, 6.0, 5.0, 5.0, 4.0, 4.0, 5.0, 4.0, 5.0, 1.0, 4.0, 5.0, 3.0, 4.0, 3.0]
+            self.args.evolution_train_eq_full = [0.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 4.0, 6.0, 4.0, 1.0, 4.0, 3.0, 4.0, 3.0, 5.0, 4.0, 4.0, 2.0, 1.0, 6.0, 4.0, 4.0, 4.0, 2.0, 3.0, 6.0, 3.0, 3.0, 1.0, 4.0, 1.0, 3.0, 3.0, 2.0, 7.0, 0.0, 3.0, 3.0, 4.0, 4.0, 3.0, 4.0, 3.0, 2.0, 4.0, 4.0, 4.0, 3.0, 3.0, 1.0, 3.0, 6.0, 1.0, 4.0, 4.0, 2.0, 3.0, 5.0, 5.0, 3.0, 3.0, 3.0, 1.0, 5.0, 4.0, 4.0, 4.0, 1.0, 5.0, 3.0, 7.0, 3.0, 2.0, 5.0, 2.0, 4.0, 4.0, 3.0, 3.0, 3.0, 3.0, 5.0, 6.0, 5.0, 4.0, 3.0, 6.0, 2.0, 3.0, 3.0, 4.0, 6.0, 4.0, 3.0, 3.0, 3.0, 5.0, 3.0, 4.0, 3.0, 1.0, 4.0, 6.0, 2.0, 3.0, 4.0, 4.0, 4.0, 2.0, 3.0, 4.0, 4.0, 4.0, 4.0, 4.0, 2.0, 3.0, 3.0, 3.0, 5.0, 3.0, 1.0, 3.0, 2.0, 2.0, 4.0, 5.0, 3.0, 3.0, 4.0, 3.0, 4.0, 2.0, 3.0, 5.0, 4.0, 3.0, 2.0, 3.0, 2.0, 2.0, 2.0, 4.0, 4.0, 3.0, 1.0, 3.0, 4.0, 3.0, 4.0, 4.0, 4.0, 3.0, 4.0, 3.0, 3.0, 1.0, 5.0, 4.0, 4.0, 6.0, 2.0, 2.0, 3.0, 4.0, 5.0, 1.0, 6.0, 4.0, 5.0, 2.0, 5.0, 2.0, 4.0, 3.0, 4.0, 4.0, 5.0, 3.0, 3.0, 3.0, 5.0, 2.0, 2.0, 2.0, 5.0, 2.0, 2.0, 2.0, 5.0, 1.0, 4.0, 2.0, 3.0, 5.0, 4.0, 4.0, 3.0, 6.0, 3.0, 5.0, 5.0, 6.0, 4.0, 4.0, 3.0, 3.0, 4.0, 4.0, 7.0, 4.0, 4.0, 2.0, 3.0, 3.0, 5.0, 4.0, 3.0, 3.0, 2.0, 3.0, 3.0, 2.0, 4.0, 4.0, 4.0, 6.0, 5.0, 5.0, 4.0, 5.0, 4.0, 2.0, 5.0, 5.0, 4.0, 2.0, 5.0, 2.0, 6.0, 3.0, 4.0, 3.0, 5.0, 3.0, 5.0, 6.0, 3.0, 4.0, 4.0, 4.0, 3.0, 5.0, 7.0, 3.0, 2.0, 3.0, 4.0, 4.0, 3.0, 6.0, 4.0, 2.0, 4.0, 4.0, 4.0, 3.0, 4.0, 4.0, 5.0, 6.0, 7.0, 2.0, 9.0, 4.0, 4.0, 3.0, 6.0, 4.0, 5.0, 4.0, 8.0, 3.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 3.0, 5.0, 3.0, 6.0, 6.0, 4.0, 3.0, 4.0, 5.0, 2.0, 2.0, 6.0, 5.0, 4.0, 2.0, 4.0, 4.0, 3.0, 4.0, 4.0, 5.0, 3.0, 3.0, 1.0, 4.0, 4.0, 5.0, 3.0, 6.0, 4.0, 4.0, 4.0, 6.0, 5.0, 5.0, 4.0, 3.0, 5.0, 5.0, 4.0, 4.0, 4.0, 4.0, 3.0, 7.0, 4.0, 5.0, 3.0, 4.0, 4.0, 5.0, 3.0, 4.0, 6.0, 5.0, 4.0, 3.0, 6.0, 4.0, 6.0, 3.0, 5.0, 3.0, 2.0, 5.0, 5.0, 5.0, 5.0, 4.0, 5.0, 5.0, 3.0, 3.0, 5.0, 1.0, 4.0, 4.0, 5.0, 2.0, 6.0, 6.0, 5.0, 4.0, 5.0, 3.0, 3.0, 3.0, 3.0, 3.0, 6.0, 4.0, 3.0, 4.0, 3.0, 5.0, 4.0, 5.0, 3.0, 4.0, 4.0, 1.0, 4.0, 4.0, 5.0, 4.0, 4.0, 5.0, 4.0, 3.0, 6.0, 5.0, 2.0, 4.0, 4.0, 4.0, 3.0, 4.0, 4.0, 4.0, 5.0, 3.0, 2.0, 2.0, 4.0, 7.0, 6.0, 6.0, 4.0, 5.0, 5.0, 4.0, 4.0, 6.0, 2.0, 4.0, 3.0, 4.0, 4.0, 5.0, 5.0, 5.0, 4.0, 4.0, 4.0, 5.0, 3.0, 4.0, 5.0, 3.0, 7.0, 4.0, 4.0, 2.0, 5.0, 4.0, 4.0, 5.0, 4.0, 4.0, 4.0, 5.0, 4.0, 5.0, 5.0, 5.0, 4.0, 3.0, 2.0, 4.0, 5.0, 4.0, 7.0, 5.0, 4.0, 3.0, 4.0, 6.0, 6.0, 2.0, 7.0, 2.0, 5.0, 5.0, 4.0, 4.0, 5.0, 5.0, 5.0, 3.0, 2.0, 4.0, 5.0, 2.0, 5.0, 4.0, 5.0, 4.0, 4.0, 2.0, 5.0, 4.0, 6.0, 5.0, 4.0, 6.0, 6.0, 5.0, 4.0, 2.0, 1.0, 5.0, 4.0, 5.0, 4.0, 4.0, 3.0, 2.0, 3.0, 4.0, 6.0, 3.0, 5.0, 3.0, 6.0, 5.0, 5.0, 2.0, 4.0, 6.0, 5.0, 4.0, 4.0, 4.0, 6.0, 4.0, 3.0, 3.0, 5.0, 2.0, 2.0, 5.0, 3.0, 7.0, 5.0, 6.0, 5.0, 6.0, 4.0, 3.0, 6.0, 3.0, 4.0, 7.0, 3.0, 3.0, 4.0, 4.0, 5.0, 3.0, 6.0, 7.0, 1.0, 5.0, 3.0, 5.0, 4.0, 6.0, 3.0, 6.0, 2.0, 5.0, 6.0, 4.0, 5.0, 5.0, 2.0, 5.0, 4.0, 1.0, 3.0, 5.0, 2.0, 6.0, 4.0, 5.0, 4.0, 5.0, 5.0, 5.0, 4.0, 7.0, 4.0, 4.0, 5.0, 7.0, 5.0, 5.0, 3.0, 5.0, 4.0, 5.0, 4.0, 3.0, 5.0, 4.0, 4.0, 7.0, 3.0, 4.0, 3.0, 3.0, 3.0, 5.0, 4.0, 6.0, 2.0, 2.0, 5.0, 5.0, 4.0, 3.0, 5.0, 3.0, 6.0, 5.0, 5.0, 3.0, 5.0, 2.0, 5.0, 4.0, 5.0, 2.0, 7.0, 3.0, 2.0, 5.0, 6.0, 5.0, 4.0, 4.0, 5.0, 3.0, 4.0, 4.0, 4.0, 6.0, 4.0, 1.0, 4.0, 3.0, 6.0, 7.0, 3.0, 5.0, 4.0, 5.0, 6.0, 7.0, 4.0, 6.0, 4.0, 3.0, 6.0, 5.0, 5.0, 4.0, 4.0, 4.0, 5.0, 2.0, 3.0, 3.0, 5.0, 3.0, 7.0, 5.0, 5.0, 3.0, 5.0, 3.0, 6.0, 2.0, 4.0, 6.0, 6.0, 5.0, 4.0, 5.0, 3.0, 6.0, 5.0, 6.0, 4.0, 4.0, 6.0, 5.0, 3.0, 6.0, 5.0, 3.0, 4.0, 3.0, 4.0, 4.0, 3.0, 5.0, 5.0, 5.0, 5.0, 2.0, 5.0, 4.0, 1.0, 2.0, 3.0, 5.0, 6.0, 3.0, 5.0, 6.0, 5.0, 5.0, 5.0, 2.0, 6.0, 5.0, 3.0, 5.0, 4.0, 3.0, 8.0, 4.0, 5.0, 3.0, 5.0, 4.0, 4.0, 4.0, 5.0, 4.0, 5.0, 4.0, 5.0, 6.0, 3.0, 4.0, 7.0, 5.0, 3.0, 4.0, 4.0, 3.0, 5.0, 4.0, 5.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 4.0, 2.0, 5.0, 3.0, 6.0, 5.0, 2.0, 4.0, 4.0, 4.0, 5.0, 3.0, 3.0, 3.0, 3.0, 3.0, 4.0, 3.0, 4.0, 5.0, 4.0, 4.0, 5.0, 6.0, 2.0, 4.0, 5.0, 3.0, 5.0, 4.0, 1.0, 3.0, 4.0, 5.0, 4.0, 4.0, 3.0, 5.0, 6.0, 5.0, 6.0, 6.0, 4.0, 3.0, 5.0, 5.0, 4.0, 6.0, 5.0, 5.0, 3.0, 4.0, 5.0, 5.0, 3.0, 3.0, 4.0, 4.0, 3.0, 6.0, 5.0, 5.0, 5.0, 4.0, 4.0, 3.0, 4.0, 6.0, 4.0, 3.0, 4.0, 6.0, 4.0, 4.0, 4.0, 4.0, 5.0, 2.0, 3.0, 5.0, 4.0, 5.0, 3.0, 4.0, 3.0, 5.0, 4.0, 4.0, 3.0, 6.0, 4.0, 4.0, 3.0, 3.0, 5.0, 5.0, 6.0, 5.0, 5.0, 3.0, 3.0, 4.0, 4.0, 7.0, 4.0, 2.0, 3.0, 2.0, 5.0, 3.0, 7.0, 4.0, 4.0, 3.0, 5.0, 6.0, 4.0, 5.0, 5.0, 4.0, 4.0, 4.0, 3.0, 5.0, 4.0, 4.0, 4.0, 6.0, 5.0, 4.0, 4.0, 3.0, 3.0, 4.0, 6.0, 5.0, 5.0, 4.0, 4.0, 6.0, 6.0, 5.0, 5.0, 4.0, 5.0, 4.0, 3.0, 5.0, 5.0, 6.0, 4.0, 3.0, 5.0, 4.0, 3.0, 4.0, 6.0, 6.0, 5.0, 3.0, 6.0, 3.0, 3.0, 5.0, 5.0, 3.0, 6.0, 5.0, 5.0, 4.0, 4.0, 5.0, 4.0, 5.0, 1.0, 4.0, 5.0, 3.0, 4.0, 3.0]
+            self.args.evolution_train_eq = self.args.evolution_train_eq[:100 * 7]
+            self.args.initial_level_time = time.time()
+            self.block_test=False
+            self.model_play = self.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
+                                                   training=True,
+                                                   load=True,
+                                                   folder=self.args.folder_name,
+                                                   filename=f'model_train_{7}.pth.tar'
+                                                   )
+
 
 
         iteration = 0
@@ -259,76 +285,18 @@ class Arcade(object):
                  self.args.new_play_examples_available < len([x for x in self.args.pools if type(x) != str])) :
             #print(time.time() -active_time)
 
-
-
             if self.active_total_eqs >= self.args.num_iters_for_level_train_examples_history and not self.args.active_tester:
-                current_score = 100 * self.active_solved_test/self.active_total_eqs
-                #if num_evol_model == 0 or (current_score >= np.mean(self.args.evolution_scores) -np.std(self.args.evolution_scores) and current_score<= np.mean(self.args.evolution_scores) + np.std(self.args.evolution_scores)):
+                current_score = 100 * self.active_solved_test / self.active_total_eqs
+                # if num_evol_model == 0 or (current_score >= np.mean(self.args.evolution_scores) -np.std(self.args.evolution_scores) and current_score<= np.mean(self.args.evolution_scores) + np.std(self.args.evolution_scores)):
                 self.args.evolution_scores.append(current_score)
-                self.median_score = np.median(self.args.evolution_scores)
-                if False : #current_score > self.median_score:
-                    self.best_model = self.active_model_being_tested
-                    self.best_score = current_score
-                    self.best_checkpoint_num_plays = self.checkpoint_num_plays_being_tested
-                    try:
-                        m=self.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
-                                                               training=True,
-                                                               load=True,
-                                                               folder=self.args.folder_name,
-                                                               filename=self.best_model
-                                                               )
-                        m.save_checkpoint(folder=self.args.folder_name,
-                                          filename=f'model_evol_{num_evol_model}.pth.tar')
-                        num_evol_model += 1
-                    except:
-                        pass
-
-
-                    self.checkpoint_num_plays_being_tested = self.num_train
-                    self.active_model_being_tested = f'model_train_{self.num_train}.pth.tar'
-                elif False:
-                    try:
-                        self.model_play = self.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
-                                                                   training=True,
-                                                                   load=True,
-                                                                   folder=self.args.folder_name,
-                                                                   filename=self.best_model
-                                                                   )  # TODO: do I need to initialize the model like this?load_model()
-                    except:
-                        pass
-                    self.args.checkpoint_num_plays = self.best_checkpoint_num_plays
-                    self.active_model_being_tested = f'model_train_{self.best_checkpoint_num_plays}.pth.tar'
-
+                self.args.evolution_scores_full.append(current_score)
+                self.median_score = 0  # np.median(self.args.evolution_scores)
                 print('Checking good evolution', self.active_solved_test, self.active_total_eqs,
-                      self.best_model,  self.best_score, current_score)
+                      self.best_model, self.best_score, current_score)
 
                 self.active_total_eqs = 0
                 self.active_solved_test = 0
 
-                train_score = np.mean(self.args.evolution_train_eq[-60:])
-                train_scores = [np.mean(x) for x in
-                                [self.args.evolution_train_eq[-100 * (i + 1)+30:-(100) * (i)+30 ] for i in
-                                 range(1, len(self.args.evolution_scores) + 1)]]
-                if len(train_scores) > 0:
-                    a = np.nanmax(train_scores)
-                else:
-                    a = 0
-                print('\nTRAIN SCORES:', train_scores)
-                print(f'Last 50 train score: {train_score}\n')
-                self.args.training_performance_log.append([train_scores, train_score])
-                if train_score < a - 0.175:
-                    j = max(int(np.nanargmax(train_scores)), 1)
-                    self.model_play = self.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
-                                                           training=True,
-                                                           load=True,
-                                                           folder=self.args.folder_name,
-                                                           filename=f'model_train_{j}.pth.tar'
-                                                           )
-                    self.args.checkpoint_num_plays = 100 * j
-                    self.args.evolution_scores.append(f'returned to checkpoint {100 * j}')
-                    self.args.evolution_train_eq.append(-1)
-                    self.num_train = j
-                    self.train_examples_history = [[]]
 
             folder_name = self.args.folder_name
             #folder_name = os.path.join('\\', 'we 0.1', 'test_files', folder_name)
@@ -393,6 +361,7 @@ class Arcade(object):
                                     self.args.total_plays += 1
                                     self.args.checkpoint_num_plays+=1
                                     self.test_due=True
+
                                     print(self.args.test_mode, self.args.total_plays, self.args.save_model)
                                     self.save_data()
                                     print('new_play_examples_available',  self.args.new_play_examples_available)
@@ -674,7 +643,8 @@ class Arcade(object):
         if mode == 'train':
             self.args.evolution_train[self.quarters] += total_score
             self.args.iterations_train[self.quarters] += 1
-            self.args.evolution_train_eq.append(total_score)
+            self.args.evolution_train_eq[-1].append(total_score)
+            self.args.evolution_train_eq_full[-1].append(total_score)
             self.args.iterations_train_eq.append(1)
             self.train_examples_history[-1].append(examples)
             if self.args.learnable_smt:
@@ -880,6 +850,36 @@ class Arcade(object):
         #else:
         #    return None
 
+
+
+        self.args.checkpoint_train_intervals.append(self.args.checkpoint_num_plays)
+        train_score = np.mean(self.args.evolution_train_eq[-1])
+        if len(self.args.evolution_train_eq) > 1:
+            train_scores = [np.mean(x) for x in self.args.evolution_train_eq[:-1]]
+            a = np.nanmax(train_scores)
+        else:
+            a = 0
+        print('\nTRAIN SCORES:', train_scores)
+        print(f'Last 50 train score: {train_score}\n')
+        self.args.training_performance_log.append([train_scores, train_score])
+        if train_score < a - 0.125:
+            j = int(np.nanargmax(train_scores))
+            self.model_play = self.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
+                                                   training=True,
+                                                   load=True,
+                                                   folder=self.args.folder_name,
+                                                   filename=f'model_train_{j}.pth.tar'
+                                                   )
+            self.args.checkpoint_num_plays = 100 * (j+1)
+            self.args.checkpoint_train_intervals = self.args.checkpoint_train_intervals[:j+1]
+            self.args.evolution_scores = self.args.evolution_scores[:100 * (j+1)]
+            self.args.evolution_train_eq = self.args.evolution_train_eq[:j+1]
+            self.args.evolution_train_eq_full.append(f'reverted_to_{j}')
+            self.num_train = j
+            self.train_examples_history = [[]]
+        self.args.evolution_train_eq.append([])
+        self.args.evolution_train_eq_full.append([])
+
     def check_level_up_conditions(self, score, level):
         if score >= self.args.min_eqs_for_successful_test_player or self.args.test_mode:
             self.args.num_successful_plays_at_level += 1
@@ -973,13 +973,16 @@ class Arcade(object):
             f'WNscores (test/train): {self.args.num_solved_test[self.args.min_level:]}/{self.args.num_solved_train[self.args.min_level:]}\n'
             f'{[round(self.args.evolution_train[i] / max(self.args.iterations_train[i], 0.001), 2) for i in range(len(self.args.evolution_train))]},{[round(self.args.evolution_test[i] / max(self.args.iterations_test[i], 0.001), 2) for i in range(len(self.args.evolution_test))]}\n'
             f'{[round(self.args.evolution_train_eq[i] / max(self.args.iterations_train_eq[i], 0.001), 2) for i in range(len(self.args.evolution_train_eq))]},{[round(self.args.evolution_test_eq[i] / max(self.args.iterations_test_eq[i], 0.001), 2) for i in range(len(self.args.evolution_test_eq))]}\n'
+            f'{self.args.evolution_train_eq_full}\n'
             f'Evolution: best score {self.best_score}, best model {self.best_model},\n'
-            f'best checkpoint num plays {self.best_checkpoint_num_plays}, checkpoint num plays being tested {self.checkpoint_num_plays_being_tested},\n'
+            f'best checkpoint num plays {self.best_checkpoint_num_plays}, checkpoint num plays being tested {self.args.checkpoint_num_plays_being_tested},\n'
             f'checkpoint num plays {self.args.checkpoint_num_plays},\n'
             f'active model being tested {self.active_model_being_tested}\n'
             f'median active scores {self.median_score},'
-            f'active scores {self.args.evolution_scores}\n'
+            f'evolution scores {self.args.evolution_scores}\n'
+            f'evolution scores full{self.args.evolution_scores_full}\n'
             f'training performance log: {self.args.training_performance_log }\n'
+            f'checkpoint train intervals: {self.args.checkpoint_train_intervals}'
             f'State :: test_due {self.test_due} - ongoing-test {self.ongoing_test} - benchmark_due {self.benchmark_due} - ongoing_benchmark {self.ongoing_benchmark}\n\n')
         self.args.min_level+=1
 
