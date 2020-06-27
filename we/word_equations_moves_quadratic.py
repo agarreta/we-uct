@@ -102,7 +102,7 @@ class WordEquationMovesQuadratic(object):
             word_side = action['word_side']
             new_eq = self.delete_var(new_eq, eq_side, word_side)
 
-        if type_of_action in ['move_0', 'move_-1']:
+        if type_of_action in ['move_0', 'move_1']:
             eq_side = action['eq_side']
             word_side = action['word_side']
             new_eq = self.move(new_eq, eq_side, word_side)
@@ -148,7 +148,7 @@ class WordEquationMovesQuadratic(object):
                            'type': 'delete',
                            'eq_side': eq_side,
                            'word_side': word_side,
-                           } for eq_side in [0,1]for word_side in [0,-1]]
+                           } for eq_side in [0,1] for word_side in [0,-1]]
         actions_move = [{'description': f"move_{eq_side}_{word_side}",
                            'type': f'move_{word_side}',
                            'eq_side': eq_side,
