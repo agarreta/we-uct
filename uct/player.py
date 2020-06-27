@@ -13,9 +13,9 @@ from pickle import Pickler, Unpickler
 from .SMTSolver import SMT_eval
 import torch
 from .utils import seed_everything
+import math
 
-
-class Player(object):
+class PlayerClassic(object):
 
     def __init__(self, args, nnet, mode='train', name='player', pool=[], previous_attempts_pool = [], seed=None):
         if seed is not None:
@@ -23,14 +23,13 @@ class Player(object):
             seed_everything(self.seed)
         else:
             self.seed = None
-        T = 30
-        args.timeout_time = T
-        if args.hanoi or args.wordgame:
-            args.timeout_time = T
-            if args.active_tester:
-                args.hanoi_max_lvl=16
+
         if args.active_tester:
-            args.timeout_time=T
+            args.timeout_time = args.active_tester_time
+        elif mode == 'test':
+            args.timeout_time = args.test_time
+        else:
+            args.timeout_time = args.train_time
         args.timeout_mcts = args.timeout_time
         self.args = args
 
@@ -122,6 +121,8 @@ class Player(object):
 
         self.discount = args.discount
 
+        self.local_execution_times = []
+
     def initiate_container(self, value):
         l = self.level if not self.args.hanoi else self.args.hanoi_max_lvl
         if type(value) == list:
@@ -156,7 +157,7 @@ class Player(object):
         return elapsed_time > self.args.timeout_time#*1.25
 
     def execute_episode(self, eq=None, verbose=0):
-
+        #print('no Q values')
         self.mcts.initial_time = time.time()
 
         train_examples = []
@@ -170,7 +171,7 @@ class Player(object):
         level = eq.level
         eq.s_eq=None
 
-        eq.sat = 0
+        eq.sat = self.args.unknown_value
 
 
         eq.initial_state = True
@@ -187,8 +188,9 @@ class Player(object):
             else:
                 s_eq = None
             eq.s_eq = s_eq
-            pi = self.mcts.get_action_prob(eq, s_eq, temp=self.temp, previous_state=prev_state)
+            _, pi = self.mcts.get_action_prob(eq, s_eq, temp=self.temp, previous_state=prev_state)
             if pi == 'already_sat':
+                print(pi, eq)
                 return [(0,0,1)], ['already_solved']
             examples = [(s_eq, pi, None)]
             train_examples += examples
@@ -198,6 +200,15 @@ class Player(object):
             action = np.random.choice(len(pi), p=np.array(pi))
 
             prev_state = eq.deepcopy(copy_id = True)
+            if False:
+                if eq.w in self.mcts.prior_state_value:
+                    val = self.mcts.prior_state_value[eq.w]
+                else:
+                    val = -10
+
+                log += [eq.get_string_form_for_print(), val, pi, [
+                    self.mcts.num_times_taken_state_action[(eq.w, a)] if
+                    (eq.w,a) in self.mcts.num_times_taken_state_action else 0 for a in range(8)]]
 
             new_eq = self.we.moves.act(eq, action, verbose)
             eq = new_eq
@@ -208,7 +219,8 @@ class Player(object):
 
             episode_step += 1
             tt = round(time.time() - t, 2)
-            log += [eq.get_string_form_for_print()]
+            if True:
+                log += [eq.get_string_form_for_print()]
 
             if self.timeout(tt, episode_step, level, eq) or\
                     (self.args.forbid_repetitions and num_repetitions > 1/2):
@@ -221,7 +233,7 @@ class Player(object):
                     if verbose == 1:
                         candidate_sol = eq.simplify_candidate_sol()
                         log.append(candidate_sol)
-                    return [(x[0], x[1], self.discount**(i)) for i,x in enumerate(train_examples[::-1])],  log  #+ self.mcts.found_sol[1]*['early_sol']
+                    return [(x[0], x[1], ((self.discount**(i))*self.args.sat_value)) for i,x in enumerate(train_examples[::-1])],  log  #+ self.mcts.found_sol[1]*['early_sol']
 
             #eq = self.we.utils.check_satisfiability(eq, smt_time=self.args.mcts_smt_time_max)
             if eq.w in self.mcts.final_state_value:
@@ -229,14 +241,14 @@ class Player(object):
             else:
                 eq = self.we.utils.check_satisfiability(eq, smt_time=self.args.mcts_smt_time_max)
 
-            if eq.sat != 0:
+            if eq.sat != self.args.unknown_value:
                 if verbose == 1:
                     candidate_sol = eq.simplify_candidate_sol()
                     log.append(candidate_sol)
-                if eq.sat == 1:
-                    return [(x[0], x[1], self.discount**i) for i, x in enumerate(train_examples[::-1])], log
+                if eq.sat == self.args.sat_value:
+                    return [(x[0], x[1], (self.discount**i)*self.args.sat_value) for i, x in enumerate(train_examples[::-1])], log
                 else:
-                    return [(x[0], x[1], -self.discount**i) for i, x in enumerate(train_examples[::-1])], log
+                    return [(x[0], x[1], (self.discount**i)*self.args.unsat_value) for i, x in enumerate(train_examples[::-1])], log
 
 
     def play(self, level_list=None):
@@ -266,52 +278,66 @@ class Player(object):
                 npool = []
                 num_eqs_per_lvl_npool = [0 for _ in range(4, 41)]
                 num_eqs_per_lvl_oldpool = [0 for _ in range(4, 41)]
-                for e in pool[:100]:
+                for e in pool[: self.args.test_pool_length]:
                     num_eqs_per_lvl_oldpool[e.level - 4] += 1
                 for l in range(4, 41):
                     for e in pool:
-                        if len(npool) > 100:
+                        if len(npool) > self.args.test_pool_length:
                             break
                         if e.level == l and num_eqs_per_lvl_npool[l - 4] < 2 + min(1, l % 4):
                             npool.append(e)
                             num_eqs_per_lvl_npool[l - 4] += 1
-                    if len(npool) > 100:
+                    if len(npool) > self.args.test_pool_length:
                         break
                 print(num_eqs_per_lvl_oldpool)
                 print(num_eqs_per_lvl_npool)
-                assert len(npool) >= 100
+                assert len(npool) >= self.args.test_pool_length
                 pool = npool
         level_order = [[eq.level, i] for i, eq in enumerate(pool)]
         level_order.sort(reverse=True)
         pool = [pool[lvl[1]] for lvl in level_order]
 
-        if self.mode == 'test':
+        if self.mode == 'test' and not self.args.active_tester:
             file_name = self.args.pool_name_load
             print('Loading {}'.format(file_name))
             if os.path.exists(file_name):
                 with open(file_name, "rb") as f:
-                    pool = Unpickler(f).load()[:300]
+                    pool = Unpickler(f).load()
                     self.pool_generation_time = 0
-                print([x.level for x in pool[:100]])
+                print([x.level for x in pool[:self.args.test_pool_length]])
                 max_level = 25
                 npool = []
-                num_eqs_per_lvl_npool = [0 for _ in range(4, max_level + 1)]
-                num_eqs_per_lvl_oldpool = [0 for _ in range(4, max_level + 1)]
-                # for e in pool[:100]:
-                #    num_eqs_per_lvl_oldpool[e.level-4] += 1
-                for l in range(4, max_level + 1):
-                    for e in pool:
-                        if len(npool) > 100:
+                level_slots = [range(math.floor(10 + 1.6 * i), math.floor(10 + 1.6 * (i + 1))) for i in range(0, 9)]
+                num_slots = [0 for _ in range(0, 9)]
+                while len(npool) < self.args.test_pool_length:
+                    a = int(np.argmin([x for x in num_slots]))
+                    l = level_slots[a]
+                    for x in [y for y in pool if y not in npool]:
+                        if x.level in l:
+                            npool.append(x)
+                            num_slots[a] += 1
                             break
-                        if e.level == l and num_eqs_per_lvl_npool[l - 4] < (4 + min(1, l % 4)):
-                            npool.append(e)
-                            num_eqs_per_lvl_npool[l - 4] += 1
-                    if len(npool) > 100:
-                        break
-                # print(num_eqs_per_lvl_oldpool)
-                print(num_eqs_per_lvl_npool)
-                assert len(npool) >= 100
-                pool = npool
+                assert len(pool) >= self.args.test_pool_length
+                pool = npool[:self.args.test_pool_length]
+                print('TEST LEVELS: ', num_slots)
+
+                if False:
+                    num_eqs_per_lvl_npool = [0 for _ in range(4, max_level + 1)]
+                    num_eqs_per_lvl_oldpool = [0 for _ in range(4, max_level + 1)]
+                    # for e in pool[:100]:
+                    #    num_eqs_per_lvl_oldpool[e.level-4] += 1
+                    for l in range(4, max_level + 1):
+                        for e in pool:
+                            if len(npool) > 100:
+                                break
+                            if e.level == l and num_eqs_per_lvl_npool[l - 4] < (4 + min(1, l % 4)):
+                                npool.append(e)
+                                num_eqs_per_lvl_npool[l - 4] += 1
+                        if len(npool) > self.args.num_iters_for_level_train_examples_history:
+                            break
+                    # print(num_eqs_per_lvl_oldpool)
+                    print(num_eqs_per_lvl_npool)
+                    assert len(npool) >= self.args.num_iters_for_level_train_examples_history
 
         self.execution_times_sat = self.initiate_container([])
         self.execution_times_unsat = self.initiate_container([])
@@ -375,6 +401,7 @@ class Player(object):
             reps = self.mcts.num_reps
 
             local_execution_time = round(time.time() - initial_local_time, 4)
+
             len_eq = len(log)
 
             printout_info = [i, '', eq.level, len_eq, local_execution_time,
@@ -385,7 +412,9 @@ class Player(object):
             if not self.args.cnf_benchmark:
                 printout_info += [log]
 
-            if examples[0][2] >= 1  or log[-1] == 'early_sol':
+            if examples[0][2] >= self.args.sat_value  or log[-1] == 'early_sol':
+                self.local_execution_times.append(local_execution_time)
+
                 self.score[eq.level-1].append(1)
                 printout_info[1] = 'New sol'
                 logging.error(self.execution_printout(*printout_info))
@@ -397,13 +426,13 @@ class Player(object):
                     self.eqs_solved.append([eq.level, eq_original, local_execution_time])
 
 
-            elif (not self.args.values01 and examples[0][2] == 0):
+            elif (not self.args.values01 and examples[0][2] == self.args.unknown_value):
                 self.score[eq.level-1].append(0)
                 printout_info[1] = 'Stopped'
                 self.num_timeouts[eq.level-1] += 1
                 logging.error(self.execution_printout(*printout_info))
 
-            elif examples[0][2] < 0:
+            elif examples[0][2] == self.args.unsat_value:
 
                 self.score[eq.level-1].append(0)
                 self.z3mctstimes_unsat[eq.level-1].append(self.mcts.meanz3times[0])
