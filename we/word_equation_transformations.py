@@ -115,17 +115,26 @@ class WordEquationTransformations(object):
     def get_automorphism(self, eq):
 
         order = ''.join(OrderedDict.fromkeys(eq.w).keys())
-
-        char_auto = re.sub( '[' + ''.join(self.args.VARIABLES + ['.', '=']) + ']', '' , order)
-        var_auto = re.sub('[' + ''.join(self.args.ALPHABET + ['.', '=']) + ']', '', order)
-
-        for x in self.args.ALPHABET:
-            if x not in char_auto:
-                char_auto += x
-
-        for x in self.args.VARIABLES:
-            if x not in var_auto:
+        order = re.sub('=','',order)
+        order = re.sub('\.','',order)
+        var_auto =''
+        char_auto = ''
+        for x in order:
+            if x.isupper():
                 var_auto += x
+            else:
+                char_auto += x
+        if False:
+            char_auto = re.sub( '[' + ''.join(self.args.VARIABLES + ['.', '=']) + ']', '' , order)
+            var_auto = re.sub('[' + ''.join(self.args.ALPHABET + ['.', '=']) + ']', '', order)
+
+            for x in self.args.ALPHABET:
+                if x not in char_auto:
+                    char_auto += x
+
+            for x in self.args.VARIABLES:
+                if x not in var_auto:
+                    var_auto += x
 
         automorphism = {'.':'.', '=':'='}
         automorphism.update({var_auto[i]: self.args.VARIABLES[i] for i in range(len(var_auto))})
