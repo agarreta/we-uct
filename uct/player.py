@@ -15,7 +15,7 @@ import torch
 from .utils import seed_everything
 import math
 
-class PlayerClassic(object):
+class Player(object):
 
     def __init__(self, args, nnet, mode='train', name='player', pool=[], previous_attempts_pool = [], seed=None):
         if seed is not None:
