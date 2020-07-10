@@ -163,31 +163,28 @@ def individual_player_session(play_args):
     args, pool, model_folder, model_filename, mode, seed = play_args
     pname = args.pool_name_load.split('/')[1]
     if args.smt_solver is not None:
-        args.mcts_smt_time_max = timeouts[args.smt_solver][pname]
-    if model_folder == 'v55':
+        try:
+            args.mcts_smt_time_max = timeouts[args.smt_solver][pname]
+        except:
+            args.mcts_smt_time_max = 800
+    if True:# model_folder in ['v55','v57']:
         num_alph=10
-        num_vars=15
+        num_vars=14
         args.SIDE_MAX_LEN = 150
         args.num_mcts_simulations = 50
         args.ALPHABET = list(ascii_lowercase)
         args.VARIABLES = list(ascii_uppercase)
-        if 'track'   in args.pool_name:
-            args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
-            args.VARIABLES = [x for x in ascii_uppercase]
-            args.ALPHABET = args.ALPHABET[:num_alph]
-            args.VARIABLES = args.VARIABLES[:num_vars]
-        else:
-            args.VARIABLES = [x for x in ascii_uppercase][::-1]
-            args.VARIABLES = args.VARIABLES[:num_vars]
+        #if 'track'   in args.pool_name:
+        #    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
+        #    args.VARIABLES = [x for x in ascii_uppercase]
+        #    args.ALPHABET = args.ALPHABET[:num_alph]
+        #    args.VARIABLES = args.VARIABLES[:num_vars]
+        #else:
+        args.VARIABLES = [x for x in ascii_uppercase]
+        args.VARIABLES = args.VARIABLES[:num_vars]
+        args.ALPHABET = args.ALPHABET[:num_alph]
+        args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
 
-        args.num_resnet_blocks = 8
-        npool=[]
-        for x in pool:
-            if len(set([y for y in x.w if y in args.VARIABLES])) < 15:
-                npool.append(x)
-            if len(set([y for y in x.w if y in args.ALPHABET])) <10:
-                npool.append(x)
-        pool=npool
     elif model_folder == 'v56':
         num_alph=3
         num_vars=5
@@ -237,5 +234,4 @@ def individual_player_session(play_args):
     results['sat_steps_taken'] = player.sat_steps_taken
 
     return results
-
 
