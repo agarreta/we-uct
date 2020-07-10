@@ -4,7 +4,7 @@ Created on Mon Apr  8 17:28:18 2019
 
 @author: garre
 """
-
+from string import ascii_uppercase, ascii_lowercase
 
 from .player import Player
 from .utils import Utils, seed_everything
@@ -19,6 +19,46 @@ import datetime
 plt.interactive(True)
 import numpy as np
 
+
+t=800
+timeouts={
+    'Z3': {
+        '01_track':t,
+        '02_track': t,
+        '03_track':t,
+        'pool_20_5_3.pth.tar':t
+    },
+    'seq': {
+        '01_track': t,
+        '02_track': t,
+        '03_track': t,
+        'pool_20_5_3.pth.tar': t
+    },
+    'CVC4': {
+        '01_track':t,
+        '02_track':t,
+        '03_track':t,
+        'pool_20_5_3.pth.tar':t
+    },
+    'dumb': {
+        '01_track': t,
+        '02_track': t,
+        '03_track': t,
+        'pool_20_5_3.pth.tar': t
+    },
+    'TRAU': {
+        '01_track':3500,
+        '02_track': 3500,
+        '03_track': 3500,
+        'pool_20_5_3.pth.tar': 3500
+    },
+    'woorpje': {
+        '01_track': 3000,
+        '02_track': 3000,
+        '03_track': 3000,
+        'pool_20_5_3.pth.tar': 3000
+    }
+}
 def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1):
     seed_everything(seed)
     if num_cpus == 1:
@@ -71,12 +111,22 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
         solver_time_avg = -1
         solver_score = -1
         intersection_times = -1
+        intersection_times_std = -1
+        solver_time_std=-1
         intersection_times_solver = -1
+        intersection_times_solver_std=-1
+        solver_eqs_solved=0
+        intersection=-1
+        solver_tm=-1
+        intersection_solved=-1
+        intersection_solver_solved=-1
 
     log = f'\nPool {args.pool_name}, Seed: {args.seed_class}\n' \
           f'Model: {os.path.join(model_folder, model_filename)}\n' \
-          f'Score: {score}, Time avg: {time_avg} ({time_std}), Intersection time avg: {intersection_times} ({intersection_times_std}), Num steps avg: {steps_avg} ({steps_std}) ({l})\n' \
-          f'Solver score: {solver_score}, Solver time avg: {solver_time_avg} ({solver_time_std}), Intersection time avg: {intersection_times_solver} ({intersection_times_solver_std}),\n' \
+          f'Score: {score}, Time avg: {time_avg} ({time_std}), Intersection time avg: {intersection_times} ({intersection_times_std}), ' \
+          f'Num steps avg: {steps_avg} ({steps_std}) ({l})\n' \
+          f'Solver score: {solver_score}, Solver time avg: {solver_time_avg} ({solver_time_std}), ' \
+          f'Intersection time avg: {intersection_times_solver} ({intersection_times_solver_std}),\n' \
           f'Steps: {steps}\n'\
           f'SIDE_MAX_LEN: {args.SIDE_MAX_LEN}, num_vars: {len(args.VARIABLES)}, num_letters: {len(args.ALPHABET)}\n' \
           f'num_channels: {args.num_channels}, num_residual_blocks: {args.num_resnet_blocks}\n' \
@@ -111,12 +161,58 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
 
 def individual_player_session(play_args):
     args, pool, model_folder, model_filename, mode, seed = play_args
+    pname = args.pool_name_load.split('/')[1]
+    if args.smt_solver is not None:
+        args.mcts_smt_time_max = timeouts[args.smt_solver][pname]
+    if model_folder == 'v55':
+        num_alph=10
+        num_vars=15
+        args.SIDE_MAX_LEN = 150
+        args.num_mcts_simulations = 50
+        args.ALPHABET = list(ascii_lowercase)
+        args.VARIABLES = list(ascii_uppercase)
+        if 'track'   in args.pool_name:
+            args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
+            args.VARIABLES = [x for x in ascii_uppercase]
+            args.ALPHABET = args.ALPHABET[:num_alph]
+            args.VARIABLES = args.VARIABLES[:num_vars]
+        else:
+            args.VARIABLES = [x for x in ascii_uppercase][::-1]
+            args.VARIABLES = args.VARIABLES[:num_vars]
+
+        args.num_resnet_blocks = 8
+        npool=[]
+        for x in pool:
+            if len(set([y for y in x.w if y in args.VARIABLES])) < 15:
+                npool.append(x)
+            if len(set([y for y in x.w if y in args.ALPHABET])) <10:
+                npool.append(x)
+        pool=npool
+    elif model_folder == 'v56':
+        num_alph=3
+        num_vars=5
+        args.SIDE_MAX_LEN = 20
+        args.num_mcts_simulations = 10
+        args.ALPHABET = list(ascii_lowercase)
+        args.VARIABLES = list(ascii_uppercase)
+        if 'track' not in args.pool_name:
+            args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
+            args.VARIABLES = [x for x in ascii_uppercase[::-1]]
+            args.ALPHABET = args.ALPHABET[:num_alph]
+            args.VARIABLES = args.VARIABLES[:num_vars]
+            args.num_mcts_simulations = 50
+
+    else:
+        args.VARIABLES = list(ascii_uppercase)
+        args.ALPHABET = list(ascii_lowercase)
+    args.update_symbol_index_dictionary()
     seed_everything(seed)
     results = dict({'level': args.level})
 
     nnet = NNetWrapper(args, device='cpu', training=False, seed=seed)
-    if model_filename!= 'uniform':
-        nnet.load_checkpoint(folder=model_folder, filename=model_filename)
+    if model_filename != 'uniform':
+        if model_filename != 'model_train_0.pth.tar':
+            nnet.load_checkpoint(folder=model_folder, filename=model_filename)
     else:
         nnet.model = UniformModel(args, args.num_actions)
 
@@ -126,6 +222,7 @@ def individual_player_session(play_args):
         param.requires_grad_(False)
 
     args.active_tester = True
+
 
     player = Player(args, nnet,
                     mode=mode, name=f'player_0',
