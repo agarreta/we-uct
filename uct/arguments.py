@@ -1,7 +1,7 @@
 from string import ascii_lowercase, ascii_uppercase, punctuation
 
 import numpy as np
-
+from math import ceil, floor
 # from keras.preprocessing.text import Tokenizer
 #  from we.word_equation.we import WE
 
@@ -51,6 +51,14 @@ class Arguments(object):
         self.local_execution_times_test_history = []
         self.sat_steps_taken_train_history = []
         self.sat_steps_taken_test_history = []
+        #self.train_level_slots = [range(floor(3 +1.5*i), ceil(3+1.5*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
+        self.num_cpus=8
+        #self.format_mode = 'normal'
+
+        #self.train_level_slots = [range(ceil(3 +1.3*i), ceil(3+1.3*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
+        #self.test_level_slots = [range(ceil(5 +1.7*i), ceil(5+1.7*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
+
+
         #self.num_train = 42
        #self.active_tester_time = 30
        #self.test_time = 10
@@ -73,9 +81,9 @@ class Arguments(object):
 
 
         if self.equation_sizes == 'small':
-            self.SIDE_MAX_LEN = 20 # 24 #24
-            num_vars = 5
-            num_alph =3
+            self.SIDE_MAX_LEN =150 # 24 #24
+            num_vars=14
+            num_alph =10
         elif self.equation_sizes == 'medium':
             self.SIDE_MAX_LEN =300
             num_vars = 26
@@ -85,7 +93,7 @@ class Arguments(object):
         self.test_mode_pool_filename = 'benchmarks/pool_lvl_6_30_size_100_quadratic-oriented_tiny.pth.tar' if not self.test_mode else None  # 'benchmarks/pool_lvl_6_30_size_100_regular-ordered_tiny.pth.tar'
 
         self.ALPHABET = [x for x in ascii_lowercase][0:num_alph] if not self.large else numeric_vars_alph
-        self.VARIABLES = [x for x in ascii_uppercase[::-1]] + [x for x in '0123456789'] + list(ascii_lowercase[6:])
+        self.VARIABLES = [x for x in ascii_uppercase[::]] + [x for x in '0123456789'] + list(ascii_lowercase[6:])
         self.ALPHABET = self.ALPHABET[:num_alph] if not self.large else numeric_vars_alph
         self.VARIABLES = self.VARIABLES[:num_vars]  if not self.large else numeric_vars
         self.LEN_CORPUS = len(self.VARIABLES) + len(self.ALPHABET)
@@ -108,7 +116,7 @@ class Arguments(object):
 
     def __init__(self, folder_name=''):
         self.nnet_type = 'newresnet'
-        self.test_mode =   False
+        self.test_mode =  not True
         self.oracle = not True
         self.use_length_constraints = not True
         self.num_cpus = 8
@@ -121,15 +129,15 @@ class Arguments(object):
         self.forbid_repetitions = False
         self.noise_param = 0.1
         self.num_mcts_simulations = 50
-        self.linear_hidden_size=128
-        self.num_resnet_blocks=10
+        self.linear_hidden_size=64
+        self.num_resnet_blocks=2
         self.num_channels=64
         self.discount=0.9 if self.mcts_value_type == 'Qvalues' else 0.9
         self.mcts_smt_time_max = 800
         self.checkpoint_num_plays = 0
         self.total_plays = 0
         # self.pool_name_load = 'benchmarks/30_10_5_v2.pth.tar' #'benchmarks/pool_30_10_5_v2.pth.tar'
-        self.pool_name_load = 'benchmarks/pool_lvl_39_33_size_100_quadratic-oriented_tiny.pth.tar'  #'benchmarks/pool_30_10_5_v2.pth.tar'
+        self.pool_name_load = 'benchmarks/pool_150_14_10.pth.tar' #'benchmarks/pool_150_15_10.pth.tar'  #'benchmarks/pool_30_10_5_v2.pth.tar'
         self.num_levels_in_examples_history = 1
         self.num_iters_for_level_train_examples_history = 100
         self.num_play_iterations_before_test_iteration = self.num_iters_for_level_train_examples_history
@@ -147,13 +155,20 @@ class Arguments(object):
         self.unknown_value=0
         self.unsat_value=-1
         self.epochs = 1
-        self.load_model = not  True
+        self.load_model =    False
         self.active_tester_time=30
         self.test_time=30
         self.train_time=30
         self.using_attention= False
         self.bound = True
-
+        #self.train_level_slots = [range(floor(3 +1.*i), ceil(3+1.*(i+1))) for i in range(0,9)] #
+        self.train_level_slots = [range(floor(3 +1.*i), ceil(3+1.*(i+1))) for i in range(0,9)] #
+        #self.train_level_slots = [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
+        #[range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]#[range(ceil(3 +1.3*i), ceil(3+1.3*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
+        #self.test_level_slots =  [range(floor(10 +1.6*i), floor(10+1.6*(i+1))) for i in range(0,9)] #[range(ceil(5 +1.7*i), ceil(5+1.7*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
+        self.test_level_slots = [range(floor(3 +1.*i), ceil(3+1.*(i+1))) for i in range(0,9)] ##[range(ceil(5 +1.7*i), ceil(5+1.7*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
+        self.format_mode='cuts'
+        self.NNET_SIDE_MAX_LEN=24
 
         self.num_train = 0
         self.num_collisions_test=0
@@ -497,6 +512,9 @@ class Arguments(object):
             word_index.update({x: i+len(self.VARIABLES) for i,x in enumerate(self.ALPHABET)})
             #word_index.update({x: i+14 for i,x in enumerate(self.ALPHABET)})
             word_index.update({'.': self.LEN_CORPUS-1})
+            if self.format_mode == 'cuts':
+                word_index.update({'|': self.LEN_CORPUS})
+                self.LEN_CORPUS+=1
             #word_index.update({'.': 24})
         if self.nnet_type in ['lstmpe']:
             word_index.update({'=': self.LEN_CORPUS})
