@@ -64,7 +64,7 @@ class WordEquationUtils(object):
             return t
         elif not self.args.few_channels:
             #if first:
-            t = torch.zeros(1,self.args.LEN_CORPUS+1,1, length)
+            t = torch.zeros(1,self.args.LEN_CORPUS,1, length)
             try:
                 for i, x in enumerate(s):
                     if x != '=':
@@ -160,19 +160,17 @@ class WordEquationUtils(object):
             return torch.tensor([[[0.]]])
         if self.args.nnet_type in ['attention']:
             def attention_fun(eq):
-                mdim = 3 + len(self.args.VARIABLES) + len(self.args.ALPHABET)
+                mdim = 2 + len(self.args.VARIABLES) + len(self.args.ALPHABET)
                 t = torch.zeros(len(eq), mdim, dtype =torch.float)
                 if eq == 'error':
                     return t
-                found_eq = False
                 for i, symbol in enumerate(eq):
                     if symbol != '=':
-                        idx = 3+self.args.symbol_indices[symbol]
-                        t[ i, idx]=1.+ self.sin_PE(i, idx, mdim) + self.cos_PE(i, idx, mdim)
-                        t[ i, 1 + int(found_eq)] = + self.sin_PE(i, 1 + int(found_eq), mdim) + self.cos_PE(i, 1 + int(found_eq), mdim)
+                        idx = 1+self.args.symbol_indices[symbol]
+                        t[ i, idx]=1#.+ self.sin_PE(i, idx, mdim) + self.cos_PE(i, idx, mdim)
+                        #t[ i, 1 + int(found_eq)] = 1.#+ self.sin_PE(i, 1 + int(found_eq), mdim) + self.cos_PE(i, 1 + int(found_eq), mdim)
                     else:
-                        found_eq=True
-                        t[ i, 0] = 1. + self.sin_PE(i, 0, mdim) + self.cos_PE(i, 0, mdim)
+                        t[ i, 0] = 1. #+ self.sin_PE(i, 0, mdim) + self.cos_PE(i, 0, mdim)
                 return t
 
             return attention_fun(eq.w)
@@ -184,14 +182,40 @@ class WordEquationUtils(object):
         if self.args.nnet_type in ['resnet', 'resnet_double', 'newresnet']:# and \
                 #('noagg' in self.args.folder_name or 'meanagg' in self.args.folder_name):
 
+
             if self.args.using_attention:
                 return self.attention_fun(eq.w)
 
 
             s1, s2 = eq.w.split('=')
+            if self.args.format_mode == 'cuts':
+                #l = int(self.args.NNET_SIDE_MAX_LEN/2)
+                #s1 = s1[:l] + '|' + s1[-l:]
+                #s2 = s2[: l] + '|'  + s2[-l:]
+
+                cuts = []
+                relevant_vars = [x for x in [s1[0], s1[-1], s2[0], s2[-1]] if x in self.args.VARIABLES]
+                cuts += [[s1[:4], s2[:4]]]
+                side_relevant_vars = [x for x in relevant_vars if x in [s1[0],s1[-1]] and x in [s2[0], s2[-1]]]
+                inner_relevant_vars = [x for x in relevant_vars if x not in side_relevant_vars]
+                for x in inner_relevant_vars:
+                    p1 = s1.find(x,1,-1 )
+                    if p1 == -1:
+                        p1 = s2.find(x, 1,-1)
+                    cuts += [[s1[p1-1:p1+2], s2[p1-1:p1+2]]]
+                cuts +=  [[s1[-4:], s2[-4:]]]
+                new_s1, new_s2 = '',''
+                for c in cuts:
+                    new_s1 += c[0] + '|'
+                    new_s2 += c[1] + '|'
+                s1 = new_s1[:-1]
+                s2 = new_s2[:-1]
+                if random.random() < 1/2000:
+                    print(s1,s2)
 
 
             maxlen = self.args.SIDE_MAX_LEN if self.args.bound else max(len(s1), len(s2))
+            maxlen = maxlen if self.args.format_mode != 'cuts' else self.args.NNET_SIDE_MAX_LEN+5
             if True:#self.args.bound:
                 tensor1, tensor2 = self.one_hot_encode_resnet(s1, maxlen).to(device), self.one_hot_encode_resnet(s2, maxlen).to(device)
                 tensor = torch.cat((tensor1, tensor2), dim=2).to(device)
