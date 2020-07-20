@@ -73,11 +73,11 @@ class NewResnet2(nn.Module):
 
     def __init__(self, args, channels=None, blocks=None, device='cpu', one_head = '', headless=False):
         super(NewResnet2, self).__init__()
-
-        np.random.seed(0)
-        torch.manual_seed(0)
+        SIDE_MAX_LEN = args.SIDE_MAX_LEN if args.format_mode != 'cuts' else args.NNET_SIDE_MAX_LEN+5
+        np.random.seed(args.seed_class)
+        torch.manual_seed(args.seed_class)
         if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(0)
+            torch.cuda.manual_seed_all(args.seed_class)
         self.noise = GaussianNoise()
 
         self.args = args
@@ -88,7 +88,7 @@ class NewResnet2(nn.Module):
         self.num_channels = self.args.num_channels if channels is None else channels
         self.num_resnet_blocks = self.args.num_resnet_blocks if blocks is None else blocks
 
-        self.linear_input_size = int(self.final_num_channels * 2*(self.args.SIDE_MAX_LEN))
+        self.linear_input_size = int(self.final_num_channels * 2*(SIDE_MAX_LEN))
         #self.linear_input_size = self.final_num_channels * int(self.args.SIDE_MAX_LEN/2) *int((self.args.LEN_CORPUS+1)/2)
 
         self.conv_initial = nn.Conv2d(self.num_in_channels, self.num_channels, 3, padding = 1, stride = 1)
