@@ -224,11 +224,6 @@ class WordEquationUtils(object):
                 tensor = self.encode_newresnet(s1,s2, maxlen).to(device)
 
 
-            if self.args.use_length_constraints:
-                tensor_lc = self.format_lc_part_in_cnn_style(eq, maxlen)
-
-                tensor = torch.cat((tensor, tensor_lc), dim =1).to(device)
-
             return tensor
 
         if self.args.nnet_type == 'resnet1d':
@@ -237,10 +232,6 @@ class WordEquationUtils(object):
 
             tensor = self.one_hot_encode_resnet(eq.w, maxlen).to(device)
 
-            if self.args.use_length_constraints:
-                tensor_lc = self.format_lc_part_in_cnn_style(eq, maxlen)
-
-                tensor = torch.cat((tensor, tensor_lc), dim=1).to(device)
 
             return tensor
 
@@ -455,40 +446,42 @@ class WordEquationUtils(object):
 
     def LC_is_sat(self, eq):
         sats = []
-        for num in range(len(eq.coefficients_variables_lc)):
-            sats.append(self.main_LC_is_sat(eq, num))
+        for i,x in enumerate(eq.coefficients_variables_lc):
+            for num in range(len(x)):
+                sats.append(self.main_LC_is_sat(eq, i,num))
         if False in sats:
             return False
         else:
             return True
 
-    def main_LC_is_sat(self, eq, num=0):
+    def main_LC_is_sat(self, eq,i=0, num=0):
         """
         Determines if the length constraint of eq is satisfiable assuming the word equation is empty
         lc always has the form: linear_combination_of_weighted_lengths_of_variables >= ell
         """
-        if eq.ell[num] <= 0:
+        if eq.ell[i][num] <= 0:
             # in this case we can set all variables to be empty
             return True
-        elif any([eq.coefficients_variables_lc[num][var] > 0 for var in self.args.VARIABLES]):
+        elif any([eq.coefficients_variables_lc[i][num][var] > 0 for var in self.args.VARIABLES]):
             # we can make a variable with positive coefficient as large as needed
             return True
         else:
             # the only option left is that all coefficients are <= 0 and ell > 0, so unsolvable
             return False
     def update_LC_with_var_subtitution(self, eq, var, subst):
-        for _ in range(len(eq.coefficients_variables_lc)):
-            eq = self.main_update_LC_with_var_subtitution(eq, var, subst, _)
+        for i,x in enumerate(eq.coefficients_variables_lc):
+            for _ in range(len(x)):
+                eq = self.main_update_LC_with_var_subtitution(eq, var, subst, _, i)
         return eq
 
-    def main_update_LC_with_var_subtitution(self, eq, var, subst,num):
+    def main_update_LC_with_var_subtitution(self, eq, var, subst,num,i):
         # assert var in self.args.VARIABLES
         # assert len(self.args.VARIABLES) == 5
-        eq.ell[num] = eq.ell[num] - eq.coefficients_variables_lc[num][var] * self.count_ctts(subst)
+        eq.ell[i][num] = eq.ell[i][num] - eq.coefficients_variables_lc[i][num][var] * self.count_ctts(subst)
         # eq.coefficients_variables_lc.update({
         #     x: eq.coefficients_variables_lc[x] + eq.coefficients_variables_lc[var] * subst.count(x) for x in self.args.VARIABLES if x != var
         # })
-        eq.coefficients_variables_lc[num].update({
+        eq.coefficients_variables_lc[i][num].update({
             var: 0
         })
         # if len(eq.not_normalized) == 0:

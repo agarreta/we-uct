@@ -1,5 +1,6 @@
 import re
 from collections import OrderedDict
+from random import shuffle
 
 class WordEquationTransformations(object):
 
@@ -41,8 +42,9 @@ class WordEquationTransformations(object):
                 eq = self.del_pref_suf(eq)
 
             if self.args.use_length_constraints:
-                for _ in range(len(eq.coefficients_variables_lc)):
-                    eq = self.treat_lc(eq, mode,_)
+                for i,x in enumerate(eq.coefficients_variables_lc):
+                    for _ in range(len(x)):
+                        eq = self.treat_lc(eq, mode,_,i)
             return eq
 
             def normal_form_large_version(w, alphabet, variables, num_digits):
@@ -112,9 +114,14 @@ class WordEquationTransformations(object):
                 eq.w = new_w
                 return eq
 
-    def get_automorphism(self, eq):
+    def get_automorphism(self, eq, type='canonical'):
 
-        order = ''.join(OrderedDict.fromkeys(eq.w).keys())
+        if type == 'canonical':
+            order = ''.join(OrderedDict.fromkeys(eq.w).keys())
+        else:
+            order = list(set(eq.w))
+            shuffle(order)
+            order = ''.join(order)
         order = re.sub('=','',order)
         order = re.sub('\.','',order)
         var_auto =''
@@ -205,7 +212,7 @@ class WordEquationTransformations(object):
         return eq
 
 
-    def treat_lc(self, eq, mode = 'play', num=0):
+    def treat_lc(self, eq, mode = 'play', num=0, i=0):
         # if eq.ell <= 0:
         # if mode == 'generation':
         #     if all([eq.coefficients_variables_lc[x] <= 0 for x in self.args.VARIABLES]):
@@ -232,15 +239,15 @@ class WordEquationTransformations(object):
         # else:
         for x in self.args.VARIABLES:
             try:
-                coef = eq.coefficients_variables_lc[num][x]
+                coef = eq.coefficients_variables_lc[i][num][x]
             except:
                 a=1
             if coef != 0:
                 if x not in eq.w:
                     if coef > 0:
-                        eq.nullify_lc(num)
+                        eq.nullify_lc(num,i)
                     elif coef < 0:
-                        eq.coefficients_variables_lc[num][x] = 0
+                        eq.coefficients_variables_lc[i][num][x] = 0
 
         #for x in self.args.ALPHABET:
         #    coef = eq.weights_constants_lc[x]

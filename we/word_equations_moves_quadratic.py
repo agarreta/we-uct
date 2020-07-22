@@ -37,8 +37,9 @@ class WordEquationMovesQuadratic(object):
             eq.w = new_w
             eq.attempted_wrong_move = False
             if self.args.use_length_constraints:
-                for _ in range(len( eq.coefficients_variables_lc)):
-                    eq.coefficients_variables_lc[_][var] = 0
+                for o,x in enumerate(self.args.coefficients_variables_lc):
+                    for _ in range(len( x)):
+                        x[_][var] = 0
             return eq
 
     #def compress(self, eq):
@@ -84,11 +85,12 @@ class WordEquationMovesQuadratic(object):
             eq.w =new_w
             eq.attempted_wrong_move = False
             if self.args.use_length_constraints:
-                for _ in range(len( eq.coefficients_variables_lc)):
-                    if let in self.args.VARIABLES:
-                        eq.coefficients_variables_lc[_][let] += eq.coefficients_variables_lc[_][var]
-                    elif let in self.args.ALPHABET:
-                        eq.ell[_] -= eq.coefficients_variables_lc[_][var]
+                for o,x in enumerate(eq.coefficients_variables_lc):
+                    for _ in range(len( x)):
+                        if let in self.args.VARIABLES:
+                            x[_][let] += x[_][var]
+                        elif let in self.args.ALPHABET:
+                            eq.ell[o][_] -= x[_][var]
             return eq
 
     def act(self, eq, action_num, verbose=0):
