@@ -23,10 +23,10 @@ class MCTS():
         self.args = args
         self.we = WE(args, seed)
 
-        self.state_action_values = {}       # stores Q values for s,a (as defined in the paper)
-        self.num_times_taken_state_action = {}       # stores #times edge s,a was visited
-        self.num_times_visited_state = {}        # stores #times board s was visited
-        self.final_state_value = {}        # stores game.getGameEnded ended for board s
+        self.state_action_values = {}       
+        self.num_times_taken_state_action = {}      
+        self.num_times_visited_state = {}      
+        self.final_state_value = {}       
         self.prior_state_value = {}
         self.is_leaf = {}
         self.registered_ids = set({})
