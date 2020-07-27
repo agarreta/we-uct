@@ -16,33 +16,7 @@ numeric_vars_alph = [x for x in numeric_vars_alph if x not in list(punctuation) 
 
 
 class Arguments(object):
-
-
-    def modify_parameters_for_benchmark_test(self):
-        self.num_equations_test = 20*10 if self.hanoi else 10*10
-        self.num_equations_train = 20*10 if self.hanoi else 10*10
-        self.max_level_benchmark = 41
-        self.min_level_benchmark = 5
-
-        self.num_cpus = 1
-
-        self.test_mode_device = 'cpu'
-        self.play_device = self.test_mode_device
-        self.min_successful_players_to_level_up = 8
-        self.num_mcts_multiplier = 11
-
-        self.num_mcts_simulations_benchmark = self.num_mcts_simulations
-        self.timeout_time_benchmark = 300           #self.timeout_function(level=self.max_level_benchmark,
-                                                              # num_mcts=self.num_mcts_simulations_benchmark)
-        self.timeout_mcts_benchmark = 1.5*self.timeout_mcts
-
-        self.timeout_time_multiplyer = 2
-        if not self.medium and not self.large:
-            if self.tiny:
-                self.test_mode_pool_filename = 'benchmarks/pool_lvl_6_30_size_100_standard_tiny.pth.tar' if not self.test_mode else 'benchmarks/pool_lvl_6_30_size_100_regular-ordered_tiny.pth.tar'
-            elif self.small:
-                self.test_mode_pool_filename = 'benchmarks/pool_lvl_6_30_size_100_standard.pth.tar' if not self.test_mode else 'benchmarks/pool_lvl_6_30_size_100_regular-ordered.pth.tar'
-
+    
     def modification_when_loaded(self):
         self.checkpoint_num_plays = self.checkpoint_train_intervals[-1]
         self.max_num_plays =  100050
@@ -53,41 +27,13 @@ class Arguments(object):
         self.sat_steps_taken_test_history = []
         #self.train_level_slots = [range(floor(3 +1.5*i), ceil(3+1.5*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
         self.num_cpus=8
-        #self.format_mode = 'normal'
-
-        #self.train_level_slots = [range(ceil(3 +1.3*i), ceil(3+1.3*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
-        #self.test_level_slots = [range(ceil(5 +1.7*i), ceil(5+1.7*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
-
-
-        #self.num_train = 42
-       #self.active_tester_time = 30
-       #self.test_time = 10
-       #self.train_time = 5
-       #self.local_execution_times_train = []
-       #self.local_execution_times_test = []
-       #self.sat_steps_taken_train = []
-       #self.sat_steps_taken_test = []
-       #self.num_train = 34
-
-
-    def cnf_benchmark_modify_params(self):
-        self.num_mcts_simulations = 200
-        self.timeout_time = 4000
-        self.level = 50
-        self.save_model = False
-        self.num_cpus = 2
+ 
 
     def quadratic_setting(self):
 
-
-        if self.equation_sizes == 'small':
-            self.SIDE_MAX_LEN =150 # 24 #24
-            num_vars=14
-            num_alph =10
-        elif self.equation_sizes == 'medium':
-            self.SIDE_MAX_LEN =300
-            num_vars = 26
-            num_alph = 26
+        self.SIDE_MAX_LEN =150 # 24 #24
+        num_vars=14
+        num_alph =10
 
         self.level = 40 if not self.oracle else 41
         self.test_mode_pool_filename = 'benchmarks/pool_lvl_6_30_size_100_quadratic-oriented_tiny.pth.tar' if not self.test_mode else None  # 'benchmarks/pool_lvl_6_30_size_100_regular-ordered_tiny.pth.tar'
@@ -102,17 +48,10 @@ class Arguments(object):
         self.generation_mode = 'quadratic-oriented'
          #self.generation_mode = 'quadratic-oriented-linear'
 
-
         self.side_maxlen_pool = self.SIDE_MAX_LEN
         self.pool_max_initial_length = self.SIDE_MAX_LEN -  len(self.VARIABLES)
         if self.large:
             self.ALPHABET = numeric_vars_alph
-
-    @staticmethod
-    def max_steps(lvl):
-        return lvl + 2*np.sqrt(lvl)
-
-
 
     def __init__(self, folder_name=''):
         self.nnet_type = 'newresnet'
@@ -161,11 +100,7 @@ class Arguments(object):
         self.train_time=30
         self.using_attention= False
         self.bound = True
-        #self.train_level_slots = [range(floor(3 +1.*i), ceil(3+1.*(i+1))) for i in range(0,9)] #
         self.train_level_slots = [range(floor(3 +1.*i), ceil(3+1.*(i+1))) for i in range(0,9)] #
-        #self.train_level_slots = [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
-        #[range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]#[range(ceil(3 +1.3*i), ceil(3+1.3*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
-        #self.test_level_slots =  [range(floor(10 +1.6*i), floor(10+1.6*(i+1))) for i in range(0,9)] #[range(ceil(5 +1.7*i), ceil(5+1.7*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
         self.test_level_slots = [range(floor(3 +1.*i), ceil(3+1.*(i+1))) for i in range(0,9)] ##[range(ceil(5 +1.7*i), ceil(5+1.7*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
         self.format_mode='cuts'
         self.NNET_SIDE_MAX_LEN=24
@@ -180,39 +115,11 @@ class Arguments(object):
         if self.z3_is_final:
             self.generate_z3_unsolvable = True
 
-
         self.quit = False
         self.initial_time =0
 
-        self.sokoban = False
-        self.sokoban_room_size = 7
-        self.maze = False
-        self.maze_size = 5
-        self.wordgame  = False
-        self.SOLUTION = 'aaabbb'
-        self.wordgame_del = True
-        self.wordgame_tree = False
-        self.wordgame_size = len(self.SOLUTION) + 4
-        self.wordgame_alphabet = list(set(self.SOLUTION).union({'c', 'd'}))
-        if self.wordgame_tree:
-            self.wordgame_alphabet = list(set(self.SOLUTION).union({'b'}))
-
-        self.wordgame_alphabet.sort()
         self.cube = False
         self.hanoi = False
-        self.num_discs = 5
-        self.hanoi_max_lvl =25 #2**self.num_discs+1#int(2**self.num_discs/2) -1
-
-        self.sat = False
-        self.sat_min_n = 4
-        self.sat_max_n = 100
-        self.sat_max_alpha = 10  # alpha = m/n (m = num clauses)
-        self.sat_min_alpha = 2
-        self.sat_max_k = 4  # k = length of clause
-        self.sat_min_k = 4
-        self.alpha_resolutions = 10
-        self.sat_num_layers = 2
-        self.sat_hidden_dim =  32
 
         self.nobound = False
 
@@ -220,11 +127,8 @@ class Arguments(object):
 
         self.rec_mcts = False
         self.mcts_classic = False
-        self.mcgs_persistence = 0.999# 0.99975
         self.mcgs_type = 2
 
-        self.recurrent_blocks1 = False
-        self.recurrent_blocks2 = False
         self.recurrent_blocks = False
 
         self.maxpool_input = False
@@ -238,14 +142,6 @@ class Arguments(object):
         self.chunk_size = 10
         self.large = False if not self.oracle else True
 
-        self.seconds_per_step = 18 if not self.sokoban else 15
-        if self.wordgame:
-            self.seconds_per_step = 9
-        if self.sat:
-            self.seconds_per_step = 25
-        if self.large:
-            self.seconds_per_step = 20
-
         self.augment_examples = False
         self.automatic_compress = False
         self.medium = False
@@ -258,7 +154,6 @@ class Arguments(object):
         self.constant_side = False if self.large else False
         self.cnf_benchmark = False
         self.generation_mode = 'standard'
-
 
         self.episode_timeout_method = 'time'
         self.use_seed = True
@@ -285,32 +180,6 @@ class Arguments(object):
         self.check_z3_conversion = False
         if not self.use_value_nn_head:
             assert self.solver_proportion == 1.
-
-
-        if not self.large:
-            self.VARIABLES = [x for x in ascii_uppercase[::-1]] + [x for x in '0123456789'] + list(ascii_lowercase[6:])
-        else:
-            self.VARIABLES = numeric_vars #[x for x in ascii_uppercase[::-1]] + [x for x in '0123']
-
-        if self.small:
-            self.SIDE_MAX_LEN = 30
-            num_vars = 8 if not self.oracle else 24
-            num_alph = 5 if not self.oracle else 24
-            self.pool_max_initial_length = 10
-            self.test_mode_pool_filename = 'benchmarks/pool_lvl_6_30_size_100_standard.pth.tar' if not self.test_mode else None # 'benchmarks/pool_lvl_6_30_size_100_regular-ordered.pth.tar'
-            if self.tiny:
-                self.SIDE_MAX_LEN = 30
-                num_vars = 8 if not self.oracle else 50
-                num_alph = 5 if not self.oracle else 50
-                self.pool_max_initial_length = 4
-                self.test_mode_pool_filename = 'benchmarks/pool_lvl_6_30_size_100_standard_tiny.pth.tar' if not self.test_mode else None # 'benchmarks/pool_lvl_6_30_size_100_regular-ordered_tiny.pth.tar'
-                if self.very_tiny:
-                    self.timeout_forced_increment = 3
-                    self.level = 4 if not self.oracle else 21
-
-
-
-
 
         self.side_maxlen_pool = self.SIDE_MAX_LEN
         # self.pool_max_initial_length = self.pool_max_initial_length if self.nnet_type != 'supernet' else 10 # not self.large else 100
@@ -344,20 +213,6 @@ class Arguments(object):
         print(len(self.VARIABLES), self.VARIABLES)
         #assert len(self.VARIABLES) == num_vars
         self.ALPHABET = [x for x in ascii_lowercase][0:num_alph] if not self.large else numeric_vars_alph
-
-        self.pgnn_feature_dim = 7
-        self.pgnn_input_dim = self.pgnn_feature_dim
-        self.pgnn_output_dim = self.pgnn_input_dim
-        self.pgnn_hidden_dim = self.pgnn_input_dim
-        self.pgnn_num_layers = 2
-        self.pgnn_len_side = self.SIDE_MAX_LEN
-        self.pgnn_max_num_nodes =  1+2*self.SIDE_MAX_LEN + len(self.VARIABLES) + len(self.ALPHABET) + 1 +1
-        self.pgnn_true_output_dim = self.pgnn_max_num_nodes * int(int(np.log2(self.pgnn_max_num_nodes))**2)
-        self.pgnn_approximate = 1
-
-        self.timeout_steps_std_multiplyer = 4
-        self.timeout_time_multiplyer = 1.2
-        self.timeout_steps_small_std_multiplyer = 2
 
         self.empty_symbol = '.'
         self.SPECIAL_CHARS = ['=', self.empty_symbol]
@@ -419,7 +274,6 @@ class Arguments(object):
         #we = WE(self,seed=1)
         self.num_actions =8# we.moves.get_action_size() if not self.sat else 1
 
-
         if not self.check_LP:
             print('WARNING: Not checking LP')
 
@@ -438,28 +292,6 @@ class Arguments(object):
         if self.large:
             self.ALPHABET = numeric_vars_alph
 
-        self.change_parameters_by_folder_name('we_alpha0_disc90_smaller_seed2')
-
-    def timeout_function(self, current_time, max_time, level = None):
-        # max_time = round(2*mean_time)
-        return 180 if not self.cube and not self.wordgame and not self.hanoi else 300
-
-
-    def timeout_function2(self, time, max_time, level = None):
-        return 40#180 if not self.cube and not self.wordgame and not self.hanoi else 300
-
-
-        #(level/10)*level*1.1*num_mcts #(np.log(level)/80) * (np.log(level)*3) * num_mcts  # (level/12) * (level*1.2) * num_mcts / 10
-
-    def timeout_time_test_function(self, level, num_mcts):
-        return self.timeout_function(level, num_mcts)
-
-    def timeout_time_benchmark_function(self, level, num_mcts):
-        return self.timeout_function(level, num_mcts)
-
-    def num_mcts_function(self, level):
-        return self.num_mcts_simulations # int(round(self.num_mcts_multiplier*np.log(level)))
-            #int(round(10*np.log(level)))
 
     def init_parameters(self):
         self.time_log = []
@@ -495,14 +327,6 @@ class Arguments(object):
         self.new_play_examples_available = 0
         self.num_levels_without_benchmark = 0
 
-    def update_parameters(self):
-        self.update_num_mcts_simulations()
-        self.update_num_constants_in_pool()
-
-    def update_num_mcts_simulations(self):
-        self.num_mcts_simulations = self.num_mcts_function(self.level)
-            # int(round(self.num_mcts_multiplier * self.level))
-
     def update_symbol_index_dictionary(self):
         if self.nnet_type in ['resnet', 'recnewnet', 'newresnet', 'GIN', 'pgnn', 'resnet1d', 'resnet_double',
                               'satnet', 'graphwenet', 'attention', 'lstmpe','hanoinet', 'wordgamenet']:
@@ -527,10 +351,6 @@ class Arguments(object):
         self.alphabet_indices ={x: i for i,x in enumerate(self.ALPHABET)}
         self.variable_indices ={x: i for i,x in enumerate(self.VARIABLES)}
 
-
-    def update_num_constants_in_pool(self):
-        if len(self.ALPHABET) <= self.pool_max_initial_constants:
-            self.pool_max_initial_constants = len(self.ALPHABET)-1
 
     def change_parameters_by_folder_name(self, folder_name):
 
@@ -673,5 +493,4 @@ class Arguments(object):
               f'z3 is final: {self.z3_is_final}\n'
               f'seconds per step: {self.seconds_per_step}\n'
               f'discount: {self.discount}')
-        return None
 
