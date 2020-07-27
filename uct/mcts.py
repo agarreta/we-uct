@@ -58,12 +58,6 @@ class MCTS():
 
     def get_action_prob(self, eq, s_eq, temp=1, previous_state=None):
         """
-        This function performs num_mcts_simulations simulations of MCTS starting from
-        canonicalBoard.
-        Returns:
-            probs: a policy vector where the probability of the ith action is
-                   proportional to num_times_taken_state_action[(s,a)]**(1./temp)
-
         """
         self.num_rec = 0
         self.num_times_taken_state_action_during_get_action_prob = {}
@@ -128,19 +122,6 @@ class MCTS():
 
     def search(self, state, s_eq, temp, previous_state=None, ctx=None):
         """
-        This function performs one iteration of MCTS. It is recursively called
-        till a leaf node is found. The action chosen at each node is one that
-        has the maximum upper confidence bound as in the paper.
-        Once a leaf node is found, the neural network is called to return an
-        initial policy P and a value v for the state. This value is propogated
-        up the search path. In case the leaf node is a terminal state, the
-        outcome is propogated up the search path. The values of num_times_visited_state, num_times_taken_state_action, state_action_values are
-        updated.
-        NOTE: the return values are the negative of the value of the current
-        state. This is done since v is in [-1,1] and if v is the value of a
-        state for the current player, then its value is -v for the other player.
-        Returns:
-            v: the negative of the value of the current canonicalBoard
         """
 
         state_id = state.id
