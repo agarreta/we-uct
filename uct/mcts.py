@@ -14,7 +14,7 @@ class MCTS():
     """
     """
 
-    def __init__(self, nnet, args, num_mcts_sims, timeout_mcts, nn_outputs, mode, seed=None):
+    def __init__(self, nnet, args, num_mcts_sims, nn_outputs, mode, seed=None):
 
         if seed is not None:
             seed_everything(seed)
@@ -45,7 +45,6 @@ class MCTS():
         self.depth = 0
         self.search_time = time.time()
         self.edges = {}
-        self.timeout = timeout_mcts
         self.mode = mode
 
         self.noise_param = self.args.noise_param
@@ -222,4 +221,3 @@ class MCTS():
         else:
             self.num_times_taken_state_action[(state_w, a)] = 1
             self.state_action_values[(state_w, a)] = v
-
