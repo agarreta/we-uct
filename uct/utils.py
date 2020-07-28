@@ -16,17 +16,7 @@ class Utils(object):
         print('Loading {}'.format(file_name))
         if os.path.exists(file_name):
             with open(file_name, "rb") as f:
-                # if object == 'time_log':
-                #     self.time_log = Unpickler(f).load()
-                #     logging.info(self.time_log)
-                # if object == 'test_log':
-                #     self.test_log = Unpickler(f).load()
-                if object == 'arguments':
-                    return Unpickler(f).load()
-                # if object == 'avg_steps':
-                #     self.avg_sat_steps_taken_per_level = Unpickler(f).load()
-                if object == 'examples':
-                    return Unpickler(f).load()
+                return Unpickler(f).load()
 
     def save_object(self, object_name, object, folder =None):
         if self.args.active_tester:
@@ -36,32 +26,7 @@ class Utils(object):
             os.makedirs(folder)
         filename = os.path.join(folder, object_name + '.pth.tar')
         with open(filename, "wb+") as f:
-            # if object == 'time_log':
-            #     Pickler(f).dump(self.time_log)
-            # if object == 'test_log':
-            #     Pickler(f).dump(self.test_log)
-            if 'arguments' in object_name:
-                Pickler(f).dump(object)
-                print('LEVEL: {}'.format(object.level))
-            # if object == 'avg_steps':
-            #     Pickler(f).dump(self.avg_sat_steps_taken_per_level)
-            if object_name == 'examples':
-                Pickler(f).dump(object)
-                print('Number of entries in last level of train_examples_history: {}'.format(len(object[-1])))
-        #filename = os.path.join(folder, object_name + '_level_' + str(self.args.level) + '.pth.tar')
-        #with open(filename, "wb+") as f:
-        #    # if object == 'time_log':
-        #    #     Pickler(f).dump(self.time_log)
-        #    # if object == 'test_log':
-        #    #     Pickler(f).dump(self.test_log)
-        #    if 'arguments' in object_name:
-        #        Pickler(f).dump(object)
-        #        print('LEVEL: {}'.format(object.level))
-        #    # if object == 'avg_steps':
-        #    #     Pickler(f).dump(self.avg_sat_steps_taken_per_level)
-        #    if object_name == 'examples':
-        #        Pickler(f).dump(object)
-        #        print('Number of entries in last level of train_examples_history: {}'.format(len(object[-1])))
+            Pickler(f).dump(object)
 
     def load_nnet(self, device, training:bool, load, folder='', filename='model.pth.tar'):
         nnet = NNetWrapper(self.args, device, training=training, seed=1)
@@ -82,7 +47,7 @@ class Utils(object):
 
 def seed_everything(seed):
     # https://www.kaggle.com/hmendonca/fold1h4r3-arcenetb4-2-256px-rcic-lb-0-9759 cells 45-50
-    #print(f'setting everything to seed {seed}')
+    # print(f'setting everything to seed {seed}')
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
