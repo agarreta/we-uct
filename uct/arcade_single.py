@@ -174,12 +174,6 @@ def individual_player_session(play_args):
         args.num_mcts_simulations = 50
         args.ALPHABET = list(ascii_lowercase)
         args.VARIABLES = list(ascii_uppercase)
-        #if 'track'   in args.pool_name:
-        #    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
-        #    args.VARIABLES = [x for x in ascii_uppercase]
-        #    args.ALPHABET = args.ALPHABET[:num_alph]
-        #    args.VARIABLES = args.VARIABLES[:num_vars]
-        #else:
         args.VARIABLES = [x for x in ascii_uppercase]
         args.VARIABLES = args.VARIABLES[:num_vars]
         args.ALPHABET = args.ALPHABET[:num_alph]
@@ -234,4 +228,3 @@ def individual_player_session(play_args):
     results['sat_steps_taken'] = player.sat_steps_taken
 
     return results
-
