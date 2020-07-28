@@ -5,13 +5,12 @@ from .word_equation.we import WE
 import logging
 import os
 from pickle import  Unpickler
-from .SMTSolver import SMT_eval
 from .utils import seed_everything
 import math
 
 class PlayerClassic(object):
 
-    def __init__(self, args, nnet, mode='train', name='player', pool=[], previous_attempts_pool = [], seed=None):
+    def __init__(self, args, nnet, mode='train', name='player', pool=[], seed=None):
         if seed is not None:
             self.seed = seed
             seed_everything(self.seed)
@@ -80,28 +79,23 @@ class PlayerClassic(object):
         from PIL import PngImagePlugin
         logger = logging.getLogger(PngImagePlugin.__name__)
         logger.setLevel(logging.INFO)  # tame the "STREAM" debug messages
-        console.setLevel(logging.ERROR)
+        console.setLevel(logging.INFO)
         logging.getLogger('').addHandler(console)
 
-    def timeout(self, elapsed_time, episode_step, level, eq):
-        return elapsed_time > self.args.timeout_time#*1.25
+    def timeout(self, elapsed_time):
+        return elapsed_time > self.args.timeout_time
 
-    def execute_episode(self, eq=None, verbose=0):
+    def execute_episode(self, eq=None):
         self.mcts.initial_time = time.time()
 
         train_examples = []
         episode_step = 0
         num_repetitions = 0
-        if verbose == 1:
-            eq.not_normalized = eq.w
 
         log = [eq.w]
         t = time.time()
-        level = eq.level
         eq.s_eq=None
-
         eq.sat = self.args.unknown_value
-
         eq.initial_state = True
         prev_state=eq.deepcopy(copy_id = True)
         prev_state.initial_state = True
@@ -127,7 +121,7 @@ class PlayerClassic(object):
 
             prev_state = eq.deepcopy(copy_id = True)
 
-            new_eq = self.we.moves.act(eq, action, verbose)
+            new_eq = self.we.moves.act(eq, action)
             eq = new_eq
 
             if self.args.forbid_repetitions:
@@ -138,18 +132,14 @@ class PlayerClassic(object):
             tt = round(time.time() - t, 2)
             log += [eq.get_string_form_for_print()]
 
-            if self.timeout(tt, episode_step, level, eq) or\
-                    (self.args.forbid_repetitions and num_repetitions > 1/2):
+            if self.timeout(tt) or (self.args.forbid_repetitions and num_repetitions > 1/2):
                 r =  self.args.evaluation_after_exceeded_steps_or_time
                 return [(x[0], x[1], r*(self.discount**i)) for i, x in enumerate(train_examples[::-1])], log
 
             if self.mcts.found_sol[0]:
                 if self.mode == 'test' or self.args.oracle:
                     print('found early solution')
-                    if verbose == 1:
-                        candidate_sol = eq.simplify_candidate_sol()
-                        log.append(candidate_sol)
-                    return [(x[0], x[1], ((self.discount**(i))*self.args.sat_value)) for i,x in enumerate(train_examples[::-1])],  log  
+                    return [(x[0], x[1], ((self.discount**(i))*self.args.sat_value)) for i,x in enumerate(train_examples[::-1])],  log
 
             if eq.w in self.mcts.final_state_value:
                 eq.sat = self.mcts.final_state_value[eq.w]
@@ -157,9 +147,6 @@ class PlayerClassic(object):
                 eq = self.we.utils.check_satisfiability(eq, smt_time=self.args.mcts_smt_time_max)
 
             if eq.sat != self.args.unknown_value:
-                if verbose == 1:
-                    candidate_sol = eq.simplify_candidate_sol()
-                    log.append(candidate_sol)
                 if eq.sat == self.args.sat_value:
                     return [(x[0], x[1], (self.discount**i)*self.args.sat_value) for i, x in enumerate(train_examples[::-1])], log
                 else:
@@ -203,12 +190,10 @@ class PlayerClassic(object):
             pool = self.we.generator.pool
             self.pool_generation_time = self.we.generator.pool_generation_time
             print('pool generated')
-        
+
         level_order = [[eq.level, i] for i, eq in enumerate(pool)]
         level_order.sort(reverse=True)
         pool = [pool[lvl[1]] for lvl in level_order]
-
-        absolute_initial_time = time.time()
 
         for i, eq in enumerate(pool):
             eq_original=eq.w
@@ -217,42 +202,23 @@ class PlayerClassic(object):
             else:
                 self.nn_outputs = {}
 
-            self.mcts = MCTS(self.nnet,
-                             self.args,
-                             self.num_mcts_simulations,
-                             self.timeout_mcts,
-                             self.args.max_steps(eq.level),
-                             self.level,
-                             self.nn_outputs)
-
+            self.mcts = MCTS(self.nnet, self.args, self.num_mcts_simulations, self.nn_outputs, self.mode, self.seed)
             self.mcts.name = self.name
-
-            # todo: not needed?
-            verbose=0
-
-            if self.args.active_tester and self.args.test_solver:
-                t = time.time()
-                z3out = SMT_eval(self.args, eq)
 
             initial_local_time = time.time()
             eq = self.we.transformations.normal_form(eq)
-            examples, log = self.execute_episode(eq, verbose)
+            examples, log = self.execute_episode(eq)
 
             local_execution_time = round(time.time() - initial_local_time, 4)
 
             len_eq = len(log)
-            printout_info = [len_eq, local_execution_time,
-                             round(self.timeout_time,2),
-                             self.num_mcts_simulations,
-                             0]
-            if not self.args.cnf_benchmark:
-                printout_info += [log]
+            printout_info = [len_eq, local_execution_time, round(self.timeout_time,2), self.num_mcts_simulations, 0]
 
             if examples[0][2] >= self.args.sat_value  or log[-1] == 'early_sol':
                 self.local_execution_times.append(local_execution_time)
                 self.score[eq.level-1].append(1)
                 printout_info[1] = 'New sol'
-                logging.error(self.execution_printout(*printout_info))
+                logging.info(self.execution_printout(*printout_info))
                 self.sat_steps_taken.append(len_eq)
                 if self.args.active_tester:
                     self.eqs_solved.append([eq.level, eq_original, local_execution_time])
@@ -260,31 +226,21 @@ class PlayerClassic(object):
             elif (not self.args.values01 and examples[0][2] == self.args.unknown_value):
                 self.score[eq.level-1].append(0)
                 printout_info[1] = 'Stopped'
-                logging.error(self.execution_printout(*printout_info))
+                logging.info(self.execution_printout(*printout_info))
 
             elif examples[0][2] == self.args.unsat_value:
-
                 self.score[eq.level-1].append(0)
                 printout_info[1] = 'Fail'
-                logging.error(self.execution_printout(*printout_info))
+                logging.info(self.execution_printout(*printout_info))
 
             if log[0] != 'already_solved':
                 self.train_examples += examples
 
-        self.absolute_execution_time = round(time.time()-absolute_initial_time, 2)
-
-        if self.mode == 'BENCHMARK':
-            logging.error(f'*+*+*+*+*+*+*\n'
-                         f'benchmark for {self.name} score of {self.score} in {self.absolute_execution_time} seconds\n')
-
-    def execution_printout(self, i,
-                           steps, local_execution_time, timout_time, num_mcts, previous_attempts, log =[]):
+    def execution_printout(self, i, steps, local_execution_time, timout_time, num_mcts, previous_attempts, log =[]):
         return f'{self.num_successful_plays_at_level}/{self.num_plays_at_current_level} - {self.name} - Eq: ' \
-            f'{self.get_score()}/{i + 1}/{self.num_equations}: Steps {steps}, Time: {local_execution_time}, Timeout (episode/mcts): {timout_time},' \
+            f'{self.get_score()}/{i + 1}/{self.num_equations}: Steps {steps}, Time: {local_execution_time},' \
+               f' Timeout (episode/mcts): {timout_time},' \
             f' Num mcts sims: {num_mcts}, Previous attempts: {previous_attempts}, {log}'
-
-    def len_list_for_div(self, l):
-        return len(l) if len(l) != 0 else 1
 
     def get_score(self):
         return sum([sum(x) for x in self.score])
