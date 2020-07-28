@@ -21,14 +21,6 @@ class Arguments(object):
 
     def modification_when_loaded(self):
         self.checkpoint_num_plays = self.checkpoint_train_intervals[-1]
-        self.max_num_plays = 100050
-        self.new_play_examples_available = 0
-        self.local_execution_times_train_history = []
-        self.local_execution_times_test_history = []
-        self.sat_steps_taken_train_history = []
-        self.sat_steps_taken_test_history = []
-        # self.train_level_slots = [range(floor(3 +1.5*i), ceil(3+1.5*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
-        self.num_cpus = 8
 
     def quadratic_setting(self):
 
@@ -45,10 +37,7 @@ class Arguments(object):
         self.VARIABLES = self.VARIABLES[:num_vars] if not self.large else numeric_vars
         self.LEN_CORPUS = len(self.VARIABLES) + len(self.ALPHABET)
         self.update_symbol_index_dictionary()
-        self.generation_mode = 'constant_side'  # ''quadratic-oriented'
         self.generation_mode = 'quadratic-oriented'
-        # self.generation_mode = 'quadratic-oriented-linear'
-
         self.side_maxlen_pool = self.SIDE_MAX_LEN
         self.pool_max_initial_length = self.SIDE_MAX_LEN - len(self.VARIABLES)
         if self.large:
@@ -76,7 +65,6 @@ class Arguments(object):
         self.mcts_smt_time_max = 800
         self.checkpoint_num_plays = 0
         self.total_plays = 0
-        # self.pool_name_load = 'benchmarks/30_10_5_v2.pth.tar' #'benchmarks/pool_30_10_5_v2.pth.tar'
         self.pool_name_load = 'benchmarks/pool_150_14_10.pth.tar'  # 'benchmarks/pool_150_15_10.pth.tar'  #'benchmarks/pool_30_10_5_v2.pth.tar'
         self.num_levels_in_examples_history = 1
         self.num_iters_for_level_train_examples_history = 100
@@ -84,7 +72,6 @@ class Arguments(object):
         self.test_pool_length = 100  # self.num_iters_for_level_train_examples_history
         self.batch_size = 64
         self.log_comments = ''
-        # self.smt_evaluation = True
         self.smt_solver = 'Z3'  # if 'CVC4' in folder_name else 'Z3'
         self.train_device = 'cuda:0'
         self.evaluation_after_exceeded_steps_or_time = -1
@@ -110,81 +97,39 @@ class Arguments(object):
         self.num_train = 0
         self.num_collisions_test = 0
         self.few_channels = False
-        self.use_random_symmetry = False
-        self.skip_first_benchmark = False
-        self.generate_z3_unsolvable = False
-        self.z3_is_final = False
-        if self.z3_is_final:
-            self.generate_z3_unsolvable = True
 
-        self.quit = False
         self.initial_time = 0
 
-        self.cube = False
-        self.hanoi = False
-
         self.nobound = False
-
         self.values01 = False
 
-        self.rec_mcts = False
-        self.mcts_classic = False
         self.mcgs_type = 2
 
-        self.recurrent_blocks = False
-
-        self.maxpool_input = False
-        self.chunk_h = 8
-        self.chunk_w = 30
-
         self.values_01 = False
-        self.max_aggregation = False
-        self.affine_transf = True
 
-        self.chunk_size = 10
         self.large = False if not self.oracle else True
 
         self.augment_examples = False
-        self.automatic_compress = False
         self.medium = False
         self.small = True
         self.tiny = True
         self.very_tiny = True
         self.size_type = 'tiny'
-        self.timeout_time = 50 if not self.large else 50  # 200
         self.timeout_forced_increment = 10
         self.constant_side = False if self.large else False
-        self.cnf_benchmark = False
         self.generation_mode = 'standard'
 
         self.episode_timeout_method = 'time'
         self.use_seed = True
-        self.learnable_smt = False
-        self.use_noise_in_test = False
 
         if self.test_mode:
             self.num_cpus = 1
 
         self.value_mode = 'value-classic'  # solver, entropy, classic, value-entropy, value-classic
-        self.use_solver = False
-        if self.value_mode in ['solver', 'entropy', 'value-entropy', 'value-classic']:
-            self.use_value_nn_head = True
-            self.episode_timeout_method = 'time'
-            self.allowance_factor_play = 1.6
-            self.value_timed_out_simulation = 0 if not self.values01 else 0.5
-        else:
-            self.use_value_nn_head = True
-
-        self.timeout_value_smt = 0.
-        self.solver_timeout = 100
-        self.solver_timeout_increase_per_level = 30
-        self.solver_proportion = 0.5
-        self.check_z3_conversion = False
-        if not self.use_value_nn_head:
-            assert self.solver_proportion == 1.
+        self.use_value_nn_head = True
+        self.value_timed_out_simulation =0
 
         self.side_maxlen_pool = self.SIDE_MAX_LEN
-        # self.pool_max_initial_length = self.pool_max_initial_length if self.nnet_type != 'supernet' else 10 # not self.large else 100
         self.pool_max_initial_constants = 1
 
         self.min_eqs_for_successful_test_player = 9
@@ -200,20 +145,13 @@ class Arguments(object):
         self.load_level = True
         self.use_dynamic_negative_reward = False
         self.use_test_player = False
-        self.symmetrize_examples = False
-        self.use_true_symmetrization = False
-        self.num_random_symmetrizations = 10
         self.check_LP = True if not self.oracle else False
         self.use_steps_for_timeout = True
         self.truncate = True
         self.use_clears = False
 
         self.VARIABLES = self.VARIABLES[:num_vars] if not self.large else numeric_vars
-        if '=' in self.VARIABLES:
-            print('= in variables remove')
-            # self.VARIABLES = [x for x in self.VARIABLES if x not in '=']
         print(len(self.VARIABLES), self.VARIABLES)
-        # assert len(self.VARIABLES) == num_vars
         self.ALPHABET = [x for x in ascii_lowercase][0:num_alph] if not self.large else numeric_vars_alph
 
         self.empty_symbol = '.'
@@ -221,21 +159,16 @@ class Arguments(object):
         self.LEN_CORPUS = len(self.ALPHABET) + len(self.VARIABLES)
 
         self.play_device = 'cpu'
-        # self.batch_size = 1 if self.nnet_type in ['attention', 'graphwenet'] else self.batch_size
-
-        #
 
         self.num_equations_train = 10
         self.num_equations_test = 10
 
         self.num_init_players = 0
 
-        self.maxlenOfQueue = 200000
         self.cpuct = 1
         self.pb_c_base = 20000
         self.pb_c_init = 1.25
         self.temp = 1
-        self.test_mode_level_list = range(3, 21) if not self.wordgame else range(2, 10)
 
         self.folder_name = 'evaluations'
         self.examples_file_name = 'examples.pth.tar'
@@ -243,36 +176,14 @@ class Arguments(object):
         self.model_file_name = 'model.pth.tar'
         self.time_log_file_name = 'time_log.pth.tar'
 
-        self.timeout_steps = 10
-        self.timeout_steps_small = 7
-        # not uised?
-        # self.score_to_level_up = 0.875
-        self.level_up_threshold = 0.79
-        self.allowance_factor = 1.1
-        self.test_max_steps = 25
-        self.num_linear_lc_blocks = 5
-        self.lc_output_size = 256
-        self.num_linear_value_blocks = 2
-        self.num_linear_pi_blocks = 2
-        self.linear_output_size = 256
-        self.num_lstm_hidden_layers = 3
-        self.lstm_hidden_size = 512
         self.dropout = 0.2
 
         self.num_total_plays = 0
-
-        self.min_successful_players_to_level_up = 1
-
         self.failed_num_mcts_multiplier = 1
         self.num_mcts_multiplier = 300
-
-        self.timeout_mcts = 0.1
-
         self.update_symbol_index_dictionary()
         self.update_parameters()
         self.init_parameters()
-
-        # we = WE(self,seed=1)
         self.num_actions = 8  # we.moves.get_action_size() if not self.sat else 1
 
         if not self.check_LP:
