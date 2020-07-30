@@ -182,7 +182,6 @@ class Arguments(object):
         self.failed_num_mcts_multiplier = 1
         self.num_mcts_multiplier = 300
         self.update_symbol_index_dictionary()
-        self.update_parameters()
         self.init_parameters()
         self.num_actions = 8  # we.moves.get_action_size() if not self.sat else 1
 
