@@ -28,8 +28,8 @@ class Arcade(object):
 
         mode = args.mode
         self.init_log(args.folder_name, mode)
-        logging.error('\n\n\nNEW ARCADE ---- load: {} ---- {}'.format(load, args.folder_name))
-        logging.error(f'Test mode: {args.test_mode}')
+        logging.info('\n\n\nNEW ARCADE ---- load: {} ---- {}'.format(load, args.folder_name))
+        logging.info(f'Test mode: {args.test_mode}')
         self.args = args
         self.num_train = 0
 
@@ -41,122 +41,21 @@ class Arcade(object):
             self.args = self.utils.load_object('arguments')
             self.args.load_model = True
             self.train_examples_history =[[]]
-            self.args.search_times_train_this_level_log = []
-            self.args.search_times_test_this_level_log = []
 
         else:
-            # TODO: Better way to organize logs: dictionary plus list of log
-            #  names (allows to unifiy several functions later on)
             self.train_examples_history = [[]]
 
-        self.previous_process_play_time = time.time()
-
-
-        logging.error(vars(self.args))
-        logging.error(f'NUM CPUs:{self.args.num_cpus}')
+        logging.info(vars(self.args))
+        logging.info(f'NUM CPUs:{self.args.num_cpus}')
 
         self.active_players = self.args.num_cpus*[False]
         self.received_play_results = self.args.num_cpus*[False]
         self.active_training = False
         self.received_train_results = False
-        self.benchmark_due = False # if not self.args.load_model else True
-        self.ongoing_benchmark = False
         self.test_due = True # if not self.args.load_model else True
         self.ongoing_test = False
 
         if not self.args.load_model:
-            def initiate_container(value):
-                if type(value) == list:
-                    return [value.copy() for _ in range(self.args.level)]
-                else:
-                    return [value for _ in range(self.args.level)]
-            self.args.sat_times_train_mean = initiate_container([])
-            self.args.sat_times_train_std = initiate_container([])
-            self.args.sat_times_train_max = initiate_container([])
-            self.args.sat_steps_train_mean = initiate_container([])
-            self.args.sat_steps_train_std = initiate_container([])
-            self.args.sat_steps_train_max = initiate_container([])
-            self.args.precentage_of_actions_train = initiate_container([])
-            self.args.num_solved_train = initiate_container([])
-            self.args.num_failed_train = initiate_container([])
-            self.args.num_timeouts_train = initiate_container([])
-            self.args.search_times_train_mean = initiate_container([])
-            self.args.search_times_train_max = initiate_container([])
-
-            self.args.sat_times_test_mean = initiate_container([])
-            self.args.sat_times_test_std = initiate_container([])
-            self.args.sat_times_test_max = initiate_container([])
-            self.args.sat_steps_test_mean = initiate_container([])
-            self.args.sat_steps_test_std = initiate_container([])
-            self.args.sat_steps_test_max = initiate_container([])
-            self.args.precentage_of_actions_test = initiate_container([])
-            self.args.num_solved_test = initiate_container([])
-            self.args.num_failed_test = initiate_container([])
-            self.args.num_timeouts_test = initiate_container([])
-            self.args.search_times_test_mean = initiate_container([])
-            self.args.search_times_test_max = initiate_container([])
-            self.args.score_test_this_level = initiate_container([])
-            self.args.timeouts_test_this_level = initiate_container([])
-            self.args.fails_test_this_level = initiate_container([])
-
-            self.args.current_level_sat_times_train = []  # self.args.max_level*[[]]
-            self.args.current_level_sat_times_train = []  # self.args.max_level*[[]]
-            self.args.current_level_sat_times_train = []  # self.args.max_level*[[]]
-            self.args.sat_steps_taken_in_level_train = []  # self.args.max_level*[[]]
-            self.args.sat_steps_taken_in_level_train = []  # self.args.max_level*[[]]
-            self.args.sat_steps_taken_in_level_train = []  # self.args.max_level*[[]]
-            self.args.percentage_of_actions_this_level_train = []  # self.args.max_level*[[]]
-            # selargs.s.success_fail_term_log_this_level_train = []  # self.args.max_level*[[]]
-            self.args.search_times_train_this_level_log = []  # self.args.max_level*[[]]
-            self.args.score_train_this_level = []  # initiate_container([])
-            self.args.timeouts_train_this_level = []  # initiate_container([])
-            self.args.fails_train_this_level = []  # initiate_container([])
-
-            self.args.current_level_sat_times_test = []  # self.args.max_level * [[]]
-            self.args.current_level_sat_times_test = []  # self.args.max_level * [[]]
-            self.args.current_level_sat_times_test = []  # self.args.max_level * [[]]
-            self.args.sat_steps_taken_in_level_test = []  # self.args.max_level * [[]]
-            self.args.sat_steps_taken_in_level_test = []  # self.args.max_level * [[]]
-            self.args.sat_steps_taken_in_level_test = []  # self.args.max_level * [[]]
-            self.args.percentage_of_actions_this_level_test = []  # self.args.max_level * [[]]
-            # selargs.s.success_fail_term_log_this_level_test = [] # self.args.max_level * [[]]
-            self.args.search_times_test_this_level_log = []  # self.args.max_level*[[]]
-            self.args.score_test_this_level = []  # initiate_container([])
-            self.args.timeouts_test_this_level = []  # initiate_container([])
-            self.args.fails_test_this_level = []  # initiate_container([])
-
-            self.args.percentage_timeouts_failed_mean =initiate_container([])
-            self.args.percentage_timeouts_failed_this_level = []
-
-            self.args.percentage_timeouts_solved_mean = initiate_container([])
-            self.args.percentage_timeouts_solved_this_level = []
-
-            self.args.z3score_level_train = []
-            self.args.z3score_train = initiate_container([])
-            self.args.z3score_level_test = []
-            self.args.z3score_test = initiate_container([])
-
-            self.args.eq_history = [[]]
-
-            self.args.z3mctstime_sat_train = []
-            self.args.z3mctstime_unsat_train = []
-            self.args.z3mctstime_sat_test = []
-            self.args.z3mctstime_unsat_test = []
-            self.args.z3mctstime_sat_test_final =[]
-            self.args.z3mctstime_unsat_test_final = []
-            self.args.z3mctstime_sat_train_final = []
-            self.args.z3mctstime_unsat_train_final = []
-
-            self.args.action_indices_level = []
-
-            self.args.evolution_test = [0]
-            self.args.iterations_train = [0]
-            self.args.iterations_test =[0]
-            self.args.evolution_train = [0]
-            self.args.evolution_test_eq = [0]
-            self.args.iterations_train_eq = [0]
-            self.args.model_names = ['']
-
             self.args.iterations_test_eq = [0]
             self.args.evolution_train_eq = [[]]
             self.args.evolution_train_eq_full = [[]]
@@ -171,10 +70,6 @@ class Arcade(object):
         self.best_model = 'model_plays_0.pth.tar'
         self.best_score = 0
         self.active_model_being_tested = 'model_plays_0.pth.tar'
-        self.median_score = 0
-        self.best_checkpoint_num_plays = 0
-
-
         self.name = name
 
 
@@ -195,7 +90,7 @@ class Arcade(object):
         logger = logging.getLogger(PngImagePlugin.__name__)
         logger.setLevel(logging.INFO)  # tame the "STREAM" debug messages
 
-        console.setLevel(logging.ERROR)
+        console.setLevel(logging.info)
         logging.getLogger('').addHandler(console)
 
 
@@ -267,26 +162,14 @@ class Arcade(object):
                 # if num_evol_model == 0 or (current_score >= np.mean(self.args.evolution_scores) -np.std(self.args.evolution_scores) and current_score<= np.mean(self.args.evolution_scores) + np.std(self.args.evolution_scores)):
                 self.args.evolution_scores.append(current_score)
                 self.args.evolution_scores_full.append(current_score)
-                self.median_score = 0  # np.median(self.args.evolution_scores)
-                print('Checking good evolution', self.active_solved_test, self.active_total_eqs,
-                      self.best_model, self.best_score, current_score)
 
                 self.active_total_eqs = 0
                 self.active_solved_test = 0
 
 
             folder_name = self.args.folder_name
-            #folder_name = os.path.join('\\', 'we 0.1', 'test_files', folder_name)
             if not os.path.exists(folder_name):
                 os.mkdir(folder_name)
-
-            if ((time.time() + self.args.initial_time-active_time)/600 - self.quarters)> 0:
-                self.quarters += 1
-                self.args.evolution_test.append(0)
-                self.args.evolution_train.append(0)
-                self.args.iterations_test.append(0)
-                self.args.iterations_train.append(0)
-                self.args.model_names.append('')
 
             iteration += 1
 #
@@ -331,8 +214,6 @@ class Arcade(object):
                                     self.args.total_plays += 1
                                     self.args.checkpoint_num_plays+=1
                                     self.test_due=True
-
-                                    print(self.args.test_mode, self.args.total_plays, self.args.save_model)
                                     self.save_data()
                                     print('new_play_examples_available',  self.args.new_play_examples_available)
                                     self.args.new_play_examples_available += 1
@@ -340,7 +221,6 @@ class Arcade(object):
                                 else:
                                     self.args.total_plays += 1
                                     self.args.checkpoint_num_plays+=1
-                                    print(self.args.test_mode, self.args.total_plays, self.args.save_model)
                                     self.save_data()
                                     print('new_play_examples_available',  self.args.new_play_examples_available)
                                     self.args.new_play_examples_available += 1
@@ -560,9 +440,9 @@ class Arcade(object):
             if self.args.learnable_smt:
                 self.args.eq_history[-1].append(eqs)
             if len(self.train_examples_history[-1]) > self.args.num_iters_for_level_train_examples_history:
-                logging.error(f"len(train_examples_history) in last level = "
+                logging.info(f"len(train_examples_history) in last level = "
                                 f"{len( self.train_examples_history[-1] )} => remove the oldest trainExamples")
-                logging.error(f'There are {len( self.train_examples_history[-1] )} episode data in current level')
+                logging.info(f'There are {len( self.train_examples_history[-1] )} episode data in current level')
                 self.train_examples_history[-1].pop(0)
                 if self.args.learnable_smt:
                     self.args.eq_history[-1].pop(0)
@@ -579,8 +459,6 @@ class Arcade(object):
         self.print_logged_statistics()
 
     def process_train_result(self, state_dict, optimizer_state_dict, pi_losses, v_losses):
-
-        #if type(state_dict) != int:
         self.model_play.model.load_state_dict(state_dict)
         self.model_play.optimizer.load_state_dict(optimizer_state_dict)
         del state_dict, optimizer_state_dict
@@ -588,33 +466,11 @@ class Arcade(object):
             self.args.loss_log.append([self.args.level, round(pi_losses[-1],3), round(v_losses[-1],3)])
         self.args.checkpoint_train_intervals.append(self.args.checkpoint_num_plays)
         train_score = np.mean(self.args.evolution_train_eq[-1])
-        if len(self.args.evolution_train_eq) > 1:
-            train_scores = [np.mean(x) for x in self.args.evolution_train_eq[:-1]]
-            a = np.nanmax(train_scores)
-        else:
-            a = 0
-        self.args.training_performance_log.append([train_scores, train_score])
-        if train_score < a - 0.125:
-            j = int(np.nanargmax(train_scores))
-            self.model_play = self.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
-                                                   training=True,
-                                                   load=True,
-                                                   folder=self.args.folder_name,
-                                                   filename=f'model_train_{j}.pth.tar'
-                                                   )
-            self.args.checkpoint_num_plays = 100 * (j+1)
-            self.args.checkpoint_train_intervals = self.args.checkpoint_train_intervals[:j+1]
-            self.args.evolution_scores = self.args.evolution_scores[:100 * (j+1)]
-            self.args.evolution_train_eq = self.args.evolution_train_eq[:j+1]
-            self.args.evolution_train_eq_full.append(f'reverted_to_{j}')
-            self.num_train = j
-            self.train_examples_history = [[]]
-        self.args.evolution_train_eq.append([])
-        self.args.evolution_train_eq_full.append([])
+        self.args.training_performance_log.append(train_score)
 
     def print_logged_statistics(self):
         self.args.min_level -= 1
-        logging.error(
+        logging.info(
             f'Loss log: {self.args.loss_log}\n'
             f'New play examples available: {self.args.new_play_examples_available}\n'
             f'test performance log {self.args.evolution_scores}\n'
@@ -628,7 +484,7 @@ class Arcade(object):
         if not os.path.exists(folder_name):
             os.mkdir(folder_name)
         if True:
-            logging.error('======= SAVING DATA =========')
+            logging.info('======= SAVING DATA =========')
             if not self.args.active_tester:
                 self.model_play.save_checkpoint(folder=folder_name,
                                                 filename='model.pth.tar')
