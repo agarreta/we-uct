@@ -36,6 +36,12 @@ class WordEquationGeneratorQuadratic(object):
             seed_everything(seed)
         # self.we = WordEquationMoves(args)
         self.args = args
+        self.SIDE_MAX_LEN = self.args.SIDE_MAX_LEN if not self.args.use_symmetry else self.args.gen_max_len
+        self.VARIABLES  = self.args.VARIABLES if not self.args.use_symmetry else self.args.VARIABLES[:self.args.gen_vars]
+        self.ALPHABET = self.args.ALPHABET if not self.args.use_symmetry else self.args.ALPHABET[:self.args.gen_alph]
+        #if not self.args.active_tester:
+        #    self.VARIABLES = self.VARIABLES[:10]
+        #    self.ALPHABET = self.ALPHABET[:5]
         # self.args.init_log()
         self.utils = WordEquationUtils(args, seed)
         self.transformations = WordEquationTransformations(args)
@@ -54,7 +60,7 @@ class WordEquationGeneratorQuadratic(object):
     def init_eq(self, length, alph):
         eq = WordEquation(self.args)
         if self.args.generation_mode == 'constant_side':
-            length -= int(len(self.args.VARIABLES)/2)
+            length -= int(len(self.VARIABLES)/2)
         w = self.random_word(length, alph)
         eq.w = w + '=' + w
         eq.update_used_symbols()
@@ -70,26 +76,26 @@ class WordEquationGeneratorQuadratic(object):
         # print(eq_w, letter, split, previous)
         if len(previous) == 0:
             return ''
-        assert len(previous) <= 1
+        assert len(np.unique(previous) )<= 1
         return previous[0]
 
     @with_update_used_symbols
     def inverse_move(self, eq):
         w1, w2 = eq.w.split('=')
         l1, l2 = w1[0], w2[0]
-        choice = [[x,i] for i, x in enumerate([l1, l2]) if x in self.args.VARIABLES]
+        choice = [[x,i] for i, x in enumerate([l1, l2]) if x in self.VARIABLES]
         if len(choice) == 0:
             return eq
         letter = random.choice(choice)
-        #if letter[0] in self.args.VARIABLES:
+        #if letter[0] in self.VARIABLES:
         #    return eq
         if self.mode in ['quadratic-' \
-                        'oriented', 'quadratic-oriented-linear'] :
+                        'oriented', 'quadratic-oriented-linear','alternative'] :
             side = letter[1]
             letter = letter[0]
             main_eq_side = eq.w.split('=')[1-side]
             previous_letter = self.get_previous_letter(main_eq_side, letter)
-            if previous_letter == '':#t or previous_letter in self.args.VARIABLES:
+            if previous_letter == '':#t or previous_letter in self.VARIABLES:
                 return eq
             main_eq_side = previous_letter + re.sub(previous_letter+letter, letter, main_eq_side)
             if side == 0:
@@ -103,7 +109,7 @@ class WordEquationGeneratorQuadratic(object):
             letter = letter[0]
             main_eq_side = eq.w.split('=')[1-side]
             previous_letter = self.get_previous_letter(main_eq_side, letter)
-            if previous_letter == '':# or previous_letter in self.args.VARIABLES:
+            if previous_letter == '':# or previous_letter in self.VARIABLES:
                 return eq
             main_eq_side =   re.sub(previous_letter+letter, letter, main_eq_side)
             new_w = main_eq_side + '='+ previous_letter + w2
@@ -112,7 +118,7 @@ class WordEquationGeneratorQuadratic(object):
         else:
             assert False
         # new_w_split = new_w.split('=')
-        # assert new_w_split[0][0] in self.args.VARIABLES or new_w_split[1][0] in self.args.VARIABLES
+        # assert new_w_split[0][0] in self.VARIABLES or new_w_split[1][0] in self.VARIABLES
         # side_with_previous_letter = [x[0] == letter for x in new_w.split('=')]  # [bool, bool]
         # print(eq.w, new_w, side_with_previous_letter)
         # if side_with_previous_letter[0]:  # left starts with letter
@@ -134,13 +140,25 @@ class WordEquationGeneratorQuadratic(object):
         eq_side = eq_split[other_side]
         position = random.choice(range(len(eq_side)))
         new_eq_side = eq_side[:position] + var + eq_side[position:]
-        if self.mode == 'quadratic-oriented':
+        if self.mode in ['quadratic-oriented','alternative']:
             if side == 0:
                 new_w = var + eq_split[side] + '=' + new_eq_side
             else:
                 new_w = new_eq_side + '=' + var + eq_split[side]
+        elif self.mode == 'constant_side':
+            new_w = eq_split[side] + '=' + var + new_eq_side
+
         elif self.mode == 'quadratic-oriented-linear':
-            lin = random.choice([1,1,0])
+            lin = random.choice([1,1,1,0])
+            if any([len(x)>= self.SIDE_MAX_LEN-2 for x in eq_split]) and side ==1:
+                lin = max(1, lin)
+            if lin == 2:
+                let = new_eq_side[position-1]
+                for i, x in enumerate(new_eq_side):
+                    if i  != position+1 and x == let:
+                        new_eq_side_ = new_eq_side[:i]  + var  +new_eq_side[i:]
+                new_eq_side = new_eq_side_
+
             if side == 0:
                 new_w = lin*var + eq_split[side] + '=' + new_eq_side
 
@@ -156,7 +174,7 @@ class WordEquationGeneratorQuadratic(object):
         return eq
 
     def compute_variable_length(self, eq, variable):
-        return sum([eq.num_letters_per_variable[variable][x] for x in self.args.ALPHABET])
+        return sum([eq.num_letters_per_variable[variable][x] for x in self.ALPHABET])
 
     @with_update_used_symbols
     def add_variable_to_lc(self, eq):
@@ -282,7 +300,7 @@ class WordEquationGeneratorQuadratic(object):
                           f'{[x.get_string_form() for x in self.log]}' )
                     self.utils.check_satisfiability(neq)
 
-                    raise Exception
+                    raise Exception(neq.w)
 
     def is_simple(self, eq, vars_to_check):
         """Simple : if it can be solved by removing all variables or one side has length less than 3 """
@@ -307,13 +325,13 @@ class WordEquationGeneratorQuadratic(object):
                             return True
                     else:
                         return True
-                if neq_split[0] in self.args.VARIABLES and self.is_constant(neq_split[1]):
+                if neq_split[0] in self.VARIABLES and self.is_constant(neq_split[1]):
                     if self.args.use_length_constraints:
                         if self.utils.treat_case_variable_side(neq.deepcopy(), neq_split[0], neq_split[1]):
                             return True
                     else:
                         return True
-                if neq_split[1] in self.args.VARIABLES and self.is_constant(neq_split[0]):
+                if neq_split[1] in self.VARIABLES and self.is_constant(neq_split[0]):
                     if self.args.use_length_constraints:
                         if self.utils.treat_case_variable_side(neq.deepcopy(),neq_split[1], neq_split[0]):
                             return True
@@ -332,7 +350,7 @@ class WordEquationGeneratorQuadratic(object):
         return False
 
 
-        # for var in self.args.VARIABLES:
+        # for var in self.VARIABLES:
         #     if var in neq.w:
         #         neq.w = re.sub(var, '', w)
         #         neq = self.transformations.normal_form(neq)
@@ -344,83 +362,97 @@ class WordEquationGeneratorQuadratic(object):
         #     return False
 
     def is_constant(self, w):
-        return not bool(np.array([int(x in w) for x in self.args.VARIABLES]).sum())
+        return not bool(np.array([int(x in w) for x in self.VARIABLES]).sum())
 
     def generate_pool(self, size, level_list):
+
         p = []
         t = time.time()
+        if self.args.generation_mode == 'standard':
+            prob_insertion = random.choice([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+            initial_length = self.args.pool_max_initial_length  # random.choice([x+1 for x in range(self.args.pool_max_initial_length-1, self.args.pool_max_initial_length)])
+        elif self.args.generation_mode == 'alternative':
+            prob_insertion = random.choice([0.1, 0.2, 0.8, 0.9])
+            initial_length = self.args.pool_max_initial_length
+        elif self.args.generation_mode == 'constant_side':
+            prob_insertion = random.choice([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+            initial_length = 3 * self.args.pool_max_initial_length
+        elif self.args.generation_mode == 'quadratic-oriented':
+            prob_insertion = random.choice([0.8])
+        elif self.args.generation_mode == 'quadratic-oriented-linear':
+            prob_insertion = random.choice([0.2, 0.9, 0.5])
+            initial_length = 2  # max(1,int(self.args.pool_max_initial_length/4))
+        elif self.args.generation_mode == 'regular-ordered':
+            prob_insertion = random.choice([0.66])
+            initial_length = int(self.args.pool_max_initial_length / 2)
+        if self.args.quadratic_mode:
+            initial_length = self.SIDE_MAX_LEN - len(self.VARIABLES)
+            self.args.pool_max_initial_constants = len(self.ALPHABET)
+
         if self.args.test_mode:
             print(level_list)
-        for i, level in enumerate(level_list):
-        #while len(p) < size:
-            # min_num_vars = random.choice([1])
-            if self.args.generation_mode == 'standard':
-                prob_insertion = random.choice([0.2,0.3,0.4,0.5,0.6,0.7, 0.8,0.9])
-                initial_length = self.args.pool_max_initial_length  # random.choice([x+1 for x in range(self.args.pool_max_initial_length-1, self.args.pool_max_initial_length)])
-            elif self.args.generation_mode == 'alternative':
-                prob_insertion = random.choice([0.1,0.2,0.8,0.9])
-                initial_length = self.args.pool_max_initial_length
-            elif self.args.generation_mode == 'constant_side':
-                prob_insertion = random.choice([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-                initial_length = 3*self.args.pool_max_initial_length
-            elif self.args.generation_mode == 'quadratic-oriented':
-                prob_insertion = random.choice([0.8])
-            elif self.args.generation_mode == 'quadratic-oriented-linear':
-                prob_insertion = random.choice([0.2, 0.9, 0.5])
-                initial_length = 2  # max(1,int(self.args.pool_max_initial_length/4))
-            elif self.args.generation_mode == 'regular-ordered':
-                prob_insertion = random.choice([0.66])
-                initial_length = int(self.args.pool_max_initial_length/2)
-            if self.args.quadratic_mode:
-                initial_length = self.args.SIDE_MAX_LEN - len(self.args.VARIABLES)
-                self.args.pool_max_initial_constants = len(self.args.ALPHABET)
-        # num_initial_letters = random.choice([x + 1 for x in range(len(self.args.ALPHABET))])
-            if not self.args.test_mode:
-                #random_level = level #level_list[-1]  # random.choice([x for x in level_list])
-                if i == 0:
-                    random_level = max(level-1, self.args.min_level)
-                elif i == 1:
-                    random_level = level
-                else:
-                    random_level = random.choice([x for x in range(3, level+1)])
-            else:
-                random_level = level
-            find_next_equation = False
-            while not find_next_equation:
-                #print('hola')
-                self.generate_sequence_of_eqns(level=random_level,
-                                               initial_alphabet=[x for x in self.args.ALPHABET[:self.args.pool_max_initial_constants]],
-                                               initial_length=initial_length,
-                                               prob_insertion=prob_insertion,
-                                               min_num_vars=1)
+        level_slots = self.args.train_level_slots
 
-                if len(self.log) > 1:
-                    candidate_eq = self.log[-1]
-                    if candidate_eq.level >= random_level:
-                        candidate_eq = self.transformations.normal_form(candidate_eq, minimize=True)
-                        if len(candidate_eq.w.split('=')[0]) >= 2 and len(candidate_eq.w.split('=')[1]) >= 2:
-                            if not self.is_simple(candidate_eq, self.args.VARIABLES):
-                                if self.args.generate_z3_unsolvable:
-                                    if not self.args.values_01:
-                                        candidate_eq = self.utils.check_satisfiability(candidate_eq)
-                                    else:
-                                        candidate_eq = self.utils.check_sat_wrap(candidate_eq)
-                                        if candidate_eq.sat == 'unknown':
+        while len(p) < len(level_list):
+            for i, level_slot in enumerate(level_slots):
+                if len(p) >= len(level_list):
+                    break
+                #while len(p) < size:
+                # min_num_vars = random.choice([1])
+                random_level = random.choice(level_slot)
+                # num_initial_letters = random.choice([x + 1 for x in range(len(self.ALPHABET))])
+                #if not self.args.test_mode:
+                #    #random_level = level #level_list[-1]  # random.choice([x for x in level_list])
+                #    if i == 0:
+                #        random_level = max(level-1, self.args.min_level)
+                #    elif i == 1:
+                #        random_level = level
+                #    else:
+                #        random_level = random.choice([x for x in range(3, level+1)])
+                #else:
+                #    random_level = level
+                find_next_equation = False
+
+                while not find_next_equation:
+                    #print('hola')
+                    self.generate_sequence_of_eqns(level=random_level,
+                                                   initial_alphabet=[x for x in self.ALPHABET[:self.args.pool_max_initial_constants]],
+                                                   initial_length=initial_length,
+                                                   prob_insertion=prob_insertion,
+                                                   min_num_vars=1)
+
+                    if len(self.log) > 1:
+                        candidate_eq = self.log[-1]
+                        if candidate_eq.level >= random_level:
+                            candidate_eq = self.transformations.normal_form(candidate_eq, minimize=True)
+                            if len(candidate_eq.w.split('=')[0]) >= 2 and len(candidate_eq.w.split('=')[1]) >= 2:
+                                if not self.is_simple(candidate_eq, self.VARIABLES):
+                                    if self.args.test_mode or (candidate_eq.w not in self.args.test_ws):
+                                        if self.args.generate_z3_unsolvable:
+                                            if not self.args.values_01:
+                                                candidate_eq = self.utils.check_satisfiability(candidate_eq)
+                                            else:
+                                                candidate_eq = self.utils.check_sat_wrap(candidate_eq)
+                                                if candidate_eq.sat == 'unknown':
+                                                    p.append(candidate_eq)
+                                                    find_next_equation = True
+                                                    if self.args.test_mode:
+                                                        print(len(p), candidate_eq.get_string_form(), candidate_eq.level)
+                                        else:
+                                            candidate_eq.sat = 0
+                                        if candidate_eq.sat == 0:
                                             p.append(candidate_eq)
                                             find_next_equation = True
                                             if self.args.test_mode:
                                                 print(len(p), candidate_eq.get_string_form(), candidate_eq.level)
-                                else:
-                                    candidate_eq.sat = 0
-                                if candidate_eq.sat == 0:
-                                    p.append(candidate_eq)
-                                    find_next_equation = True
-                                    if self.args.test_mode:
-                                        print(f'"{candidate_eq.get_string_form()}",')
-
+                                    else:
+                                        self.args.num_collisions_test += 1
+        print([eq.level for eq in p] )
         logging.info(f'Elapsed time generating pool: {round(time.time()-t,2)}')
         self.pool_generation_time = round(time.time()-t, 2)
         self.pool = p
+
+
         self.save_pool(level_list, size)
 
     def save_pool(self, level_list, size):
@@ -432,8 +464,11 @@ class WordEquationGeneratorQuadratic(object):
         if not self.args.test_mode:
             filename = os.path.join(folder, f'pool{len(pool_names)}_lvl_{level_list[0]}_{level_list[-1]}_size_{size}.pth.tar')
         else:
-            filename = os.path.join('benchmarks', f'pool_{self.args.SIDE_MAX_LEN}_{len(self.args.VARIABLES)}_{len(self.args.ALPHABET)}.pth.tar')
+            filename = os.path.join('benchmarks', f'pool_lvl_{level_list[0]}_{level_list[-1]}_size_{size}_{self.args.generation_mode}_{self.args.size_type}.pth.tar')
 
         with open(filename, "wb+") as f:
-            Pickler(f).dump(self.pool)
+            if not self.args.test_mode:
+                Pickler(f).dump([x.w for x in self.pool])
+            else:
+                Pickler(f).dump(self.pool)
         f.close()
