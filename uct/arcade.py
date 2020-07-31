@@ -71,7 +71,8 @@ class Arcade(object):
         self.best_score = 0
         self.active_model_being_tested = 'model_plays_0.pth.tar'
         self.name = name
-
+        
+        self.utils.load_nnet(device='cpu', training=True,load=False,folder=self.args.folder_name,filename=f'model.pth.tar')
 
     def init_log(self, folder_name, mode='train'):
         import logging
@@ -107,11 +108,7 @@ class Arcade(object):
             seed = self.args.num_init_players + 1000*self.args.seed_class
             processes_play.update({_: Process(
                 target=self.individual_player_session,
-                args=([self.args,
-                       self.model_play,
-                       modes[_],
-                       pipes_play[_], _,
-                       seed],))})
+                args=([self.args,self.model_play,modes[_],pipes_play[_], _,seed],))})
             self.active_players[_] = True
             processes_play[_].start()
         player_levels = {_: self.args.level for _ in range(self.args.num_cpus)}
@@ -134,38 +131,28 @@ class Arcade(object):
 
         iteration = 0
         num_evol_model = 0
-
+        self.model_play = self.load
         seed = self.args.num_init_players + 10000 * self.args.seed_class
 
         parent_conn_train = Queue()
-        train_mode = 'normal'#'initialize'
+        train_mode = 'normal'
         p_train = Process(target=self.arcade_train,
-                          args=[self.args,
-                                self.model_play,
-                                self.train_examples_history,
-                                parent_conn_train,
-                                train_mode,
-                                None,
-                                seed])
+                          args=(self.args,self.model_play,self.train_examples_history,parent_conn_train,
+                                train_mode,None,seed))
         p_train.start()
-        active_time = time.time()
-        self.quarters = 0 + int(self.args.initial_time/3600)
         nnet_train_done  =False
         while (self.args.checkpoint_num_plays < self.args.max_num_plays and
                not self.args.active_tester) or \
                 (self.args.active_tester and self.args.checkpoint_num_plays < self.args.max_num_plays and
                  self.args.new_play_examples_available < len([x for x in self.args.pools if type(x) != str])) :
-            #print(time.time() -active_time)
 
             if self.active_total_eqs >= self.args.num_iters_for_level_train_examples_history and not self.args.active_tester:
                 current_score = 100 * self.active_solved_test / self.active_total_eqs
-                # if num_evol_model == 0 or (current_score >= np.mean(self.args.evolution_scores) -np.std(self.args.evolution_scores) and current_score<= np.mean(self.args.evolution_scores) + np.std(self.args.evolution_scores)):
                 self.args.evolution_scores.append(current_score)
                 self.args.evolution_scores_full.append(current_score)
 
                 self.active_total_eqs = 0
                 self.active_solved_test = 0
-
 
             folder_name = self.args.folder_name
             if not os.path.exists(folder_name):
@@ -177,11 +164,10 @@ class Arcade(object):
                 self.initiate_loop = False
                 processes_play, pipes_play, modes, player_levels = self.init_dict_of_process_and_queus()
 
-
             if self.args.active_tester or  (not self.args.test_mode):
                 for _ in range(self.args.num_cpus):
 
-                        if not pipes_play[_].empty():  # or (iteration==1 and self.args.load_model):
+                        if not pipes_play[_].empty():
 
                             print(f'Hola player {_}')
                             self.active_players[_] = False
@@ -195,7 +181,6 @@ class Arcade(object):
                             pipes_play[_].join_thread()
                             processes_play[_].join()
                             processes_play[_].close()
-
 
                             if not self.active_players[_]:
                                 if not self.args.active_tester:
@@ -252,21 +237,13 @@ class Arcade(object):
                             seed = self.args.num_init_players + 10000 * self.args.seed_class
 
                             p_train = Process(target=self.arcade_train,
-                                              args=[self.args,
-                                                    self.model_play,
-                                                    self.train_examples_history,
-                                                    parent_conn_train,
-                                                    'normal',
-                                                    self.args.eq_history, seed])
+                                              args=(self.args,self.model_play,self.train_examples_history,parent_conn_train,'normal',self.args.eq_history, seed))
 
                             self.args.new_play_examples_available = 0
                             p_train.start()
 
-
-
         print('Waiting  before start closing procesess')
         time.sleep(10)
-
 
         for _ in range(self.args.num_cpus):
             try:
@@ -299,10 +276,6 @@ class Arcade(object):
         pipe = arguments[3]
         player_num = arguments[4]
         seed = arguments[5]
-
-        if mode == 'BENCHMARK':
-            print('benchmark')
-
         model.training = False
         model.model.eval()
 
@@ -344,10 +317,8 @@ class Arcade(object):
         while pipe.qsize() > 0:
             time.sleep(2)
 
-
     @staticmethod
-    def arcade_train(args, model_original, train_examples_history, pipe, train_mode='normal', eq_history = None, seed=None):
-
+    def arcade_train(args, model_original, train_examples_history, pipe, train_mode='normal',seed=None):
         results = {}
         try:
             model_original.model.to(args.train_device)
@@ -402,43 +373,21 @@ class Arcade(object):
         self.args.num_init_players +=1
         seed = self.args.num_init_players + 1000*self.args.seed_class
         pipes_play[player_idx] = Queue()
-        processes_play[player_idx] = Process(target=self.individual_player_session, args=(
-            [self.args,
-             self.model_play,
-             mode,
-             pipes_play[player_idx],
-             player_idx, seed],))
+        processes_play[player_idx] = Process(target=self.individual_player_session, args=([self.args,self.model_play,mode,pipes_play[player_idx],player_idx, seed],))
         player_levels[player_idx] = self.args.level
         return processes_play, pipes_play, player_levels
 
     def get_score(self, score):
         return sum([sum(x) for x in score])
 
-    def process_play_result(self, examples, sat_times, pool_generation_time, sat_steps
-                    , score, level, mode, truncate, player_num, eqs_solved, eqs_solved_Z3,
-                            failed_pool, previous_attempts_pool, search_times,
-                            num_timeouts, num_fails, type_of_benchmark, percentage_timeouts_solved,
-                            percentage_timeouts_failed, z3score, z3mctstime_sat, z3mctstime_unsat, action_indices,  eqs = None):
+    def process_play_result(self, examples, score, mode, truncate, player_num, eqs_solved, eqs_solved_Z3, eqs = None):
 
         total_score = self.get_score(score)
-        if self.args.active_tester:
-            self.plotter.eqs_solved.append(eqs_solved)
-            self.plotter.eqs_solved_Z3.append(eqs_solved_Z3)
-            print('\n!!!!!appending eqs_solved Z3\n!!!!!appending eqs_solved Z3\n!!!!!appending eqs_solved Z3\n!!!!!appending eqs_solved Z3\n!!!!!appending eqs_solved Z3\n!!!!!appending eqs_solved Z3\n!!!!!appending eqs_solved Z3\n!!!!!appending eqs_solved Z3', eqs_solved_Z3)
-
-            #self.plotter.times_eqs_solved
-        if truncate:
-            self.args.num_truncated_pools_per_player[player_num] += 1
-
         if mode == 'train':
-            self.args.evolution_train[self.quarters] += total_score
-            self.args.iterations_train[self.quarters] += 1
             self.args.evolution_train_eq[-1].append(total_score)
             self.args.evolution_train_eq_full[-1].append(total_score)
             self.args.iterations_train_eq.append(1)
             self.train_examples_history[-1].append(examples)
-            if self.args.learnable_smt:
-                self.args.eq_history[-1].append(eqs)
             if len(self.train_examples_history[-1]) > self.args.num_iters_for_level_train_examples_history:
                 logging.info(f"len(train_examples_history) in last level = "
                                 f"{len( self.train_examples_history[-1] )} => remove the oldest trainExamples")
@@ -450,8 +399,6 @@ class Arcade(object):
         if mode == 'test':
             self.active_solved_test += total_score
             self.active_total_eqs += self.args.num_iters_for_level_train_examples_history
-            self.args.evolution_test[self.quarters] += total_score
-            self.args.iterations_test[self.quarters] += 1
             self.args.evolution_test_eq.append(total_score)
             self.args.iterations_test_eq.append(1)
             self.ongoing_test = False
@@ -478,19 +425,13 @@ class Arcade(object):
             f'State :: test_due {self.test_due} - ongoing-test {self.ongoing_test}\n\n')
         self.args.min_level+=1
 
-
-    def save_data(self, save_model = True, args_name = 'arguments'):
+    def save_data(self):
         folder_name = self.args.folder_name
         if not os.path.exists(folder_name):
             os.mkdir(folder_name)
-        if True:
-            logging.info('======= SAVING DATA =========')
-            if not self.args.active_tester:
-                self.model_play.save_checkpoint(folder=folder_name,
-                                                filename='model.pth.tar')
-                self.utils.save_object('examples', self.train_examples_history, folder = folder_name)
-            self.utils.save_object(args_name, self.args, folder =folder_name)
-        if self.args.level % 1 == 0 and save_model:
-            if not self.args.active_tester:
-                self.model_play.save_checkpoint(folder=folder_name,
-                                                filename=f'model_level_{self.args.level}.pth.tar')
+        logging.info('======= SAVING DATA =========')
+        if not self.args.active_tester:
+            self.model_play.save_checkpoint(folder=folder_name, filename='model.pth.tar')
+            self.utils.save_object('examples', self.train_examples_history, folder = folder_name)
+        self.utils.save_object('arguments', self.args, folder =folder_name)
+
