@@ -21,11 +21,9 @@ from .neural_net_models.uniform_model import UniformModel
 #from .utils import seed_everything
 from .word_equation.word_equation_utils import seed_everything
 #from .neural_net_models.attention import WordEquationAttention
-from copy import deepcopy
 # torch.set_default_tensor_type(torch.HalfTensor)
 from random import shuffle
-from we.word_equation.we import WE
-from we.word_equation.word_equation import WordEquation
+from uct.we.word_equation import WE
 from .neural_net_models.encoder import Encoder_wrap
 
 def init_log(folder, mode='train'):
@@ -40,9 +38,10 @@ def init_log(folder, mode='train'):
                         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                         datefmt='%m-%d %H:%M',
                         filename=folder + f'/log_{mode}.log')
+
     # define a Handler which writes INFO messages or higher to the sys.stderr
     # console = logging.StreamHandler()
-    # console.setLevel(logging.INFO)
+    console.setLevel(logging.INFO)
     # add the handler to the root logger
     # logging.getLogger('').addHandler(console)
 
@@ -585,24 +584,3 @@ class NNetWrapper( NeuralNet ):
         for x in self.model.parameters():
             x.requires_grad_(False)
         self.optimizer.load_state_dict(checkpoint['optimizer'])
-
-        # if self.args.load_level:
-            # self.args.level = checkpoint['level']
-            # self.args.update_parameters()
-
-    #def init_log(self, folder, mode='train'):
-#
-    #    # TODO: What is this for?
-    #    logging.getLogger( "tensorflow" ).setLevel( logging.WARNING )
-#
-    #    # set up logging to file
-    #    logging.basicConfig( level=logging.DEBUG,
-    #                         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-    #                         datefmt='%m-%d %H:%M',
-    #                         filename=folder + f'/log_{mode}.log' )
-    #    # define a Handler which writes INFO messages or higher to the sys.stderr
-    #    console = logging.StreamHandler()
-    #    console.setLevel( logging.INFO )
-    #    # add the handler to the root logger
-    #    logging.getLogger( '' ).addHandler( console )
-#
