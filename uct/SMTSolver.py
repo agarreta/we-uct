@@ -4,25 +4,30 @@ from we.arguments import Arguments
 args = Arguments()
 
 def SMT_eval_Z3(eq, timeout, solver=''):
-    w = eq.w
+    w = eq.get_string_form()
     os.chdir('..')
     os.chdir('..')
     os.chdir('..')
     with open('z3-master/build/python/word_equation.txt', 'w+') as f:
         f.write(f'{w}')
+    with open('z3-master/build/python/timeout.txt', 'w+') as f:
+        f.write(f'{timeout}')
     os.chdir('PycharmProjects/pr/test')
 
     folder = 'cd\ncd z3-master/build/python'
     if timeout is None:
         command = f'{folder}\npython execute_word_equation{solver}.py'
-    elif timeout >= 20000:
-        command = f'{folder}\npython execute_word_equation{solver}.py'
-    elif timeout == 1200:
-        command = f'{folder}\npython execute_word_equation_1_2_second{solver}.py'
-    elif timeout == 800:
+    else:
         command = f'{folder}\npython execute_word_equation_08_second{solver}.py'
-    elif timeout == 400:
-        command = f'{folder}\npython execute_word_equation_04_second.py'
+    if False:
+        if False: #timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation{solver}.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second{solver}.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second{solver}.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
 
     stream = os.popen(command)
     result = stream.read()
@@ -38,20 +43,30 @@ def SMT_eval_Z3(eq, timeout, solver=''):
     return out
 
 def SMT_eval_woorpje(eq, timeout):
-    w = eq.w
+    if timeout is not None:
+        timeout = int(timeout/1000)
+    w = eq.get_string_form()
     os.chdir('..')
     os.chdir('..')
     os.chdir('..')
     with open('woorpje-0_2/bin/word_equation.txt', 'w+') as f:
         f.write(f'{w}')
+    with open(f'woorpje-0_2/bin/timeout.txt', 'w+') as f:
+        f.write(f'{timeout}')
     os.chdir('PycharmProjects/pr/test')
 
     if timeout is None:
         command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation.py'
-    elif timeout >= 20000:
-        command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation.py'
     else:
-        command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation_04_second.py'
+        command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation_08_second.py'
+
+    if False:
+        if timeout >= 20000:
+            command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation.py'
+        elif timeout == 800:
+            command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation_08_second.py'
+        elif timeout == 1200:
+            command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation_1_2_second.py'
 
     stream = os.popen(command)
     result = stream.read()
@@ -67,25 +82,30 @@ def SMT_eval_woorpje(eq, timeout):
     return out
 
 def SMT_eval_CVC4(eq, timeout):
-    w = eq.w
+    w = eq.get_string_form()
     os.chdir('..')
     os.chdir('..')
     os.chdir('..')
     with open('CVC4-master/build/bin/word_equation.txt', 'w+') as f:
         f.write(f'{w}')
+    with open(f'CVC4-master/build/bin/timeout.txt', 'w+') as f:
+        f.write(f'{timeout}')
     os.chdir('PycharmProjects/pr/test')
 
     folder = 'cd\ncd CVC4-master/build/bin'
     if timeout is None:
         command = f'{folder}\npython execute_word_equation.py'
-    elif timeout >= 20000:
-        command = f'{folder}\npython execute_word_equation.py'
-    elif timeout == 1200:
-        command = f'{folder}\npython execute_word_equation_1_2_second.py'
-    elif timeout == 800:
+    else:
         command = f'{folder}\npython execute_word_equation_08_second.py'
-    elif timeout == 400:
-        command = f'{folder}\npython execute_word_equation_04_second.py'
+    if False:
+        if timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
 
     stream = os.popen(command)
     out = stream.read()
@@ -110,14 +130,17 @@ def SMT_eval_sloth(eq, timeout):
     folder = 'cd\ncd sloth-1.0'
     if timeout is None:
         command = f'{folder}\npython execute_word_equation.py'
-    elif timeout >= 20000:
-        command = f'{folder}\npython execute_word_equation.py'
-    elif timeout == 1200:
-        command = f'{folder}\npython execute_word_equation_1_2_second.py'
-    elif timeout == 800:
+    else:
         command = f'{folder}\npython execute_word_equation_08_second.py'
-    elif timeout == 400:
-        command = f'{folder}\npython execute_word_equation_04_second.py'
+    if False:
+        if timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
 
     stream = os.popen(command)
     out = stream.read()
@@ -134,7 +157,7 @@ def SMT_eval_sloth(eq, timeout):
     return out
 
 def SMT_eval_TRAU(eq, timeout):
-    w = eq.w
+    w = eq.get_string_form()
     os.chdir('..')
     os.chdir('..')
     os.chdir('..')
@@ -142,19 +165,24 @@ def SMT_eval_TRAU(eq, timeout):
     print(folder)
     with open(f'{folder}/word_equation.txt', 'w+') as f:
         f.write(f'{w}')
+    with open(f'{folder}/timeout.txt', 'w+') as f:
+        f.write(f'{timeout}')
     os.chdir('PycharmProjects/pr/test')
 
     folder = 'cd\ncd z3-new_trau/trau-build'
     if timeout is None:
         command = f'{folder}\npython execute_word_equation.py'
-    elif timeout >= 20000:
-        command = f'{folder}\npython execute_word_equation.py'
-    elif timeout == 1200:
-        command = f'{folder}\npython execute_word_equation_1_2_second.py'
-    elif timeout == 800:
+    else:
         command = f'{folder}\npython execute_word_equation_08_second.py'
-    elif timeout == 400:
-        command = f'{folder}\npython execute_word_equation_04_second.py'
+    if False:
+        if timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
 
     stream = os.popen(command)
     out = stream.read().split('\n')[0]
@@ -173,6 +201,9 @@ def SMT_eval_seq(eq, timeout):
 
 
 def SMT_eval(args, eq, timeout=None):
+
+
+
     if len(eq.w.split('='))==1:
         print('ERROR')
 
@@ -188,3 +219,5 @@ def SMT_eval(args, eq, timeout=None):
         return SMT_eval_TRAU(eq, timeout)
     elif args.smt_solver == 'seq':
         return SMT_eval_seq(eq, timeout)
+    elif args.smt_solver == 'dumb':
+        return eq.sat
