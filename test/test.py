@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr  8 17:06:03 2019
-
-@author: garre
-"""
 
 from we import *
 from we.arguments import Arguments
