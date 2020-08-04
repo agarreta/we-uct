@@ -3,7 +3,6 @@ import re
 import torch
 from uct.we.word_equation import WordEquationUtils, seed_everything
 from uct.we.word_equation import WordEquationTransformations
-# torch.set_default_tensor_type(torch.HalfTensor)
 
 class WordEquationMovesQuadratic(object):
 
@@ -15,8 +14,6 @@ class WordEquationMovesQuadratic(object):
         self.create_fast_action_dict()
         if seed is not None:
             seed_everything(seed)
-
-            # self.get_afterstates()
 
     def delete_var(self, eq, eq_side, word_side):
         eq_split = eq.w.split('=')
@@ -35,35 +32,6 @@ class WordEquationMovesQuadratic(object):
                     for _ in range(len( x)):
                         x[_][var] = 0
             return eq
-
-    #def compress(self, eq):
-    #    if self.args.ALPHABET[-1]  in eq.w:
-    #        return eq
-    #    left_allowed = {letter: True for letter in self.args.ALPHABET[:-1]}
-    #    right_allowed = {letter: True for letter in self.args.ALPHABET[:-1]}
-    #    for letter in self.args.ALPHABET:
-    #        split = eq.w.split(letter)
-    #        left_split = [x[-1:] for x in split[:-1]]  # symbols on the left of letter
-    #        right_split = [x[:1] for x in split[1:]]
-    #        if any([x in self.args.VARIABLES for x in left_split]):
-    #            right_allowed[letter] = False
-    #        if any([x in self.args.VARIABLES for x in right_split]):
-    #            left_allowed[letter] = False
-    #    allowed_tuples = [l1 + l2 for l1, val1 in left_allowed.items() if val1 for l2, val2 in right_allowed.items() if
-    #                      val2]
-    #    if len(allowed_tuples) == 0:
-    #        eq.attempted_wrong_move = True
-    #        return eq
-    #    else:
-    #        counts = [[eq.w.count(pair), pair] for pair in allowed_tuples]
-    #        if all([x == 0 for x in counts]):
-    #            eq.attempted_wrong_move = True
-    #            return eq
-    #        else:
-    #            counts.sort()
-    #            new_w = re.sub(counts[-1][-1], self.args.ALPHABET[-1], eq.w)
-    #            eq.w = new_w
-    #            return eq
 
     def move(self, eq, eq_side, word_side):
         # side = 0 if side == 'left' else 1
@@ -166,7 +134,3 @@ class WordEquationMovesQuadratic(object):
         fast_dict['delete'] = {'left': len(alph), 'right': len(alph)}
         fast_dict['move'] = {'left': len(alph), 'right': len(alph)}
         self.fast_dict = fast_dict
-
-
-
-
