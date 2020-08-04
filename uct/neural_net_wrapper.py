@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr  8 17:30:05 2019
 
-@author: garre
-"""
 import logging
 import torch.optim as optim
 import time
