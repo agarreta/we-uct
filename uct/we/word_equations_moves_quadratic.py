@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr  7 23:15:59 2019
 
-@author: garre
-"""
 import re
 import torch
 from uct.we.word_equation import WordEquationUtils, seed_everything
