@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr  8 17:28:18 2019
-
-@author: garre
-"""
 
 import random
 import numpy as np
