@@ -37,7 +37,6 @@ class WordEquation(object):
         if self.args.check_LP:
             self.find_LP()
 
-
     def get_id(self):
         self.id = self.get_string_form() + str(round(random.random(), 5))[1:]
 
@@ -89,6 +88,7 @@ class WordEquation(object):
         except:
             print(self.lp)
             print(self.args.ALPHABET)
+            assert False
 
     def get_string_form(self):
         return self.w

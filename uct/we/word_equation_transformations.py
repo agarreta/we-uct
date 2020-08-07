@@ -1,6 +1,5 @@
 import re
 from collections import OrderedDict
-from random import shuffle
 
 class WordEquationTransformations(object):
     def __init__(self, args):
@@ -8,15 +7,8 @@ class WordEquationTransformations(object):
 
     def normal_form(self, eq, mode='play'):
         if self.args.use_normal_forms:
-            #if (self.args.generation_mode != 'constant_side') and (not self.args.quadratic_mode):
-            #    new_w_split = eq.w.split('=')
-            #    new_w_split.sort()
-            #    new_w = new_w_split[0] + '=' + new_w_split[1]
-            #    eq.w = new_w
-
             if mode != 'generation':
                 eq = self.del_pref_suf(eq)
-
             if self.args.use_normal_forms:
                 auto = self.get_automorphism(eq)
                 eq = self.apply_automorphism(eq, auto, mode)
@@ -27,13 +19,7 @@ class WordEquationTransformations(object):
             return eq
 
     def get_automorphism(self, eq, type='canonical'):
-
-        if type == 'canonical':
-            order = ''.join(OrderedDict.fromkeys(eq.w).keys())
-        else:
-            order = list(set(eq.w))
-            shuffle(order)
-            order = ''.join(order)
+        order = ''.join(OrderedDict.fromkeys(eq.w).keys())
         order = re.sub('=','',order)
         order = re.sub('\.','',order)
         var_auto =''
@@ -68,7 +54,6 @@ class WordEquationTransformations(object):
                     length += 1
                 else:
                     break
-
             return length
 
         def length_longest_common_sufix(strs):

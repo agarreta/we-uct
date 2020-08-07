@@ -5,16 +5,15 @@ import re
 from .word_equation import WordEquation
 from .word_equation_transformations import WordEquationTransformations
 from .word_equation_utils import WordEquationUtils, seed_everything
-from string import ascii_lowercase
-from copy import deepcopy
 import time
 import logging
 from pickle import Pickler
 import os
 
-#from .SATtoWordEquation import SATtoWordEquation
-
 def with_update_used_symbols(fun):
+    """
+    Function wrapper that updates the used sympbols in the equation that is currently being generated
+    """
     def wrapped_fun(*args, **kwargs):
         args[1].update_used_symbols()
         values = fun(*args, **kwargs)
@@ -29,15 +28,10 @@ class WordEquationGeneratorQuadratic(object):
     def __init__(self, args, seed=None):
         if seed is not None:
             seed_everything(seed)
-        # self.we = WordEquationMoves(args)
         self.args = args
-        self.SIDE_MAX_LEN = self.args.SIDE_MAX_LEN if not self.args.use_symmetry else self.args.gen_max_len
-        self.VARIABLES  = self.args.VARIABLES if not self.args.use_symmetry else self.args.VARIABLES[:self.args.gen_vars]
-        self.ALPHABET = self.args.ALPHABET if not self.args.use_symmetry else self.args.ALPHABET[:self.args.gen_alph]
-        #if not self.args.active_tester:
-        #    self.VARIABLES = self.VARIABLES[:10]
-        #    self.ALPHABET = self.ALPHABET[:5]
-        # self.args.init_log()
+        self.SIDE_MAX_LEN = self.args.SIDE_MAX_LEN
+        self.VARIABLES  = self.args.VARIABLES
+        self.ALPHABET = self.args.ALPHABET
         self.utils = WordEquationUtils(args, seed)
         self.transformations = WordEquationTransformations(args)
         self.pool = {}
@@ -48,8 +42,7 @@ class WordEquationGeneratorQuadratic(object):
         while True:
             for _ in range(length):
                 word += random.choice(alphabet)
-            if len(set(word)) > 1 or random.random() > -1.1:  # avoids having words with one single letter (which eventually produces a lot of equations beggining with ZZ
-                #    print(f'-{word}')
+            if len(set(word)) > 1:  # this together with the 'while True' avoids having initial words with only no two distinct letters. Such initial words tend to produce  quite easy equations
                 return word
 
     def init_eq(self, length, alph):

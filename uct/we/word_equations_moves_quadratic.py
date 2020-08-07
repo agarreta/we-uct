@@ -1,8 +1,8 @@
 
 import re
 import torch
-from uct.we.word_equation import WordEquationUtils, seed_everything
-from uct.we.word_equation import WordEquationTransformations
+from uct.we.word_equation_utils import WordEquationUtils, seed_everything
+from uct.we.word_equation_transformations import WordEquationTransformations
 
 class WordEquationMovesQuadratic(object):
 
@@ -134,3 +134,8 @@ class WordEquationMovesQuadratic(object):
         fast_dict['delete'] = {'left': len(alph), 'right': len(alph)}
         fast_dict['move'] = {'left': len(alph), 'right': len(alph)}
         self.fast_dict = fast_dict
+
+
+if __name__ == '__main__':
+    print('Hi')
+
