@@ -1,4 +1,5 @@
 import os
+
 from we.arguments import Arguments
 args = Arguments()
 
@@ -18,12 +19,21 @@ def SMT_eval_Z3(eq, timeout, solver=''):
         command = f'{folder}\npython execute_word_equation{solver}.py'
     else:
         command = f'{folder}\npython execute_word_equation_08_second{solver}.py'
+    if False:
+        if False: #timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation{solver}.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second{solver}.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second{solver}.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
 
     stream = os.popen(command)
     result = stream.read()
     #result = result.split('-')
     out = result.split('-')[0]
-    #print(out)
+    print(out)
     if out == 'sat':
         out = 1
     elif out == 'unsat':
@@ -50,17 +60,25 @@ def SMT_eval_woorpje(eq, timeout):
     else:
         command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation_08_second.py'
 
+    if False:
+        if timeout >= 20000:
+            command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation.py'
+        elif timeout == 800:
+            command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation_08_second.py'
+        elif timeout == 1200:
+            command = f'cd\ncd woorpje-0_2/bin\npython execute_word_equation_1_2_second.py'
+
     stream = os.popen(command)
     result = stream.read()
-    #print('A')
-    #print(result)
-    #print('B')
+    print('A')
+    print(result)
+    print('B')
     out = result
     if 'Found a solution' in out:
         out = 1
     else:
         out = 0
-    #print(out)
+    print(out)
     return out
 
 def SMT_eval_CVC4(eq, timeout):
@@ -79,13 +97,22 @@ def SMT_eval_CVC4(eq, timeout):
         command = f'{folder}\npython execute_word_equation.py'
     else:
         command = f'{folder}\npython execute_word_equation_08_second.py'
+    if False:
+        if timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
 
     stream = os.popen(command)
     out = stream.read()
-    #print(out)
-    #print(out.split('\n'))
+    print(out)
+    print(out.split('\n'))
     out = out.split('\n')[0]
-    #print(out)
+    print(out)
     if out == 'sat':
         out = 1
     elif out == 'unsat':
@@ -105,11 +132,21 @@ def SMT_eval_sloth(eq, timeout):
         command = f'{folder}\npython execute_word_equation.py'
     else:
         command = f'{folder}\npython execute_word_equation_08_second.py'
+    if False:
+        if timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
+
     stream = os.popen(command)
     out = stream.read()
-    #print(out)
+    print(out)
     out = out.split('\n')[-3]
-    #print(out)
+    print(out)
 
     if 'sat' in out and 'unsat' not in out:
         out = 1
@@ -137,10 +174,19 @@ def SMT_eval_TRAU(eq, timeout):
         command = f'{folder}\npython execute_word_equation.py'
     else:
         command = f'{folder}\npython execute_word_equation_08_second.py'
+    if False:
+        if timeout >= 20000:
+            command = f'{folder}\npython execute_word_equation.py'
+        elif timeout == 1200:
+            command = f'{folder}\npython execute_word_equation_1_2_second.py'
+        elif timeout == 800:
+            command = f'{folder}\npython execute_word_equation_08_second.py'
+        elif timeout == 400:
+            command = f'{folder}\npython execute_word_equation_04_second.py'
 
     stream = os.popen(command)
     out = stream.read().split('\n')[0]
-    #print(out)
+    print(out)
     if out == 'sat':
         out = 1
     elif out == 'unsat':
@@ -149,10 +195,18 @@ def SMT_eval_TRAU(eq, timeout):
         out = 0
     return out
 
+
 def SMT_eval_seq(eq, timeout):
     return SMT_eval_Z3(eq, timeout, solver='_Seq')
 
+
 def SMT_eval(args, eq, timeout=None):
+
+
+
+    if len(eq.w.split('='))==1:
+        print('ERROR')
+
     if args.smt_solver == 'Z3':
         return SMT_eval_Z3(eq, timeout)
     elif args.smt_solver == 'woorpje':

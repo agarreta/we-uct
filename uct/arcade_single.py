@@ -1,4 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr  8 17:28:18 2019
 
+@author: garre
+"""
 from string import ascii_uppercase, ascii_lowercase
 
 from .player import Player
@@ -64,7 +69,7 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
         chunk = ceil(len(pool)/num_cpus)
         eq_sub_pools = [pool[i*chunk:(i+1)*chunk] for i in range(num_cpus) if len(pool[i*chunk:(i+1)*chunk])>0]
         play_args = []
-        sub_results = p.map(individual_player_session, [(args, sub_pool, model_folder, model_filename, mode, seed) for sub_pool in eq_sub_pools])
+        sub_results = p.map(t, [(args, sub_pool, model_folder, model_filename, mode, seed) for sub_pool in eq_sub_pools])
         results = {}
         for i, sr in enumerate(sub_results):
             if i == 0:
@@ -162,35 +167,57 @@ def individual_player_session(play_args):
             args.mcts_smt_time_max = timeouts[args.smt_solver][pname]
         except:
             args.mcts_smt_time_max = 800
-    if True:# model_folder in ['v55','v57']:
+    if  model_folder in ['v55','v57','v61']:
         num_alph=10
         num_vars=14
         args.SIDE_MAX_LEN = 150
-        args.num_mcts_simulations = 50
         args.ALPHABET = list(ascii_lowercase)
         args.VARIABLES = list(ascii_uppercase)
+        #if 'track'   in args.pool_name:
+        #    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
+        #    args.VARIABLES = [x for x in ascii_uppercase]
+        #    args.ALPHABET = args.ALPHABET[:num_alph]
+        #    args.VARIABLES = args.VARIABLES[:num_vars]
+        #else:
         args.VARIABLES = [x for x in ascii_uppercase]
         args.VARIABLES = args.VARIABLES[:num_vars]
         args.ALPHABET = args.ALPHABET[:num_alph]
         args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
-
-    elif model_folder == 'v56':
+        args.num_resnet_blocks=2
+    elif model_folder in ['v56']:
         num_alph=3
         num_vars=5
         args.SIDE_MAX_LEN = 20
         args.num_mcts_simulations = 10
         args.ALPHABET = list(ascii_lowercase)
         args.VARIABLES = list(ascii_uppercase)
+        args.num_resnet_blocks=2
+        args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
         if 'track' not in args.pool_name:
-            args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
             args.VARIABLES = [x for x in ascii_uppercase[::-1]]
-            args.ALPHABET = args.ALPHABET[:num_alph]
-            args.VARIABLES = args.VARIABLES[:num_vars]
-            args.num_mcts_simulations = 50
+        args.ALPHABET = args.ALPHABET[:num_alph]
+        args.VARIABLES = args.VARIABLES[:num_vars]
+        args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
 
-    else:
-        args.VARIABLES = list(ascii_uppercase)
+    elif  model_folder in ['v58']:
+        num_alph=10
+        num_vars=14
+        args.SIDE_MAX_LEN = 150
         args.ALPHABET = list(ascii_lowercase)
+        args.VARIABLES = list(ascii_uppercase)
+        #if 'track'   in args.pool_name:
+        #    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
+        #    args.VARIABLES = [x for x in ascii_uppercase]
+        #    args.ALPHABET = args.ALPHABET[:num_alph]
+        #    args.VARIABLES = args.VARIABLES[:num_vars]
+        #else:
+        args.VARIABLES = [x for x in ascii_uppercase]
+        args.VARIABLES = args.VARIABLES[:num_vars]
+        args.ALPHABET = args.ALPHABET[:num_alph]
+        args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
+        args.num_resnet_blocks=2
+
+
     args.update_symbol_index_dictionary()
     seed_everything(seed)
     results = dict({'level': args.level})
@@ -223,3 +250,4 @@ def individual_player_session(play_args):
     results['sat_steps_taken'] = player.sat_steps_taken
 
     return results
+
