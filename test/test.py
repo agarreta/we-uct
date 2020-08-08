@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr  8 17:06:03 2019
+
+@author: garre
+"""
 
 from we import *
 from we.arguments import Arguments
@@ -117,7 +123,7 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
     def uniformize_levels(pool):
 
         npool = []
-        level_slots = [range(math.floor(10 + 1.6 * i), math.floor(10 + 1.6 * (i + 1))) for i in range(0, 9)] if model_folder in ['v56'] else [range(math.floor(3 + 1. * i), math.floor(3 + 1. * (i + 1))) for i in range(0, 9)]
+        level_slots = [range(math.floor(10 + 1.6 * i), math.floor(10 + 1.6 * (i + 1))) for i in range(0, 9)] if '20_5_3' in pool_filepath else [range(math.floor(3 + 1. * i), math.floor(3 + 1. * (i + 1))) for i in range(0, 9)]
         num_slots = [0 for _ in range(0, 9)]
         while len(npool) < 200:
             a = int(np.argmin([x for x in num_slots]))
@@ -142,8 +148,24 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
             if x.w not in [y.w for y in new_pool]:
                 new_pool.append(x)
         pool = new_pool
+    if '00' in pool_filepath:
+        new_pool=[]
+        for x in pool:
+            ar = Arguments()
+            e = WordEquation(ar)
+            e.w = x
+            new_pool.append(e)
+        pool=new_pool
+
     print([eq.w for eq in pool])
     args = Arguments(size)
+    if '05' in pool_filepath:
+        new_pool=[]
+        for x in pool:
+            x.ell = [0] + x.ell
+            new_pool.append(x)
+        pool=new_pool
+        args.use_length_constraints=True
     args.folder_name = model_folder
     args.smt_solver = solver
     args.seed_class = seed
@@ -160,7 +182,7 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
         args.use_normal_forms = False
         args.check_LP = False
         args.test_solver=True
-    if '04_track' in pool_filepath:
+    if '05_track' in pool_filepath:
         args.use_length_constraints = True
     args.pool_name = pool_filepath
     args.pool_name_load = pool_filepath
@@ -170,22 +192,35 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
 
 if __name__ == "__main__":
 
-    seeds = range(17, 17) #[2,3,1]
+    seeds = range(16, 19) #[2,3,1]
     algorithm_names = [f'we_uct_oracleZ3_disc90_track{1}_seed{seed}' for seed in seeds]
     folders = [
         f'we_alpha0_disc90_smaller_seed{seed}' for seed in seeds
-    ]  # TODO: set the args in the name in the arguments file
+    ]  # TODO: set the args in <<<<<<<<<<<the name in the arguments file
 
-    if False:
-        print(algorithm_names)
+    if True:
+        for t in [0]:
+            print(algorithm_names)
+
+            for solver in ['TRAU','CVC4']:
+                simple_evaluate(f'benchmarks/0{5}_track/transformed',
+                                'v56', 'uniform', solver=solver, smt_max_time=800, seed=20)
+
+        assert False
         for t in [1,2,3]:
-            simple_evaluate(f'benchmarks/0{t}_track/transformed',
-                            'v57', 'model_train_0.pth.tar', solver=None, smt_max_time=800, seed=20)
-        simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar',
-                            'v57', 'model_train_52.pth.tar', solver=None, smt_max_time=800, seed=20)
+            print(algorithm_names)
+            for j in [77,52,0]:
+                simple_evaluate(f'benchmarks/0{t}_track/transformed',
+                                'v57', f'model_train_{j}.pth.tarf', solver=None, smt_max_time=800, seed=20)
 
-    simple_evaluate(f'benchmarks/pool_150_14_10.pth.tar',
-                     'v57', 'model_train_0.pth.tar', solver=None, smt_max_time=800, seed=20)
+            if False:
+                simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar',
+                                    'v57',  f'model_train_{t}.pth.tar', solver=None, smt_max_time=800, seed=20)
+                simple_evaluate(f'benchmarks/pool_150_14_10.pth.tar',
+                                'v57', f'model_train_{t}.pth.tar', solver=None, smt_max_time=800, seed=20)
+
+    assert False
+
     simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar',
                     'v56', 'model_train_130.pth.tar', solver=None, smt_max_time=800, seed=20)
     assert False
