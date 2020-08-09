@@ -14,7 +14,7 @@ class MCTS():
     """
     """
 
-    def __init__(self, nnet, args, num_mcts_sims, nn_outputs, mode, seed=None):
+    def __init__(self, nnet, args, num_mcts_sims, mode, seed=None):
 
         if seed is not None:
             seed_everything(seed)
@@ -23,10 +23,10 @@ class MCTS():
         self.args = args
         self.we = WE(args, seed)
 
-        self.state_action_values = {}       
-        self.num_times_taken_state_action = {}      
-        self.num_times_visited_state = {}      
-        self.final_state_value = {}       
+        self.state_action_values = {}
+        self.num_times_taken_state_action = {}
+        self.num_times_visited_state = {}
+        self.final_state_value = {}
         self.prior_state_value = {}
         self.is_leaf = {}
         self.registered_ids = set({})
@@ -34,8 +34,6 @@ class MCTS():
         self.valid_actions = {}
 
         self.root_action = -1
-
-        self.nn_outputs = nn_outputs
 
         self.prev_state = ''
         self.num_rec = 0
@@ -67,7 +65,7 @@ class MCTS():
         self.root_w = eq.w
         for i in range(self.num_mcts_simulations):
 
-            self.search(eq, s_eq, temp, previous_state=previous_state, ctx= ctx)
+            self.search(eq, s_eq, temp, previous_state=previous_state)
             if time.time() - self.initial_time > self.args.timeout_time:
                 break
 
@@ -106,20 +104,17 @@ class MCTS():
         self.edges[next_state.id] = []
         return next_state
 
-    def network_output(self, eq_name, eq_s, smt=None, ctx=None, eq=None):
+    def network_output(self, eq_name, eq_s, smt=None, eq=None):
 
-        if eq_name in self.nn_outputs:
-            return self.nn_outputs[eq_name]
-        else:
-            output_pi, output_v = self.nnet.predict(eq_s, smt, ctx)
-            if self.args.oracle:
-                output_v = self.oracle_rollout(eq)
-            output = (output_pi, output_v)
-            self.nn_outputs[eq_name] = output
-            return output
+        output_pi, output_v = self.nnet.predict(eq_s, smt)
+        if self.args.oracle:
+            output_v = self.oracle_rollout(eq)
+        output = (output_pi, output_v)
+        #self.nn_outputs[eq_name] = output
+        return output
 
 
-    def search(self, state, s_eq, temp, previous_state=None, ctx=None):
+    def search(self, state, s_eq, temp, previous_state=None):
         """
         """
 
@@ -196,7 +191,7 @@ class MCTS():
         next_state = self.check_if_new_node(state, next_state)
         next_s_eq = self.we.utils.format_state(next_state, self.device)
 
-        v, new_leaf, old_leaf = self.search(next_state, next_s_eq, temp, state, ctx)
+        v, new_leaf, old_leaf = self.search(next_state, next_s_eq, temp, state)
 
         self.update_state_action_value(state, a, v)
         return self.discount*v, new_leaf, old_leaf
