@@ -8,7 +8,7 @@ from pickle import  Unpickler
 from .utils import seed_everything
 import math
 
-class PlayerClassic(object):
+class Player(object):
 
     def __init__(self, args, nnet, mode='train', name='player', pool=[], seed=None):
         if seed is not None:
@@ -37,7 +37,6 @@ class PlayerClassic(object):
         self.device = self.args.play_device
 
         self.temp =  args.temp  # temperature
-        self.max_steps = args.allowance_factor * self.level
         self.num_equations = args.num_equations_train
         self.pool_filename = None
         self.timeout_time = self.args.timeout_time
@@ -63,7 +62,7 @@ class PlayerClassic(object):
         self.local_execution_times = []
 
     def initiate_container(self, value):
-        l = self.level if not self.args.hanoi else self.args.hanoi_max_lvl
+        l = 41
         if type(value) == list:
             return [value.copy() for _ in range(l)]
         else:
@@ -197,12 +196,8 @@ class PlayerClassic(object):
 
         for i, eq in enumerate(pool):
             eq_original=eq.w
-            if i > 0:
-                self.nn_outputs.update(self.mcts.nn_outputs)
-            else:
-                self.nn_outputs = {}
 
-            self.mcts = MCTS(self.nnet, self.args, self.num_mcts_simulations, self.nn_outputs, self.mode, self.seed)
+            self.mcts = MCTS(self.nnet, self.args, self.num_mcts_simulations, self.mode, self.seed)
             self.mcts.name = self.name
 
             initial_local_time = time.time()
@@ -212,7 +207,7 @@ class PlayerClassic(object):
             local_execution_time = round(time.time() - initial_local_time, 4)
 
             len_eq = len(log)
-            printout_info = [len_eq, local_execution_time, round(self.timeout_time,2), self.num_mcts_simulations, 0]
+            printout_info = [len_eq, None, i, local_execution_time, round(self.timeout_time,2), self.num_mcts_simulations, log]
 
             if examples[0][2] >= self.args.sat_value  or log[-1] == 'early_sol':
                 self.local_execution_times.append(local_execution_time)
@@ -236,11 +231,11 @@ class PlayerClassic(object):
             if log[0] != 'already_solved':
                 self.train_examples += examples
 
-    def execution_printout(self, i, steps, local_execution_time, timout_time, num_mcts, previous_attempts, log =[]):
-        return f'{self.num_successful_plays_at_level}/{self.num_plays_at_current_level} - {self.name} - Eq: ' \
-            f'{self.get_score()}/{i + 1}/{self.num_equations}: Steps {steps}, Time: {local_execution_time},' \
+    def execution_printout(self, steps,outcome, num_eqs_attempted, local_execution_time, timout_time, num_mcts, log =[]):
+        return f'{self.name} - {outcome} - Eq: ' \
+            f'{self.get_score()}/{num_eqs_attempted + 1}/{self.num_equations}: Steps {steps}, Time: {local_execution_time},' \
                f' Timeout (episode/mcts): {timout_time},' \
-            f' Num mcts sims: {num_mcts}, Previous attempts: {previous_attempts}, {log}'
+            f' Num mcts sims: {num_mcts},  {log}'
 
     def get_score(self):
         return sum([sum(x) for x in self.score])
