@@ -5,9 +5,19 @@ import time
 import numpy as np
 import torch
 import os
-from .newresnet import NewResnet2
+from .neural_net_models.newresnet import NewResnet2
 from .neural_net_models.uniform_model import UniformModel
-from .we.word_equation_utils import seed_everything
+import random
+
+def seed_everything(seed):
+    # https://www.kaggle.com/hmendonca/fold1h4r3-arcenetb4-2-256px-rcic-lb-0-9759 cells 45-50
+    #print(f'setting everything to seed {seed}')
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
 
 
 def init_log(folder):
@@ -96,8 +106,11 @@ class NNetWrapper( object ):
         for param in self.model.parameters():
             param.requires_grad_(False)
 
+        print(f'EPOCH ::: {epoch}. LOSSES :::  {self.v_losses[-1]}')
         logging.info(f'EPOCH ::: {epoch}. LOSSES :::  {self.v_losses[-1]}')
+        print(f'Elapsed time during nn training: {round(time.time()-t, 2)}')
         logging.info(f'Elapsed time during nn training: {round(time.time()-t, 2)}')
+
         self.model.eval()
         for x in self.model.parameters():
             x.requires_grad_(False)
@@ -108,6 +121,9 @@ class NNetWrapper( object ):
         target_vs = torch.tensor(np.array(vs).astype(float),dtype=torch.float,device=self.device)
         self.optimizer.zero_grad()
         self.model.device = self.args.train_device
+
+        states_eq = states_eq.to('cuda:0')
+        target_vs = target_vs.to('cuda:0')
 
         out_v = self.model.forward(states_eq)
         l_v = self.loss_v(target_vs, out_v, None)
