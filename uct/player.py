@@ -107,7 +107,7 @@ class Player(object):
             else:
                 s_eq = None
             eq.s_eq = s_eq
-            _, pi = self.mcts.get_action_prob(eq, s_eq, temp=self.temp, previous_state=prev_state)
+            pi = self.mcts.get_action_prob(eq, s_eq, temp=self.temp, previous_state=prev_state)
             if pi == 'already_sat':
                 print(pi, eq)
                 return [(0,0,1)], ['already_solved']
