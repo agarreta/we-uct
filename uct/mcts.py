@@ -85,13 +85,13 @@ class MCTS():
             bestA = np.argmax(counts)
             probs = [0] * len(counts)
             probs[int(bestA)] = 1
-            return 0, probs
+            return probs
 
         su = float(sum(counts))
         assert su > 0
         probs = [x/su for x in counts]
 
-        return 0, probs
+        return probs
 
 
     def check_if_new_node(self, state, next_state):
@@ -106,12 +106,9 @@ class MCTS():
 
     def network_output(self, eq_name, eq_s, smt=None, eq=None):
 
-        output_pi, output_v = self.nnet.predict(eq_s, smt)
-        if self.args.oracle:
-            output_v = self.oracle_rollout(eq)
-        output = (output_pi, output_v)
-        #self.nn_outputs[eq_name] = output
-        return output
+        output_v = self.nnet.predict(eq_s, smt)
+
+        return output_v
 
 
     def search(self, state, s_eq, temp, previous_state=None):
@@ -135,7 +132,7 @@ class MCTS():
 
         if state_id not in self.registered_ids:
 
-            state_nn_dist, state_value = self.network_output(state_w, s_eq, eq=state)
+            state_value = self.network_output(state_w, s_eq, eq=state)
 
             self.prior_state_value[state_w] = state_value
             self.registered_ids.update({state_id})
@@ -199,8 +196,11 @@ class MCTS():
 
     def update_state_action_value(self, state, a, v=0):
         state_w = state.w
-        if type(v)==torch.Tensor:
-            v = v.item()
+        try:
+            if type(v)==torch.Tensor:
+                v = v.item()
+        except:
+            a=1
 
         if (state_w, a) in self.state_action_values:
             if (state_w, a) not in self.num_times_taken_state_action:
