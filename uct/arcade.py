@@ -50,11 +50,12 @@ class Arcade(object):
 
         if not self.args.load_model:
             self.args.iterations_test_eq = [0]
-            self.args.evolution_train_eq = [[]]
-            self.args.evolution_train_eq_full = [[]]
+            self.args.evolution_train_eq = []
+            self.args.evolution_train_eq_full = []
             self.args.training_performance_log = []
             self.args.checkpoint_num_plays_being_tested = 0
             self.args.evolution_scores = []
+
             self.args.evolution_scores_full = []
             self.args.checkpoint_train_intervals = []
 
@@ -138,13 +139,13 @@ class Arcade(object):
                 (self.args.active_tester and self.args.checkpoint_num_plays < self.args.max_num_plays and
                  self.args.new_play_examples_available < len([x for x in self.args.pools if type(x) != str])):
 
-            if self.active_total_eqs >= self.args.num_iters_for_level_train_examples_history and not self.args.active_tester:
-                current_score = 100 * self.active_solved_test / self.active_total_eqs
-                self.args.evolution_scores.append(current_score)
-                self.args.evolution_scores_full.append(current_score)
-
-                self.active_total_eqs = 0
-                self.active_solved_test = 0
+            #if self.active_total_eqs >= self.args.num_iters_for_level_train_examples_history and not self.args.active_tester:
+            #    current_score = 100 * self.active_solved_test / self.active_total_eqs
+            #    self.args.evolution_scores.append(current_score)
+            #    self.args.evolution_scores_full.append(current_score)
+##
+            #    self.active_total_eqs = 0
+            #    self.active_solved_test = 0
 
             folder_name = self.args.folder_name
             if not os.path.exists(folder_name):
@@ -207,7 +208,7 @@ class Arcade(object):
                         time.sleep(2.)
 
                 if not self.args.test_mode:
-                    if self.args.new_play_examples_available >= self.args.num_play_iterations_before_test_iteration:  # or total_plays == 0:
+                    if self.args.new_play_examples_available > self.args.num_play_iterations_before_test_iteration:  # or total_plays == 0:
                         if (not parent_conn_train.empty()) or (iteration == 1 and self.args.load_model):
                             print('Getting train results')
                             result_train = parent_conn_train.get(block=True)
@@ -230,7 +231,7 @@ class Arcade(object):
 
                             p_train = Process(target=self.arcade_train,
                                               args=(self.args, self.model_play, self.train_examples_history,
-                                                    parent_conn_train, 'normal', self.args.eq_history, seed))
+                                                    parent_conn_train, 'normal', seed))
 
                             self.args.new_play_examples_available = 0
                             p_train.start()
@@ -331,7 +332,7 @@ class Arcade(object):
 
         if len(
                 train_examples) >= args.batch_size and train_mode != 'initialize' and args.train_model:  # and args.new_play_examples_available >= args.num_play_iterations_before_test_iteration:
-            model.train(train_examples, None)
+            model.train(train_examples)
 
         model.set_parameter_device('cpu')
         model.set_optimizer_device('cpu')
@@ -344,7 +345,6 @@ class Arcade(object):
         results['state_dict'] = model.model.state_dict()  # if len(train_examples) >= args.batch_size else 0
         results[
             'optimizer_state_dict'] = model.optimizer.state_dict()  # if len(train_examples) >= args.batch_size else 0
-        results['pi_losses'] = model.pi_losses  # if len(train_examples) >= args.batch_size else 0
         results['v_losses'] = model.v_losses  # if len(train_examples) >= args.batch_size else 0
 
         pipe.put(results)
@@ -375,8 +375,7 @@ class Arcade(object):
 
         total_score = self.get_score(score)
         if mode == 'train':
-            self.args.evolution_train_eq[-1].append(total_score)
-            self.args.evolution_train_eq_full[-1].append(total_score)
+            self.args.evolution_train_eq.append(total_score)
             self.train_examples_history[-1].append(examples)
             if len(self.train_examples_history[-1]) > self.args.num_iters_for_level_train_examples_history:
                 logging.info(f"len(train_examples_history) in last level = "
@@ -387,23 +386,24 @@ class Arcade(object):
                     self.args.eq_history[-1].pop(0)
 
         if mode == 'test':
-            self.active_solved_test += total_score
-            self.active_total_eqs += self.args.num_iters_for_level_train_examples_history
-            self.args.evolution_test_eq.append(total_score)
+            #self.active_solved_test += total_score
+            #self.active_total_eqs += self.args.num_iters_for_level_train_examples_history
+            self.args.evolution_scores.append(total_score)
             self.args.iterations_test_eq.append(1)
             self.ongoing_test = False
 
         self.print_logged_statistics()
 
-    def process_train_result(self, state_dict, optimizer_state_dict, pi_losses, v_losses):
+    def process_train_result(self, state_dict, optimizer_state_dict, v_losses):
         self.model_play.model.load_state_dict(state_dict)
         self.model_play.optimizer.load_state_dict(optimizer_state_dict)
-        del state_dict, optimizer_state_dict
-        if len(pi_losses) > 0:
-            self.args.loss_log.append([self.args.level, round(pi_losses[-1], 3), round(v_losses[-1], 3)])
+        #del state_dict, optimizer_state_dict
+        if len(v_losses)>0: #TODO: how could == 0 happen?
+            self.args.loss_log.append( round(v_losses[-1], 6))
         self.args.checkpoint_train_intervals.append(self.args.checkpoint_num_plays)
-        train_score = np.mean(self.args.evolution_train_eq[-1])
+        train_score =np.array(self.args.evolution_train_eq).mean()
         self.args.training_performance_log.append(train_score)
+        self.args.evolution_train_eq = []
 
     def print_logged_statistics(self):
         self.args.min_level -= 1
