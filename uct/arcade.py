@@ -24,7 +24,6 @@ class Arcade(object):
         logging.info('\n\n\nNEW ARCADE ---- load: {} ---- {}'.format(load, args.folder_name))
         logging.info(f'Test mode: {args.test_mode}')
         self.args = args
-        self.num_train = 0
 
         seed_everything(self.args.seed_class - 1)
 
@@ -32,11 +31,13 @@ class Arcade(object):
 
         if self.args.load_model:
             self.args = self.utils.load_object('arguments')
+            #self.args.num_train = 5
             self.args.load_model = True
             self.train_examples_history = [[]]
 
         else:
             self.train_examples_history = [[]]
+            self.args.num_train = 0
 
         logging.info(vars(self.args))
         logging.info(f'NUM CPUs:{self.args.num_cpus}')
@@ -220,10 +221,10 @@ class Arcade(object):
                             parent_conn_train.join_thread()
 
                             nnet_train_done = True
-                            self.num_train += 1
+                            self.args.num_train += 1
 
                             self.model_play.save_checkpoint(folder=self.args.folder_name,
-                                                            filename=f'model_train_{self.num_train}.pth.tar')
+                                                            filename=f'model_train_{self.args.num_train}.pth.tar')
 
                             parent_conn_train = Queue()
 
