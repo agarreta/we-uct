@@ -1,4 +1,4 @@
-# we-uct
+# Word equations, Monte Carlo Tree Search, and string solvers
 
 **Important**: This project is at the early stages of being cleaned up and documented. Please use with caution.
 
