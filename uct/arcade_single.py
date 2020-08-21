@@ -1,11 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr  8 17:28:18 2019
 
+@author: garre
+"""
 from string import ascii_uppercase, ascii_lowercase
 
 from .player import Player
 from .utils import Utils, seed_everything
 import matplotlib.pyplot as plt
 from we.neural_net_wrapper import NNetWrapper
-from we.player import Player
+from we.player_classic import PlayerClassic
 from we.neural_net_models.uniform_model import  UniformModel
 import os
 from multiprocessing import Pool
@@ -169,6 +174,12 @@ def individual_player_session(play_args):
         args.num_mcts_simulations = 50
         args.ALPHABET = list(ascii_lowercase)
         args.VARIABLES = list(ascii_uppercase)
+        #if 'track'   in args.pool_name:
+        #    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
+        #    args.VARIABLES = [x for x in ascii_uppercase]
+        #    args.ALPHABET = args.ALPHABET[:num_alph]
+        #    args.VARIABLES = args.VARIABLES[:num_vars]
+        #else:
         args.VARIABLES = [x for x in ascii_uppercase]
         args.VARIABLES = args.VARIABLES[:num_vars]
         args.ALPHABET = args.ALPHABET[:num_alph]
@@ -210,7 +221,7 @@ def individual_player_session(play_args):
     args.active_tester = True
 
 
-    player = Player(args, nnet,
+    player = PlayerClassic(args, nnet,
                     mode=mode, name=f'player_0',
                     pool=pool,  # args.failed_pools[player_num] if (mode != 'test' or player_num <= 3) else [],
                     previous_attempts_pool=[], seed = seed)
@@ -223,3 +234,4 @@ def individual_player_session(play_args):
     results['sat_steps_taken'] = player.sat_steps_taken
 
     return results
+
