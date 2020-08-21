@@ -1,17 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr  8 17:28:18 2019
 
-@author: garre
-"""
 from string import ascii_uppercase, ascii_lowercase
 
 from .player import Player
 from .utils import Utils, seed_everything
 import matplotlib.pyplot as plt
-from we.neural_net_wrapper import NNetWrapper
-from we.player import Player
-from we.neural_net_models.uniform_model import  UniformModel
+from .neural_net_wrapper import NNetWrapper
 import os
 from multiprocessing import Pool
 from math import ceil
@@ -47,16 +40,16 @@ timeouts={
         'pool_20_5_3.pth.tar': t
     },
     'TRAU': {
-        '01_track':3500,
-        '02_track': 3500,
-        '03_track': 3500,
-        'pool_20_5_3.pth.tar': 3500
+        '01_track':t,
+        '02_track': t,
+        '03_track': t,
+        'pool_20_5_3.pth.tar': t
     },
     'woorpje': {
-        '01_track': 3000,
-        '02_track': 3000,
-        '03_track': 3000,
-        'pool_20_5_3.pth.tar': 3000
+        '01_track': 1000,
+        '02_track': 1000,
+        '03_track': 1000,
+        'pool_20_5_3.pth.tar': 1000
     }
 }
 def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1):
@@ -167,67 +160,27 @@ def individual_player_session(play_args):
             args.mcts_smt_time_max = timeouts[args.smt_solver][pname]
         except:
             args.mcts_smt_time_max = 800
-    if  model_folder in ['v55','v57','v61']:
-        num_alph=10
-        num_vars=14
-        args.SIDE_MAX_LEN = 150
-        args.ALPHABET = list(ascii_lowercase)
-        args.VARIABLES = list(ascii_uppercase)
-        #if 'track'   in args.pool_name:
-        #    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
-        #    args.VARIABLES = [x for x in ascii_uppercase]
-        #    args.ALPHABET = args.ALPHABET[:num_alph]
-        #    args.VARIABLES = args.VARIABLES[:num_vars]
-        #else:
-        args.VARIABLES = [x for x in ascii_uppercase]
-        args.VARIABLES = args.VARIABLES[:num_vars]
-        args.ALPHABET = args.ALPHABET[:num_alph]
-        args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
-        args.num_resnet_blocks=2
-    elif model_folder in ['v56']:
-        num_alph=3
-        num_vars=5
-        args.SIDE_MAX_LEN = 20
-        args.num_mcts_simulations = 10
-        args.ALPHABET = list(ascii_lowercase)
-        args.VARIABLES = list(ascii_uppercase)
-        args.num_resnet_blocks=2
-        args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
-        if 'track' not in args.pool_name:
-            args.VARIABLES = [x for x in ascii_uppercase[::-1]]
-        args.ALPHABET = args.ALPHABET[:num_alph]
-        args.VARIABLES = args.VARIABLES[:num_vars]
-        args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
-
-    elif  model_folder in ['v58']:
-        num_alph=10
-        num_vars=14
-        args.SIDE_MAX_LEN = 150
-        args.ALPHABET = list(ascii_lowercase)
-        args.VARIABLES = list(ascii_uppercase)
-        #if 'track'   in args.pool_name:
-        #    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
-        #    args.VARIABLES = [x for x in ascii_uppercase]
-        #    args.ALPHABET = args.ALPHABET[:num_alph]
-        #    args.VARIABLES = args.VARIABLES[:num_vars]
-        #else:
-        args.VARIABLES = [x for x in ascii_uppercase]
-        args.VARIABLES = args.VARIABLES[:num_vars]
-        args.ALPHABET = args.ALPHABET[:num_alph]
-        args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
-        args.num_resnet_blocks=2
-
+    num_alph=3
+    num_vars=5
+    args.SIDE_MAX_LEN = 20
+    args.num_mcts_simulations = 10
+    args.ALPHABET = list(ascii_lowercase)
+    args.VARIABLES = list(ascii_uppercase)
+    args.num_resnet_blocks=2
+    args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
+    if 'track' not in args.pool_name:
+        args.VARIABLES = [x for x in ascii_uppercase[::-1]]
+    args.ALPHABET = args.ALPHABET[:num_alph]
+    args.VARIABLES = args.VARIABLES[:num_vars]
+    args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
 
     args.update_symbol_index_dictionary()
     seed_everything(seed)
     results = dict({'level': args.level})
 
     nnet = NNetWrapper(args, device='cpu', training=False, seed=seed)
-    if model_filename != 'uniform':
-        if model_filename != 'model_train_0.pth.tar':
-            nnet.load_checkpoint(folder=model_folder, filename=model_filename)
-    else:
-        nnet.model = UniformModel(args, args.num_actions)
+    if model_filename != 'model_train_0.pth.tar':
+        nnet.load_checkpoint(folder=model_folder, filename=model_filename)
 
     nnet.training = False
     nnet.model.eval()
@@ -239,8 +192,7 @@ def individual_player_session(play_args):
 
     player = Player(args, nnet,
                     mode=mode, name=f'player_0',
-                    pool=pool,  # args.failed_pools[player_num] if (mode != 'test' or player_num <= 3) else [],
-                    previous_attempts_pool=[], seed = seed)
+                    pool=pool,   seed = seed)
 
     player.play(level_list=None)
 
