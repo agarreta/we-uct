@@ -114,9 +114,10 @@ class Arcade(object):
                                 train_mode, seed))
         p_train.start()
         nnet_train_done = False
-        while (self.args.checkpoint_num_plays < self.args.max_num_plays and
+        
+        while (self.args.num_pools_processed < self.args.max_num_pools and
                not self.args.active_tester) or \
-                (self.args.active_tester and self.args.checkpoint_num_plays < self.args.max_num_plays and
+                (self.args.active_tester and self.args.num_pools_processed < self.args.max_num_pools and
                  self.args.new_play_examples_available < len([x for x in self.args.pools if type(x) != str])):
 
             folder_name = self.args.folder_name
@@ -164,7 +165,7 @@ class Arcade(object):
                                 self.active_players[_] = True
                                 processes[_].start()
                                 self.args.total_plays += 1
-                                self.args.checkpoint_num_plays += 1
+                                self.args.num_pools_processed += 1
                                 self.test_due = True
                                 self.save_data()
                                 print('new_play_examples_available', self.args.new_play_examples_available)
@@ -172,7 +173,7 @@ class Arcade(object):
 
                             else:
                                 self.args.total_plays += 1
-                                self.args.checkpoint_num_plays += 1
+                                self.args.num_pools_processed += 1
                                 self.save_data()
                                 print('new_play_examples_available', self.args.new_play_examples_available)
                                 self.args.new_play_examples_available += 1
@@ -362,7 +363,7 @@ class Arcade(object):
         self.model_play.optimizer.load_state_dict(optimizer_state_dict)
         if len(v_losses)>0:
             self.args.loss_log.append( round(v_losses[-1], 6))
-        self.args.checkpoint_train_intervals.append(self.args.checkpoint_num_plays)
+        self.args.checkpoint_train_intervals.append(self.args.num_pools_processed)
         train_score =np.array(self.args.train_scores_current_iteration).mean()
         self.args.train_scores_per_iteration.append(train_score)
         self.args.train_scores_current_iteration = []
