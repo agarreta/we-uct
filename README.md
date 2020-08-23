@@ -4,6 +4,8 @@
 
 Source code for the paper "Solving word equations via Monte Carlo Tree Search and black-box solvers"
 
+Contact: garreta.a@gmail.com
+
 Directory description:
   - uct: main code files
   - solver scripts: python scripts for integrating different string solvers into our algorithms
