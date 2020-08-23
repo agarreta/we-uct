@@ -9,7 +9,7 @@ Contact: garreta.a@gmail.com
 Directory description:
   - uct: main code files
   - solver scripts: python scripts for integrating different string solvers into our algorithms
-  - test: python script for training or testing algorithms, plus logs of results.
+  - test: python script for training or testing algorithms, plus logs of results
   - datasets: datasets for testing
   
 
