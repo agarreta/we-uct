@@ -91,8 +91,6 @@ class Arcade(object):
                 args=([self.args, self.model_play, modes[worker_num], queues[worker_num], worker_num, seed],))})
             self.active_players[worker_num] = True
             processes[worker_num].start()
-        if self.args.active_tester:
-            self.args.total_plays += 1
         return processes, queues, modes
 
     def run_workers(self):
@@ -115,10 +113,11 @@ class Arcade(object):
         p_train.start()
         nnet_train_done = False
         
-        while (self.args.num_pools_processed < self.args.max_num_pools and
-               not self.args.active_tester) or \
-                (self.args.active_tester and self.args.num_pools_processed < self.args.max_num_pools and
-                 self.args.new_play_examples_available < len([x for x in self.args.pools if type(x) != str])):
+        while self.args.num_pools_processed < self.args.max_num_pools:
+
+            if self.args.active_tester and self.args.num_pools_since_last_nn_train < \
+                len([x for x in self.args.pools if type(x) != str]):
+                break
 
             folder_name = self.args.folder_name
             if not os.path.exists(folder_name):
@@ -140,7 +139,6 @@ class Arcade(object):
                         print(f'Hola again player {_}')
 
                         result_play = queues[_].get(block=True)
-                        self.args.num_finished_play_session_per_player[_] += 1
                         self.process_play_result(**result_play)
 
                         queues[_].close()
@@ -150,8 +148,8 @@ class Arcade(object):
 
                         if not self.active_players[_]:
                             if not self.args.active_tester:
-                                if (self.test_due and (
-                                not self.ongoing_test) and nnet_train_done) or self.args.active_tester:
+                                if (self.test_due and 
+                                not self.ongoing_test and nnet_train_done) or self.args.active_tester:
                                     mode = 'test'
                                     self.test_due = False
                                     self.ongoing_test = True
@@ -164,26 +162,24 @@ class Arcade(object):
                                                                                              player_levels, _)
                                 self.active_players[_] = True
                                 processes[_].start()
-                                self.args.total_plays += 1
                                 self.args.num_pools_processed += 1
                                 self.test_due = True
                                 self.save_data()
-                                print('new_play_examples_available', self.args.new_play_examples_available)
-                                self.args.new_play_examples_available += 1
+                                print('num_pools_since_last_nn_train', self.args.num_pools_since_last_nn_train)
+                                self.args.num_pools_since_last_nn_train += 1
 
                             else:
-                                self.args.total_plays += 1
                                 self.args.num_pools_processed += 1
                                 self.save_data()
-                                print('new_play_examples_available', self.args.new_play_examples_available)
-                                self.args.new_play_examples_available += 1
+                                print('num_pools_since_last_nn_train', self.args.num_pools_since_last_nn_train)
+                                self.args.num_pools_since_last_nn_train += 1
 
                         time.sleep(2.)
 
                 if not self.args.test_mode:
-                    if self.args.new_play_examples_available > self.args.num_play_iterations_before_test_iteration:  # or total_plays == 0:
+                    if self.args.num_pools_since_last_nn_train > self.args.num_pools_for_nn_train:
                         if (not parent_conn_train.empty()) or (iteration == 1 and self.args.load_model):
-                            print('Getting train results')
+                            print('Getting train data')
                             result_train = parent_conn_train.get(block=True)
 
                             self.process_train_result(**result_train)
@@ -206,7 +202,7 @@ class Arcade(object):
                                               args=(self.args, self.model_play, self.train_examples_history,
                                                     parent_conn_train, 'normal', seed))
 
-                            self.args.new_play_examples_available = 0
+                            self.args.num_pools_since_last_nn_train = 0
                             p_train.start()
 
         print('Waiting  before start closing procesess')
@@ -250,23 +246,18 @@ class Arcade(object):
 
         results = dict()
 
-        if not args.active_tester:
-            level_list = [random.choice(range(3, 41)) for _ in range(args.num_equations_train)]
-        else:
-            level_list = None
-        player = Player(args, model,
-                        mode=mode, name=f'player_{player_num}_{mode}',
-                        pool=None,  # args.failed_pools[player_num] if (mode != 'test' or player_num <= 3) else [],
-                        seed=seed)
+        player = Player(args, model, mode=mode,
+                        name=f'player_{player_num}_{mode}',
+                        pool=None, seed=seed)
         if args.active_tester:
             print(f'pool num {args.num_init_players}')
-            if args.num_init_players < len(args.pools):
-                player.pool = args.pools[args.num_init_players]
-            else:
-                player.pool = random.choice(args.pools)
-            print(args.pools)
+            #if args.num_init_players < len(args.pools):
+            player.pool = args.pools[args.num_init_players]
+            #else:
+            #    player.pool = random.choice(args.pools)
+            #print(args.pools)
         #
-        player.play(level_list)
+        player.play()
 
         results['examples'] = player.train_examples
         results['score'] = player.score
@@ -302,7 +293,7 @@ class Arcade(object):
         model.model.train()
 
         if len(
-                train_examples) >= args.batch_size and train_mode != 'initialize' and args.train_model:  # and args.new_play_examples_available >= args.num_play_iterations_before_test_iteration:
+                train_examples) >= args.batch_size and train_mode != 'initialize' and args.train_model:  # and args.num_pools_since_last_nn_train >= args.num_pools_for_nn_train:
             model.train(train_examples)
 
         model.set_parameter_device('cpu')
@@ -371,7 +362,7 @@ class Arcade(object):
     def print_logged_statistics(self):
         logging.info(
             f'Loss log: {self.args.loss_log}\n'
-            f'New play examples available: {self.args.new_play_examples_available}\n'
+            f'New play examples available: {self.args.num_pools_since_last_nn_train}\n'
             f'test performance log {self.args.test_scores}\n'
             f'training performance log: {self.args.train_scores_per_iteration}\n'
             f'State :: test_due {self.test_due} - ongoing-test {self.ongoing_test}\n\n')

@@ -152,7 +152,7 @@ class Player(object):
                     return [(x[0], x[1], (self.discount**i)*self.args.unsat_value) for i, x in enumerate(train_examples[::-1])], log
 
 
-    def play(self, level_list=None):
+    def play(self):
 
         self.nnet.model.eval()
 
@@ -182,10 +182,9 @@ class Player(object):
                 pool = npool[:self.args.test_pool_length]
                 print('TEST LEVELS: ', num_slots)
         else:
-            level_list = 10 * [self.level] if level_list is None else level_list
             print(self.args.VARIABLES)
             print('Generating pool..')
-            self.we.generator.generate_pool(self.num_equations, level_list)  # , self.seed)
+            self.we.generator.generate_pool(self.num_equations)  # , self.seed)
             pool = self.we.generator.pool
             self.pool_generation_time = self.we.generator.pool_generation_time
             print('pool generated')

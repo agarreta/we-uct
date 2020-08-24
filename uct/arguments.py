@@ -91,8 +91,8 @@ class Arguments(object):
         self.train_level_slots = [range(floor(3 + 1. * i), ceil(3 + 1. * (i + 1))) for i in range(0, 9)]  #
         self.test_level_slots = [range(floor(3 + 1. * i), ceil(3 + 1. * (i + 1))) for i in range(0,
                                                                                                  9)]  ##[range(ceil(5 +1.7*i), ceil(5+1.7*(i+1))) for i in range(0,9)] # [range(5 +2*i, 5+2*(i+1)) for i in range(0,9)]
-        self.format_mode = 'cuts'
-        self.NNET_SIDE_MAX_LEN = 24
+
+        self.args.len_train_pools=10
 
         self.num_train = 0
         self.num_collisions_test = 0
