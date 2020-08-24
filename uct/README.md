@@ -1,5 +1,4 @@
-
-File description:
+Description of files:
   - Main files:
     - arcade_train.py: class for training the network in MCTS_nn as explained in the paper
     - arcade_test.py: class for testing algorithms on a given pool of equations
