@@ -91,7 +91,7 @@ class Arcade(object):
                 args=([self.args, self.model_play, modes[worker_num], queues[worker_num], worker_num, seed],))})
             self.active_players[worker_num] = True
             processes[worker_num].start()
-        return processes, queues, modes
+        return processes, queues
 
     def run_workers(self):
 
@@ -106,10 +106,9 @@ class Arcade(object):
         seed = self.args.num_init_players + 10000 * self.args.seed_class
 
         parent_conn_train = Queue()
-        train_mode = 'normal'
         p_train = Process(target=self.train_model,
                           args=(self.args, self.model_play, self.train_examples_history, parent_conn_train,
-                                train_mode, seed))
+                                seed))
         p_train.start()
         nnet_train_done = False
         
@@ -127,7 +126,7 @@ class Arcade(object):
 
             if self.initiate_loop:
                 self.initiate_loop = False
-                processes, queues, modes, player_levels = self.init_dict_of_process_and_queues()
+                processes, queues, modes = self.init_dict_of_process_and_queues()
 
             if self.args.active_tester or not self.args.test_mode:
                 for _ in range(self.args.num_cpus):
@@ -157,9 +156,7 @@ class Arcade(object):
                                 else:
                                     mode = 'train'  # modes[_]
 
-                                processes, queues, player_levels = self.init_player(processes, queues,
-                                                                                             mode,
-                                                                                             player_levels, _)
+                                processes, queues = self.init_player(processes, queues,mode, _)
                                 self.active_players[_] = True
                                 processes[_].start()
                                 self.args.num_pools_processed += 1
@@ -269,7 +266,7 @@ class Arcade(object):
             time.sleep(2)
 
     @staticmethod
-    def train_model(args, model_original, train_examples_history, pipe, train_mode='normal', seed=None):
+    def train_model(args, model_original, train_examples_history, pipe,seed=None):
         results = {}
         try:
             model_original.model.to(args.train_device)
@@ -288,12 +285,12 @@ class Arcade(object):
             for e in examples_in_level:
                 train_examples.extend(e)
 
-        print(f'len train examples: {len(train_examples)}')
+        print(f'len train data: {len(train_examples)}')
 
         model.model.train()
 
         if len(
-                train_examples) >= args.batch_size and train_mode != 'initialize' and args.train_model:  # and args.num_pools_since_last_nn_train >= args.num_pools_for_nn_train:
+                train_examples) >= args.batch_size and args.train_model:  # and args.num_pools_since_last_nn_train >= args.num_pools_for_nn_train:
             model.train(train_examples)
 
         model.set_parameter_device('cpu')
@@ -318,14 +315,13 @@ class Arcade(object):
             pass
 
 
-    def init_player(self, processes, queues, mode, player_levels, player_idx):
+    def init_player(self, processes, queues, mode, player_idx):
         self.args.num_init_players += 1
         seed = self.args.num_init_players + 1000 * self.args.seed_class
         queues[player_idx] = Queue()
         processes[player_idx] = Process(target=self.individual_player_session, args=(
         [self.args, self.model_play, mode, queues[player_idx], player_idx, seed],))
-        player_levels[player_idx] = self.args.level
-        return processes, queues, player_levels
+        return processes, queues
 
     def get_score(self, score):
         return sum([sum(x) for x in score])
@@ -344,7 +340,6 @@ class Arcade(object):
 
         if mode == 'test':
             self.args.test_scores.append(total_score)
-
             self.ongoing_test = False
 
         self.print_logged_statistics()
