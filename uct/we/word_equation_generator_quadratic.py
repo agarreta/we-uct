@@ -352,7 +352,7 @@ class WordEquationGeneratorQuadratic(object):
     def is_constant(self, w):
         return not bool(np.array([int(x in w) for x in self.VARIABLES]).sum())
 
-    def generate_pool(self, size, level_list):
+    def generate_pool(self, size):
 
         p = []
         t = time.time()
@@ -377,32 +377,17 @@ class WordEquationGeneratorQuadratic(object):
             initial_length = self.SIDE_MAX_LEN - len(self.VARIABLES)
             self.args.pool_max_initial_constants = len(self.ALPHABET)
 
-        if self.args.test_mode:
-            print(level_list)
         level_slots = self.args.train_level_slots
 
-        while len(p) < len(level_list):
+        while len(p) < len(self.args.len_train_pools):
             for i, level_slot in enumerate(level_slots):
-                if len(p) >= len(level_list):
+                if len(p) >= len(self.args.len_train_pools):
                     break
-                #while len(p) < size:
-                # min_num_vars = random.choice([1])
+
                 random_level = random.choice(level_slot)
-                # num_initial_letters = random.choice([x + 1 for x in range(len(self.ALPHABET))])
-                #if not self.args.test_mode:
-                #    #random_level = level #level_list[-1]  # random.choice([x for x in level_list])
-                #    if i == 0:
-                #        random_level = max(level-1, self.args.min_level)
-                #    elif i == 1:
-                #        random_level = level
-                #    else:
-                #        random_level = random.choice([x for x in range(3, level+1)])
-                #else:
-                #    random_level = level
                 find_next_equation = False
 
                 while not find_next_equation:
-                    #print('hola')
                     self.generate_sequence_of_eqns(level=random_level,
                                                    initial_alphabet=[x for x in self.ALPHABET[:self.args.pool_max_initial_constants]],
                                                    initial_length=initial_length,
@@ -441,18 +426,18 @@ class WordEquationGeneratorQuadratic(object):
         self.pool = p
 
 
-        self.save_pool(level_list, size)
+        self.save_pool(size)
 
-    def save_pool(self, level_list, size):
+    def save_pool(self, size):
         folder = self.args.folder_name + '/pools'
         if not os.path.exists(folder):
             os.makedirs(folder)
         pool_names = os.listdir(folder)
 
         if not self.args.test_mode:
-            filename = os.path.join(folder, f'pool{len(pool_names)}_lvl_{level_list[0]}_{level_list[-1]}_size_{size}.pth.tar')
+            filename = os.path.join(folder, f'pool{len(pool_names)}_size_{size}.pth.tar')
         else:
-            filename = os.path.join('benchmarks', f'pool_lvl_{level_list[0]}_{level_list[-1]}_size_{size}_{self.args.generation_mode}_{self.args.size_type}.pth.tar')
+            filename = os.path.join('benchmarks', f'pool_size_{size}_{self.args.generation_mode}_{self.args.size_type}.pth.tar')
 
         with open(filename, "wb+") as f:
             if not self.args.test_mode:
