@@ -1,0 +1,9 @@
+'AaAbBbCbD=aABBbCCbDDbaa',
+'AaAbBbCbDbEbF=aABBbCCbDDbEEbFFbaa',
+'AaAbBbCbDbEbFbG=aABBbCCbDDbEEbFFbGGbaa',
+'AaAbBbCbDbEbFbGbHbI=aABBbCCbDDbEEbFFbGGbHHbIIbaa',
+'AaAbBbC=aABBbCCbaa',
+'AaAbBbCbDbE=aABBbCCbDDbEEbaa',
+'AaAbBbCbDbEbFbGbH=aABBbCCbDDbEEbFFbGGbHHbaa',
+'AaAbB=aABBbaa',
+'AaAbBbCbDbEbFbGbHbIbJ=aABBbCCbDDbEEbFFbGGbHHbIIbJJbaa'
