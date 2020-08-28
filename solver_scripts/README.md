@@ -1,5 +1,3 @@
-*NOTE:* Section under construction
-
 This folder contains a python script for each specific solver to be used.
 Each script is executed on the terminal by the MCTS_solver algorithm each time it needs to call 'solver'. 
 The script then transforms a given equation into a suitable form and then calls the solver on the transformed equation through a terminal command.
