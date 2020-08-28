@@ -53,48 +53,13 @@ class Arcade(object):
         self.utils.load_nnet(device='cpu', training=True, load=self.args.load_model, folder=self.args.folder_name,
                              filename=f'model.pth.tar')
 
-    def init_log(self, folder_name, mode='train'):
+
+
+    def run(self):
         """
-        Auxiliary method for logging
+        Main function. This will execute the main loop until a total of args.max_num_pools of sets of 10 equations
+        have been attempted by the training workers. The neural network is successively updated meanwhile.
         """
-        if not os.path.exists(folder_name):
-            os.makedirs(folder_name)
-
-        logging.basicConfig(level=logging.DEBUG,
-                            format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                            datefmt='%m-%d %H:%M',
-                            filename=folder_name + f'/log_{mode}.log')
-        console = logging.StreamHandler()
-        logger = logging.getLogger(PngImagePlugin.__name__)
-        logger.setLevel(logging.INFO)  # tame the "STREAM" debug messages
-
-        console.setLevel(logging.INFO)
-        logging.getLogger('').addHandler(console)
-
-    def init_dict_of_process_and_queues(self):
-        """
-        This creates a dictionary of processes and queues (from python's multiprocessing library), one for worker.
-        Each worker has a mode, either train (standard worker) or test.
-        """
-        queues = {worker_num: Queue() for worker_num in range(self.args.num_cpus)}
-        mode = 'train' if not self.args.active_tester else 'test'
-
-        modes = self.args.num_cpus * [mode]
-        modes[-1] = 'test'
-
-        processes = {}
-        for worker_num in range(self.args.num_cpus):
-            self.args.num_init_players += 1
-            seed = self.args.num_init_players + 1000 * self.args.seed_class
-            processes.update({worker_num: Process(
-                target=self.individual_player_session,
-                args=([self.args, self.model_play, modes[worker_num], queues[worker_num], worker_num, seed],))})
-            self.active_players[worker_num] = True
-            processes[worker_num].start()
-        return processes, queues
-
-    def run_workers(self):
-
         if self.args.load_model:
             self.args.modification_when_loaded()
             self.test_due = False  # True
@@ -227,13 +192,39 @@ class Arcade(object):
             handler.close()
             logging.getLogger('').removeHandler(handler)
 
+    def init_dict_of_process_and_queues(self):
+        """
+        This creates a dictionary of processes and queues (from python's multiprocessing library), one for worker.
+        Each worker has a mode, either train (standard worker) or test.
+        """
+        queues = {worker_num: Queue() for worker_num in range(self.args.num_cpus)}
+        mode = 'train' if not self.args.active_tester else 'test'
+
+        modes = self.args.num_cpus * [mode]
+        modes[-1] = 'test'
+
+        processes = {}
+        for worker_num in range(self.args.num_cpus):
+            self.args.num_init_players += 1
+            seed = self.args.num_init_players + 1000 * self.args.seed_class
+            processes.update({worker_num: Process(
+                target=self.individual_player_session,
+                args=([self.args, self.model_play, modes[worker_num], queues[worker_num], worker_num, seed],))})
+            self.active_players[worker_num] = True
+            processes[worker_num].start()
+        return processes, queues
+
     @staticmethod
     def individual_player_session(arguments):
+        """
+        Executes the method "play" from the class Player for a single worker and a single pool of equations.
+        It is, together with "train_model" the function that is executed in parallel via the multiprocessing library in the "run" method.
+        """
         args = arguments[0]
-        model = arguments[1]
-        mode = arguments[2]
-        pipe = arguments[3]
-        player_num = arguments[4]
+        model = arguments[1]  # neural network
+        mode = arguments[2]  # train or test
+        queue = arguments[3]
+        player_num = arguments[4]  # for logging
         seed = arguments[5]
         model.training = False
         model.model.eval()
@@ -246,27 +237,23 @@ class Arcade(object):
         player = Player(args, model, mode=mode,
                         name=f'player_{player_num}_{mode}',
                         pool=None, seed=seed)
+
         if args.active_tester:
             print(f'pool num {args.num_init_players}')
-            #if args.num_init_players < len(args.pools):
             player.pool = args.pools[args.num_init_players]
-            #else:
-            #    player.pool = random.choice(args.pools)
-            #print(args.pools)
-        #
         player.play()
 
         results['examples'] = player.train_examples
         results['score'] = player.score
         results['mode'] = player.mode
 
-        pipe.put(results)
+        queue.put(results)
         time.sleep(2)
-        while pipe.qsize() > 0:
+        while queue.qsize() > 0:
             time.sleep(2)
 
     @staticmethod
-    def train_model(args, model_original, train_examples_history, pipe,seed=None):
+    def train_model(args, model_original, train_examples_history, queue,seed=None):
         results = {}
         try:
             model_original.model.to(args.train_device)
@@ -290,7 +277,7 @@ class Arcade(object):
         model.model.train()
 
         if len(
-                train_examples) >= args.batch_size and args.train_model:  # and args.num_pools_since_last_nn_train >= args.num_pools_for_nn_train:
+                train_examples) >= args.batch_size and args.train_model:
             model.train(train_examples)
 
         model.set_parameter_device('cpu')
@@ -301,16 +288,14 @@ class Arcade(object):
         model.model.to('cpu')
         model_original.model.to('cpu')
 
-        results['state_dict'] = model.model.state_dict()  # if len(train_examples) >= args.batch_size else 0
-        results[
-            'optimizer_state_dict'] = model.optimizer.state_dict()  # if len(train_examples) >= args.batch_size else 0
-        results['v_losses'] = model.v_losses  # if len(train_examples) >= args.batch_size else 0
+        results['state_dict'] = model.model.state_dict()
+        results['optimizer_state_dict'] = model.optimizer.state_dict()
+        results['v_losses'] = model.v_losses  #
 
-        pipe.put(results)
+        queue.put(results)
         time.sleep(2)
         del model
-        while pipe.qsize() > 0:
-            #
+        while queue.qsize() > 0:
             time.sleep(2)
             pass
 
@@ -363,6 +348,9 @@ class Arcade(object):
             f'State :: test_due {self.test_due} - ongoing-test {self.ongoing_test}\n\n')
 
     def save_data(self):
+        """
+        Utility method
+        """
         folder_name = self.args.folder_name
         if not os.path.exists(folder_name):
             os.mkdir(folder_name)
@@ -372,3 +360,20 @@ class Arcade(object):
             self.utils.save_object('examples', self.train_examples_history, folder=folder_name)
         self.utils.save_object('arguments', self.args, folder=folder_name)
 
+    def init_log(self, folder_name, mode='train'):
+        """
+        Auxiliary method for logging
+        """
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+
+        logging.basicConfig(level=logging.DEBUG,
+                            format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                            datefmt='%m-%d %H:%M',
+                            filename=folder_name + f'/log_{mode}.log')
+        console = logging.StreamHandler()
+        logger = logging.getLogger(PngImagePlugin.__name__)
+        logger.setLevel(logging.INFO)  # tame the "STREAM" debug messages
+
+        console.setLevel(logging.INFO)
+        logging.getLogger('').addHandler(console)
