@@ -117,7 +117,7 @@ class Player(object):
                 if self.args.active_tester:
                     self.eqs_solved.append([eq.level, eq_original, local_execution_time])
 
-            elif (not self.args.values01 and examples[0][2] == self.args.unknown_value):
+            elif  examples[0][2] == self.args.unknown_value:
                 self.score.append(0)
                 printout_info[1] = 'Stopped'
                 logging.info(self.execution_printout(*printout_info))
@@ -172,15 +172,11 @@ class Player(object):
             new_eq = self.we.moves.act(eq, action)
             eq = new_eq
 
-            if self.args.forbid_repetitions:
-                if eq.w in log:
-                    num_repetitions +=1
-
             episode_step += 1
             tt = round(time.time() - t, 2)
             log += [eq.get_string_form_for_print()]
 
-            if self.timeout(tt) or (self.args.forbid_repetitions and num_repetitions > 1/2):
+            if self.timeout(tt):
                 r =  self.args.evaluation_after_exceeded_steps_or_time
                 return [(x[0], x[1], r*(self.args.discount**i)) for i, x in enumerate(train_examples[::-1])], log
 
