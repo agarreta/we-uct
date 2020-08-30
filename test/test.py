@@ -56,12 +56,13 @@ def train(folder):
 
 
 
+
 def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14, size='small', smt_max_time=None):
     seed_everything(seed)
     def uniformize_levels(pool):
 
         npool = []
-        level_slots = [range(math.floor(10 + 1.6 * i), math.floor(10 + 1.6 * (i + 1))) for i in range(0, 9)]
+        level_slots = [range(math.floor(10 + 1.6 * i), math.floor(10 + 1.6 * (i + 1))) for i in range(0, 9)] if '20_5_3' in pool_filepath else [range(math.floor(3 + 1. * i), math.floor(3 + 1. * (i + 1))) for i in range(0, 9)]
         num_slots = [0 for _ in range(0, 9)]
         while len(npool) < 200:
             a = int(np.argmin([x for x in num_slots]))
@@ -71,7 +72,8 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
                     npool.append(x)
                     num_slots[a] += 1
                     break
-        assert len(pool) == 200
+        assert len(pool) >= 200
+        pool = npool[:200]
         print('TEST LEVELS: ', num_slots)
         return pool
 
@@ -85,8 +87,24 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
             if x.w not in [y.w for y in new_pool]:
                 new_pool.append(x)
         pool = new_pool
+    if '00' in pool_filepath:
+        new_pool=[]
+        for x in pool:
+            ar = Arguments()
+            e = WordEquation(ar)
+            e.w = x
+            new_pool.append(e)
+        pool=new_pool
+
     print([eq.w for eq in pool])
     args = Arguments(size)
+    if '05' in pool_filepath:
+        new_pool=[]
+        for x in pool:
+            x.ell = [0] + x.ell
+            new_pool.append(x)
+        pool=new_pool
+        args.use_length_constraints=True
     args.folder_name = model_folder
     args.smt_solver = solver
     args.seed_class = seed
@@ -103,11 +121,12 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
         args.use_normal_forms = False
         args.check_LP = False
         args.test_solver=True
-
+    if '05_track' in pool_filepath:
+        args.use_length_constraints = True
     args.pool_name = pool_filepath
     args.pool_name_load = pool_filepath
+    # assert  args.equation_sizes != 'medium' or 'track' in pool_filepath
     solve_pool(args, pool, model_folder, model_filename, mode='test', seed=seed, num_cpus=args.num_cpus)
-
 
 if __name__ == "__main__":
 
