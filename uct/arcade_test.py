@@ -56,12 +56,11 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
     seed_everything(seed)
     if num_cpus == 1:
         results = individual_player_session((args, pool, model_folder, model_filename, mode, seed))
-        results['sat_steps'] = results['sat_steps_taken']
+        results['sat_steps'] = results['num_actions_taken_if_successful']
     else:
         p = Pool(num_cpus)
         chunk = ceil(len(pool)/num_cpus)
         eq_sub_pools = [pool[i*chunk:(i+1)*chunk] for i in range(num_cpus) if len(pool[i*chunk:(i+1)*chunk])>0]
-        play_args = []
         sub_results = p.map(t, [(args, sub_pool, model_folder, model_filename, mode, seed) for sub_pool in eq_sub_pools])
         results = {}
         for i, sr in enumerate(sub_results):
@@ -69,20 +68,20 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
                 results['eqs_solved'] = sr['eqs_solved']
                 results['sat_times'] = sr['sat_times']
                 results['eqs_solved_Z3'] = sr['eqs_solved_Z3']
-                results['sat_steps'] = sr['sat_steps_taken']
+                results['num_actions_taken_if_successful'] = sr['num_actions_taken_if_successful']
             else:
                 results['eqs_solved'] += sr['eqs_solved']
                 results['sat_times'] += sr['sat_times']
                 results['eqs_solved_Z3'] += sr['eqs_solved_Z3']
-                results['sat_steps'] += sr['sat_steps_taken']
+                results['num_actions_taken_if_successful'] += sr['num_actions_taken_if_successful']
     eqs_solved = set([x[1] for x in results['eqs_solved']])
     sc = np.array([x[1] for x in results['eqs_solved']])
     tm = np.array([x[-1] for x in results['eqs_solved']])
     score = len(sc)
     time_avg = np.mean(tm)
     time_std = np.std(tm)
-    l=len(results['sat_steps'])
-    steps = np.array(results['sat_steps'])
+    l=len(results['num_actions_taken_if_successful'])
+    steps = np.array(results['num_actions_taken_if_successful'])
     steps_avg = np.mean(steps)
     steps_std = np.std(steps)
     if args.test_solver:
@@ -122,7 +121,7 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
           f'Intersection time avg: {intersection_times_solver} ({intersection_times_solver_std}),\n' \
           f'Steps: {steps}\n'\
           f'SIDE_MAX_LEN: {args.SIDE_MAX_LEN}, num_vars: {len(args.VARIABLES)}, num_letters: {len(args.ALPHABET)}\n' \
-          f'num_channels: {args.num_channels}, num_residual_blocks: {args.num_resnet_blocks}\n' \
+          f'num_channels: {args.num_channels}\n' \
           f'num mcts simulations: {args.num_mcts_simulations}\n' \
           f'Max solver time in mcts: {args.mcts_smt_time_max}\n' \
           f'Comments: {args.log_comments}\n' \
@@ -143,7 +142,7 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
           f'Intersection times: {intersection_solved}\n' \
           f'Intersection solver times: {intersection_solver_solved}\n' \
           f'SIDE_MAX_LEN: {args.SIDE_MAX_LEN}, num_vars: {len(args.VARIABLES)}, num_letters: {len(args.ALPHABET)}\n' \
-          f'num_channels: {args.num_channels}, num_residual_blocks: {args.num_resnet_blocks}\n' \
+          f'num_channels: {args.num_channels}\n' \
           f'num mcts simulations: {args.num_mcts_simulations}\n' \
           f'Max solver time in mcts: {args.mcts_smt_time_max}\n' \
           f'Comments: {args.log_comments}\n' \
@@ -166,7 +165,6 @@ def individual_player_session(play_args):
     args.num_mcts_simulations = 10
     args.ALPHABET = list(ascii_lowercase)
     args.VARIABLES = list(ascii_uppercase)
-    args.num_resnet_blocks=2
     args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
     if 'track' not in args.pool_name:
         args.VARIABLES = [x for x in ascii_uppercase[::-1]]
@@ -194,11 +192,11 @@ def individual_player_session(play_args):
                     mode=mode, name=f'player_0',
                     pool=pool,   seed = seed)
 
-    player.play(level_list=None)
+    player.play()
 
     results['sat_times'] = player.execution_times_sat
     results['eqs_solved'] = player.eqs_solved
     results['eqs_solved_Z3'] = player.eqs_solved_z3
-    results['sat_steps_taken'] = player.sat_steps_taken
+    results['num_actions_taken_if_successful'] = player.num_actions_taken_if_successful
 
     return results
