@@ -1,7 +1,5 @@
 
-from we import *
-from we.arguments import Arguments
-from we.tester import Tester
+from uct.arguments import Arguments
 import os
 import gc
 import logging
@@ -9,7 +7,8 @@ import numpy as np
 import torch
 import random
 from pickle import Unpickler
-from we.arcade_single import solve_pool
+from uct.arcade_test import solve_pool
+from uct.arcade_train import Arcade
 import math
 
 
@@ -38,78 +37,23 @@ def init_log(folder_name, mode='train'):
     logging.getLogger('').addHandler(console)
 
 
-def train(folder,
-          use_oracle=False,
-          num_mcts_simulations=80,
-          timeout=30):
-
-    # TODO: import from utils
-    np.random.seed(0)
-    torch.manual_seed(0)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(0)
-    random.seed(0)
+def train(folder):
 
     args = Arguments()
-    args.use_oracle = use_oracle
-    args.num_mcts_simulations = num_mcts_simulations
-    args.timeout_time = timeout
-
     args.change_parameters_by_folder_name(folder)
     init_log(folder, 'train')
 
     arcade = Arcade(args, load=args.load_model)
-    model = arcade.utils.load_nnet(device='cpu',  # TODO: what does this argument do?
+    model = arcade.utils.load_nnet(device='cpu',
                                    training=True,
                                    load=args.load_model,
-                                   folder=folder)  # TODO: do I need to initialize the model like this?
+                                   folder=folder)
     arcade.model_play = model
     arcade.model_train = model
     arcade.run()
 
-    # TODO: needed?
-    for handler in logging.getLogger('').handlers:
-        handler.close()
-        logging.getLogger('').removeHandler(handler)
-    gc.collect()
-    torch.cuda.empty_cache()
 
 
-def evaluate(folder,
-             name,
-             use_oracle=False,
-             test_solver=False,
-             ran=None,
-             test_set=None,
-             num_mcts_simulations=80,
-             timeout=30,
-             use_constant_model=False):
-    """
-    use_oracle:  TODO: write doc
-    """
-
-    algorithm_names = [f'{10 * i}_{name}' for i in ran]
-    folders = [folder for _ in ran]
-    print(folders)
-    print(algorithm_names)
-    benchmarks = len(ran) * [test_set]
-    mcts = [num_mcts_simulations for _ in ran]
-    timeouts = [timeout for _ in ran]
-    models = [f'model_plays_{10 * j}.pth.tar' for j in ran]
-
-    print(models)
-    for i in range(len(folders)):
-        tester = Tester(test_name=algorithm_names[i],
-                        model_folder=folders[i],
-                        algorithm_name=algorithm_names[i],
-                        use_oracle=use_oracle,
-                        test_solver=test_solver,
-                        benchmark_filename=benchmarks[i],
-                        num_mcts_sims=mcts[i],
-                        timeout=timeouts[i],
-                        model=models[i],
-                        use_constant_model=use_constant_model)
-        tester.wn_test()
 
 
 def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14, size='small', smt_max_time=None):
@@ -117,7 +61,7 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
     def uniformize_levels(pool):
 
         npool = []
-        level_slots = [range(math.floor(10 + 1.6 * i), math.floor(10 + 1.6 * (i + 1))) for i in range(0, 9)] if model_folder in ['v56'] else [range(math.floor(3 + 1. * i), math.floor(3 + 1. * (i + 1))) for i in range(0, 9)]
+        level_slots = [range(math.floor(10 + 1.6 * i), math.floor(10 + 1.6 * (i + 1))) for i in range(0, 9)]
         num_slots = [0 for _ in range(0, 9)]
         while len(npool) < 200:
             a = int(np.argmin([x for x in num_slots]))
@@ -127,8 +71,7 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
                     npool.append(x)
                     num_slots[a] += 1
                     break
-        assert len(pool) >= 200
-        pool = npool[:200]
+        assert len(pool) == 200
         print('TEST LEVELS: ', num_slots)
         return pool
 
@@ -160,11 +103,9 @@ def simple_evaluate(pool_filepath, model_folder, model_filename, solver, seed=14
         args.use_normal_forms = False
         args.check_LP = False
         args.test_solver=True
-    if '04_track' in pool_filepath:
-        args.use_length_constraints = True
+
     args.pool_name = pool_filepath
     args.pool_name_load = pool_filepath
-    # assert  args.equation_sizes != 'medium' or 'track' in pool_filepath
     solve_pool(args, pool, model_folder, model_filename, mode='test', seed=seed, num_cpus=args.num_cpus)
 
 
@@ -176,52 +117,7 @@ if __name__ == "__main__":
         f'we_alpha0_disc90_smaller_seed{seed}' for seed in seeds
     ]  # TODO: set the args in the name in the arguments file
 
-    if False:
-        print(algorithm_names)
-        for t in [1,2,3]:
-            simple_evaluate(f'benchmarks/0{t}_track/transformed',
-                            'v57', 'model_train_0.pth.tar', solver=None, smt_max_time=800, seed=20)
-        simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar',
-                            'v57', 'model_train_52.pth.tar', solver=None, smt_max_time=800, seed=20)
-
     simple_evaluate(f'benchmarks/pool_150_14_10.pth.tar',
                      'v57', 'model_train_0.pth.tar', solver=None, smt_max_time=800, seed=20)
     simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar',
                     'v56', 'model_train_130.pth.tar', solver=None, smt_max_time=800, seed=20)
-    assert False
-    solvers = ['Z3', 'seq', 'CVC4', 'TRAU']
-    for solver in ['dumb']:
-        for seed in [14]:
-            for track in [1,2,3]:
-                simple_evaluate(f'benchmarks/0{track}_track/transformed',
-                                f'we_alpha0_disc90_smaller_seed{seed}',
-                                'uniform', solver=solver, smt_max_time=800, seed=seed)
-            simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar', f'we_alpha0_disc90_smaller_seed{seed}',
-                            'uniform', solver=solver, smt_max_time=800, seed=seed)
-    assert False
-    if True:
-        #for i in
-        seed = 14
-        for tr in [0]:
-            for track in [3]:
-                simple_evaluate(f'benchmarks/0{track}_track/transformed',
-                                'v55', f'model_train_{tr}.pth.tar', solver=None, smt_max_time=800, seed=seed)
-            simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar',
-                            'v55',f'model_train_{tr}.pth.tar', solver=None, smt_max_time=800, seed=seed)
-
-
-
-
-    #seed=14
-    #simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar', f'we_alpha0_disc90_smaller_seed{seed}',
-    #                'uniform', solver='CVC4', smt_max_time=800, seed=seed)
-    if False:
-        for seed in [14,15,16]:
-
-            for model_name in [f'model_train_{i}.pth.tar' for i in range(1, 14)[::3]]:
-                simple_evaluate(f'benchmarks/pool_20_5_3.pth.tar', 'v55', model_name, solver=None, seed=seed)
-
-            for model_name in [f'model_train_{i}.pth.tar' for i in range(1, 24)[::3]]:
-                pass
-
-
