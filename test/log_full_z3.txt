@@ -1,0 +1,234 @@
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-27 22:27:42.976238
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-27 22:27:49.399354
+
+Pool benchmarks/03_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-27 22:28:06.759398
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-27 23:57:10.179991
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-27 23:57:14.453798
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 00:04:25.250112
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 00:04:25.995001
+
+Pool benchmarks/03_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 00:04:33.619442
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 00:07:53.631668
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 00:07:54.645793
+
+Pool benchmarks/03_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 00:08:10.255831
+
+Pool benchmarks/01_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 10:28:53.635025
+
+Pool benchmarks/02_track/transformed, Seed: 14
+Model: we_alpha0_disc90_smaller_seed14/uniform
+Score: 0, Time avg: nan (nan), Intersection time avg: nan (nan), Num steps avg: nan (nan) (0)
+Solver score: 0, Solver time avg: nan (nan), Intersection time avg: nan (nan),
+Solved: set()
+Solver solved: set()
+Intersection: set()
+Times: []
+Solver times: []
+Intersection times: []
+Intersection solver times: []
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 10
+num mcts simulations: 50
+Max solver time in mcts: 1200
+Comments: 
+Date: 2020-06-28 10:28:57.012967
