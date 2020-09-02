@@ -2390,3 +2390,161 @@ num mcts simulations: 10
 Max solver time in mcts: 2000
 Comments: using dynamic timeout
 Date: 2020-07-04 17:00:00.275461
+
+Pool benchmarks/quadratic.tar, Seed: 18
+Model: v56/model_train_200_18.pth.tar
+Score: 99, Time avg: 0.34642929292929286 (0.1315663647511912), Intersection time avg: 0.3349020833333333 (0.10630939220341598), Num steps avg: 1.0 (0.0) (99)
+Solver score: 108, Solver time avg: 0.6505471401744418 (1.7945493716659513), Intersection time avg: 0.3339688554406166 (0.10724792966330589),
+Solved: {'abcbbcbZ=Zbcbabcb', 'aabacZYXWccbcV=WbacYVZXaaccbc', 'abbaZYbbXWccaV=WXacZVbbabbYca', 'ZaYXWVabcbccaccbcb=bcbVXWaaZccaccbcbY', 'abbZbbcccacY=YZbbcccacabb', 'abZaY=ZYaba', 'ZYaabacbcbcba=bcZaaabacbcbY', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'ZabacacYbc=YcabacabcZ', 'ZaYXbaabbbcaWccV=bWXVZaabbYbcaacc', 'ZYXaabcabbbaW=WXaZYabcabbba', 'abaaZYaabX=XZaababaYa', 'ZYabccXaababcccb=ccbXbccZaaababcY', 'ZYabaXabbcbcbca=aXZbaabbcbcbcaY', 'aZabcababY=YZababaabc', 'ZaYaaXbWbbaaacbb=XWYaaabbbaaacbbZ', 'aaZbacacbcacaccY=YacacbcacaccZaab', 'ZYXabcbW=aWbZXYcb', 'ZabaaabccaY=abYaaabccaZ', 'Zaaabbaabb=aabbaaabbZ', 'ZYXaWbbc=cbbWaZXY', 'aaZYbaXb=XbbYaaaZ', 'ZYababbccbbcbcX=bbccbbXYabaZcbc', 'ZabcbaaacYbaabX=YZXacabcbaabbaa', 'ZaaYXbbWaaV=VXWabbaYZaa', 'aaZYbaXabWbacccba=WbaXbaYabaabacccZ', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'Zab=abZ', 'abaabcZ=Zbcabaa', 'abacbbabcabbacZY=ZYcbbabcabbacaba', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'Zabcaccbc=ccbcabcaZ', 'ZYabaaaabab=abaaaababYZ', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'aabaaZcaaY=YZabaacaaa', 'aZYXabWa=WaYabaXZ', 'ZYXabaabaaac=baaacYbaXaaZ', 'ZYXaWbbacbabbaV=WbbVXbaabbacYZa', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZababYabacbcbaX=YXcbaabZababacb', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZabcbcaY=YaabcbcZ', 'ZabcbbcacbcccbY=bccYabcbbcacZcb', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZabcYaabXabbW=WZXaabbcYabba', 'ZaYbab=YbabaZ', 'Zabca=abcaZ', 'ZabbaYaaX=XYaaZbbaa', 'aZababbYbbbXWV=YaVZWbaXbbabbb', 'abZcbbYXWbbcbcaV=WYVZcbbaXbbbcbca', 'ZYaaabaccac=ccacZaaabaY', 'ZYXaabbbaWbccab=XaWbaabbYbabccZ', 'ZaaabcbcbcbaY=YcbaaabcbZcba', 'ZaabbbaabcYabaX=YXZaabbbaabcaba', 'abaZYXaacaca=XabZaaacacaY', 'ZabccbbbYbXWV=WYVZXabccbbbb', 'ZYXWaabacaabc=YZacaabXcaabW', 'aaaZYXabbW=YZWXaabbaa', 'abZYXaacacWacVc=VaacacacabcXWYZ', 'ZYXaabacacacc=acaccYaaXbacZ', 'ZaYbbbbabaaaccX=YabbXZbbabaaacc', 'aabcZbaYbXaW=XWYZbaaabcba', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW', 'ZYXababababcca=abaXbababccZaY', 'aaaabaZbbbabY=YbbbZabaaaaba', 'abbacaacabbZ=Zacaacabbabb', 'ZYababbbbaabcbaXWbV=XZVWbYaabcbaabbbbab', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abcccabcaaacacZ=Zcabcaaacacabcc', 'ZYXabbaccW=WaXYbbZacc', 'ZYababcbbacbbbc=cabaYbcbbacbbbZ', 'ZabYXabWcccca=XWababcccYcaZ', 'ZYaXbaaccacbbcbb=bbXaZbaaccacbbcY', 'ZYXabaaaccccabccc=bcaZaaXaccccabccY', 'ZabbcbbccYcXbWcbV=cWVXYabbcbbcZccbb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'ZYabcXbcacacbcabW=YbWXabcbcacacbcaZ', 'ZYabccbbbbccacac=ccacaZcabccbbbbY', 'ZaYaX=YXaZa', 'abZbcaYabccabbX=ZYXbcaababccabb', 'ZabcbccaabbYbXWV=bWVXYcbccaabZabb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'abZcccYXWcbcaacV=WVaXYZbccccbcaac', 'ZYaXabWc=WaXZbacY', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZabccccbcaacabbY=ccYccZbcaacabbab', 'abccaabbZbaY=YZbaabccaabb', 'ZYabaabb=YabbabaZ', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ababZcbcYXWcbbcccaV=ZVcbbYcccaabXWabcbc', 'abZaaaabaabbbacY=YabaaaabaabbbacZ', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWaaabccbaaccV=XWVaZYaabccbaacc', 'abaZYbcbXaababb=XbcbabaaababZbY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX'}
+Solver solved: {'abcbbcbZ=Zbcbabcb', 'aabacZYXWccbcV=WbacYVZXaaccbc', 'abbaZYbbXWccaV=WXacZVbbabbYca', 'ZaYXWVabcbccaccbcb=bcbVXWaaZccaccbcbY', 'abbZbbcccacY=YZbbcccacabb', 'abZaY=ZYaba', 'ZYaabacbcbcba=bcZaaabacbcbY', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'ZabacacYbc=YcabacabcZ', 'ZaYXbaabbbcaWccV=bWXVZaabbYbcaacc', 'ZYXaabcabbbaW=WXaZYabcabbba', 'abaaZYaabX=XZaababaYa', 'ZYabccXaababcccb=ccbXbccZaaababcY', 'ZYabaXabbcbcbca=aXZbaabbcbcbcaY', 'ZYaXbaacWbV=XaZWaVbaYcb', 'aZabcababY=YZababaabc', 'ZaYaaXbWbbaaacbb=XWYaaabbbaaacbbZ', 'aaZbacacbcacaccY=YacacbcacaccZaab', 'ZYXabcbW=aWbZXYcb', 'ZYaaXabWcacacab=WabYXaaabcacacZ', 'ZabaaabccaY=abYaaabccaZ', 'Zaaabbaabb=aabbaaabbZ', 'ZYXaWbbc=cbbWaZXY', 'aaZYbaXb=XbbYaaaZ', 'ZYababbccbbcbcX=bbccbbXYabaZcbc', 'ZabcbaaacYbaabX=YZXacabcbaabbaa', 'ZaaYXbbWaaV=VXWabbaYZaa', 'abaaZYXWcbabaaaccV=VbacWbabaaaccaXYZa', 'aaZYbaXabWbacccba=WbaXbaYabaabacccZ', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'Zab=abZ', 'ZYabaXccacaacacaW=abWXYaccacaacacaZ', 'abaabcZ=Zbcabaa', 'abacbbabcabbacZY=ZYcbbabcabbacaba', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'Zabcaccbc=ccbcabcaZ', 'ZYabaaaabab=abaaaababYZ', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'aabaaZcaaY=YZabaacaaa', 'aZYXabWa=WaYabaXZ', 'ZYXabaabaaac=baaacYbaXaaZ', 'ZYXaWbbacbabbaV=WbbVXbaabbacYZa', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZababYabacbcbaX=YXcbaabZababacb', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZabcbcaY=YaabcbcZ', 'ZabcbbcacbcccbY=bccYabcbbcacZcb', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZabcYaabXabbW=WZXaabbcYabba', 'ZaYbab=YbabaZ', 'Zabca=abcaZ', 'ZabbaYaaX=XYaaZbbaa', 'aZababbYbbbXWV=YaVZWbaXbbabbb', 'abZcbbYXWbbcbcaV=WYVZcbbaXbbbcbca', 'ZYaaabaccac=ccacZaaabaY', 'ZYabcacccXaccbcbWbV=ccbcbXbabcWYVacccaZ', 'ZYXaabbbaWbccab=XaWbaabbYbabccZ', 'ZaaabcbcbcbaY=YcbaaabcbZcba', 'ZaabbbaabcYabaX=YXZaabbbaabcaba', 'abaZYXaacaca=XabZaaacacaY', 'ZYaabcaccbcbcacXcW=XabcWYZaccbcbcacac', 'ZabccbbbYbXWV=WYVZXabccbbbb', 'ZYXWaabacaabc=YZacaabXcaabW', 'ZYabXaaacaWcV=YaabacWVaacXZ', 'ZabYXaccccbW=WYbXaZaccccb', 'ZaYabbccXWVbcbcb=WVXbYccababcbcbZ', 'aaaZYXabbW=YZWXaabbaa', 'aZbcaYXbaWV=VWXYbcaaaZb', 'abZYXaacacWacVc=VaacacacabcXWYZ', 'ZYXaabacacacc=acaccYaaXbacZ', 'ZaYbbbbabaaaccX=YabbXZbbabaaacc', 'aabcZbaYbXaW=XWYZbaaabcba', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW', 'abZbbYbaacX=ZXYbbabaacb', 'aaaabaZbbbabY=YbbbZabaaaaba', 'ZYXababababcca=abaXbababccZaY', 'abbacaacabbZ=Zacaacabbabb', 'ZYababbbbaabcbaXWbV=XZVWbYaabcbaabbbbab', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abcccabcaaacacZ=Zcabcaaacacabcc', 'ZYXabbaccW=WaXYbbZacc', 'ZYababcbbacbbbc=cabaYbcbbacbbbZ', 'ZabYXabWcccca=XWababcccYcaZ', 'abZYXWccaccccababa=WabbYabaZccaccccaX', 'ZYaXbaaccacbbcbb=bbXaZbaaccacbbcY', 'ZYXabaaaccccabccc=bcaZaaXaccccabccY', 'ZabbcbbccYcXbWcbV=cWVXYabbcbbcZccbb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'ZYabcXbcacacbcabW=YbWXabcbcacacbcaZ', 'ZYabccbbbbccacac=ccacaZcabccbbbbY', 'ZaYaX=YXaZa', 'abZbcaYabccabbX=ZYXbcaababccabb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'abZcccYXWcbcaacV=WVaXYZbccccbcaac', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZabccccbcaacabbY=ccYccZbcaacabbab', 'abccaabbZbaY=YZbaabccaabb', 'ZYabaabb=YabbabaZ', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'abZaaaabaabbbacY=YabaaaabaabbbacZ', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWaaabccbaaccV=XWVaZYaabccbaacc', 'abaZYbcbXaababb=XbcbabaaababZbY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX'}
+Intersection: {'abcbbcbZ=Zbcbabcb', 'aabacZYXWccbcV=WbacYVZXaaccbc', 'abbaZYbbXWccaV=WXacZVbbabbYca', 'ZaYXWVabcbccaccbcb=bcbVXWaaZccaccbcbY', 'abbZbbcccacY=YZbbcccacabb', 'abZaY=ZYaba', 'ZYaabacbcbcba=bcZaaabacbcbY', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'ZabacacYbc=YcabacabcZ', 'ZaYXbaabbbcaWccV=bWXVZaabbYbcaacc', 'ZYXaabcabbbaW=WXaZYabcabbba', 'ZYabccXaababcccb=ccbXbccZaaababcY', 'abaaZYaabX=XZaababaYa', 'ZYabaXabbcbcbca=aXZbaabbcbcbcaY', 'aZabcababY=YZababaabc', 'ZaYaaXbWbbaaacbb=XWYaaabbbaaacbbZ', 'aaZbacacbcacaccY=YacacbcacaccZaab', 'ZYXabcbW=aWbZXYcb', 'ZabaaabccaY=abYaaabccaZ', 'Zaaabbaabb=aabbaaabbZ', 'ZYXaWbbc=cbbWaZXY', 'aaZYbaXb=XbbYaaaZ', 'ZYababbccbbcbcX=bbccbbXYabaZcbc', 'ZabcbaaacYbaabX=YZXacabcbaabbaa', 'ZaaYXbbWaaV=VXWabbaYZaa', 'aaZYbaXabWbacccba=WbaXbaYabaabacccZ', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'Zab=abZ', 'abaabcZ=Zbcabaa', 'abacbbabcabbacZY=ZYcbbabcabbacaba', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'Zabcaccbc=ccbcabcaZ', 'ZYabaaaabab=abaaaababYZ', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'aabaaZcaaY=YZabaacaaa', 'aZYXabWa=WaYabaXZ', 'ZYXabaabaaac=baaacYbaXaaZ', 'ZYXaWbbacbabbaV=WbbVXbaabbacYZa', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZababYabacbcbaX=YXcbaabZababacb', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZabcbcaY=YaabcbcZ', 'ZabcbbcacbcccbY=bccYabcbbcacZcb', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZabcYaabXabbW=WZXaabbcYabba', 'ZaYbab=YbabaZ', 'Zabca=abcaZ', 'ZabbaYaaX=XYaaZbbaa', 'aZababbYbbbXWV=YaVZWbaXbbabbb', 'abZcbbYXWbbcbcaV=WYVZcbbaXbbbcbca', 'ZYaaabaccac=ccacZaaabaY', 'ZYXaabbbaWbccab=XaWbaabbYbabccZ', 'ZaaabcbcbcbaY=YcbaaabcbZcba', 'ZaabbbaabcYabaX=YXZaabbbaabcaba', 'abaZYXaacaca=XabZaaacacaY', 'ZabccbbbYbXWV=WYVZXabccbbbb', 'ZYXWaabacaabc=YZacaabXcaabW', 'aaaZYXabbW=YZWXaabbaa', 'abZYXaacacWacVc=VaacacacabcXWYZ', 'ZYXaabacacacc=acaccYaaXbacZ', 'ZaYbbbbabaaaccX=YabbXZbbabaaacc', 'aabcZbaYbXaW=XWYZbaaabcba', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW', 'ZYXababababcca=abaXbababccZaY', 'aaaabaZbbbabY=YbbbZabaaaaba', 'abbacaacabbZ=Zacaacabbabb', 'ZYababbbbaabcbaXWbV=XZVWbYaabcbaabbbbab', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abcccabcaaacacZ=Zcabcaaacacabcc', 'ZYXabbaccW=WaXYbbZacc', 'ZYababcbbacbbbc=cabaYbcbbacbbbZ', 'ZabYXabWcccca=XWababcccYcaZ', 'ZYaXbaaccacbbcbb=bbXaZbaaccacbbcY', 'ZYXabaaaccccabccc=bcaZaaXaccccabccY', 'ZabbcbbccYcXbWcbV=cWVXYabbcbbcZccbb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'ZYabcXbcacacbcabW=YbWXabcbcacacbcaZ', 'ZYabccbbbbccacac=ccacaZcabccbbbbY', 'ZaYaX=YXaZa', 'abZbcaYabccabbX=ZYXbcaababccabb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'abZcccYXWcbcaacV=WVaXYZbccccbcaac', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZabccccbcaacabbY=ccYccZbcaacabbab', 'abccaabbZbaY=YZbaabccaabb', 'ZYabaabb=YabbabaZ', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'abZaaaabaabbbacY=YabaaaabaabbbacZ', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWaaabccbaaccV=XWVaZYaabccbaacc', 'abaZYbcbXaababb=XbcbabaaababZbY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX'}
+Times: [0.3532 0.6783 0.3218 0.8249 0.2727 0.2787 0.3057 0.3947 0.3228 0.3544
+ 0.4732 0.4933 0.3179 0.2687 0.4068 0.6925 0.3089 0.9685 0.3334 0.2661
+ 0.4831 0.262  0.2929 0.2927 0.288  0.3077 0.3388 0.3043 0.3509 0.3899
+ 0.4802 0.3174 0.3302 0.2523 0.4521 0.5377 0.279  0.3266 0.6904 0.3105
+ 0.2827 0.324  0.2635 0.2624 0.7105 0.26   0.2552 0.3528 0.2921 0.2639
+ 0.2693 0.2945 0.5067 0.2635 0.2604 0.2638 0.4448 0.3388 0.292  0.2559
+ 0.2508 0.3087 0.2587 0.5015 0.3564 0.2468 0.258  0.4707 0.2659 0.2797
+ 0.2507 0.3025 0.5403 0.2913 0.3267 0.2774 0.2767 0.2554 0.2667 0.3479
+ 0.2602 0.4438 0.3117 0.2759 0.2528 0.2478 0.3038 0.2478 0.2529 0.3525
+ 0.3021 0.2732 0.2508 0.2762 0.252  0.2628 0.5036 0.2482 0.2656]
+Solver times: [ 0.48658085  0.31434512  0.67181015  0.32313657  0.26574278  0.27360225
+  0.30126405  0.39611697  0.27698731  0.33563137  0.47692132  0.49499822
+  1.01395512  0.31488705  0.26692152  2.43765068  0.4057579  16.96144843
+  0.70561004  0.3087945   1.05138302  0.34540248  0.26520205  0.48481035
+  0.26220608  0.2950685   0.29537535  1.40612602  0.28642273  0.30651379
+  0.59806991  0.28494239  0.32566142  0.33067489  0.38365817  0.47990537
+  1.68773699  0.31335187  0.32799959  0.25093746  0.44998312  0.53861117
+  0.2755146   8.63249993  0.33758307  0.68476057  0.31330752  0.2862103
+  0.31585455  0.2645998   0.26223683  0.7709012   0.70869088  0.25825667
+  1.73952866  0.25076127  0.35460925  0.28682423  0.262254    0.26696277
+  0.30480647  0.508564    0.25889039  0.25626755  0.26187253  0.44582868
+  0.35195875  0.28723931  0.25636148  0.24949265  0.27002668  0.26281095
+  0.40308404  0.35767841  0.26217246  0.25578237  0.4831655   0.25191712
+  0.32556319  0.26404095  0.28070116  0.52754641  1.58443594  0.26805615
+  0.32175565  0.27393031  0.27767897  0.25273442  0.26423717  0.38729191
+  0.26643085  0.42708898  0.32418585  0.27612424  0.25205755  0.24615479
+  0.29188609  0.24665236  0.24873447  0.34264207  0.299896    0.24632049
+  0.25461102  0.25220823  0.25960922  0.50479317  0.23167634  0.25856686]
+Intersection times: [0.3532 0.6783 0.3218 0.2727 0.2787 0.3057 0.3947 0.3228 0.3544 0.4732
+ 0.4933 0.3179 0.2687 0.4068 0.6925 0.3089 0.3334 0.2661 0.4831 0.262
+ 0.2929 0.2927 0.288  0.3077 0.3388 0.3043 0.3509 0.3899 0.4802 0.3174
+ 0.3302 0.2523 0.4521 0.5377 0.279  0.3266 0.6904 0.3105 0.2827 0.324
+ 0.2635 0.2624 0.7105 0.26   0.2552 0.3528 0.2921 0.2639 0.2693 0.2945
+ 0.5067 0.2635 0.2604 0.2638 0.4448 0.3388 0.292  0.2559 0.2508 0.3087
+ 0.2587 0.5015 0.3564 0.2468 0.258  0.4707 0.2659 0.2797 0.2507 0.3025
+ 0.5403 0.2913 0.3267 0.2774 0.2767 0.2554 0.2667 0.3479 0.2602 0.4438
+ 0.3117 0.2759 0.2528 0.2478 0.3038 0.2478 0.2529 0.3021 0.2732 0.2508
+ 0.2762 0.252  0.2628 0.5036 0.2482 0.2656]
+Intersection solver times: [0.48658085 0.67181015 0.32313657 0.26574278 0.27360225 0.30126405
+ 0.39611697 0.27698731 0.33563137 0.47692132 0.49499822 0.31488705
+ 0.26692152 0.4057579  0.70561004 0.3087945  0.34540248 0.26520205
+ 0.48481035 0.26220608 0.2950685  0.29537535 0.28642273 0.30651379
+ 0.28494239 0.32566142 0.33067489 0.38365817 0.47990537 0.31335187
+ 0.32799959 0.25093746 0.44998312 0.53861117 0.2755146  0.33758307
+ 0.68476057 0.31330752 0.2862103  0.31585455 0.2645998  0.26223683
+ 0.70869088 0.25825667 0.25076127 0.35460925 0.28682423 0.262254
+ 0.26696277 0.30480647 0.508564   0.25889039 0.25626755 0.26187253
+ 0.44582868 0.35195875 0.28723931 0.25636148 0.24949265 0.27002668
+ 0.26281095 0.40308404 0.35767841 0.26217246 0.25578237 0.4831655
+ 0.25191712 0.32556319 0.26404095 0.28070116 0.52754641 0.26805615
+ 0.32175565 0.27393031 0.27767897 0.25273442 0.26423717 0.38729191
+ 0.26643085 0.42708898 0.32418585 0.27612424 0.25205755 0.24615479
+ 0.29188609 0.24665236 0.24873447 0.34264207 0.299896   0.24632049
+ 0.25461102 0.25220823 0.25960922 0.50479317 0.23167634 0.25856686]
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 2
+num mcts simulations: 10
+Max solver time in mcts: 800
+Comments: 
+Date: 2020-09-01 21:37:59.356638
+
+Pool benchmarks/pool_20_5_3.pth.tar, Seed: 18
+Model: v56/model_train_200_18.pth.tar
+Score: 25, Time avg: 0.472156 (0.2592411882089727), Intersection time avg: 0.4332434782608696 (0.2316018356653372), Num steps avg: 1.0 (0.0) (25)
+Solver score: 31, Solver time avg: 1.326196708986836 (3.2077594220375363), Intersection time avg: 0.41865771749745245 (0.16590005872118266),
+Solved: {'aabcZbaYbXaW=XWYZbaaabcba', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ababZcbcYXWcbbcccaV=ZVcbbYcccaabXWabcbc', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYXabcbW=aWbZXYcb', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW', 'ZabcbccaabbYbXWV=bWVXYcbccaabZabb'}
+Solver solved: {'ZYabXaaacaWcV=YaabacWVaacXZ', 'aabcZbaYbXaW=XWYZbaaabcba', 'ZYaXbaacWbV=XaZWaVbaYcb', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZYabaXccacaacacaW=abWXYaccacaacacaZ', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'abaaZYXWcbabaaaccV=VbacWbabaaaccaXYZa', 'aZbcaYXbaWV=VWXYbcaaaZb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYXabcbW=aWbZXYcb', 'ZaYabbccXWVbcbcb=WVXbYccababcbcbZ', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abZbbYbaacX=ZXYbbabaacb', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZabYXaccccbW=WYbXaZaccccb', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW'}
+Intersection: {'aabcZbaYbXaW=XWYZbaaabcba', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXabcbW=aWbZXYcb', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW'}
+Times: [0.3044 0.2508 1.329  0.7228 0.2822 0.2624 0.2865 0.9942 0.5158 0.314
+ 0.3654 0.2722 0.8451 0.4585 0.3089 0.687  0.2801 0.4773 0.3327 0.4
+ 0.4956 0.3169 0.558  0.2857 0.4584]
+Solver times: [ 0.79889798  0.30133343  0.25969529  0.92648268  0.70097113  1.05711794
+  0.30729342  8.66047716  0.27573776  0.62662768  0.30464697  0.51329422
+  0.34042072  0.3626864   1.63685536  0.27073812  0.45777583  0.3076992
+  0.70274639  0.28880715  0.47920012 16.93608427  0.32568455  0.39620948
+  0.4869945   0.3218112   0.54730725  1.43853903  0.2983675   0.45322418
+  0.32837105]
+Intersection times: [0.3044 0.2508 1.329  0.7228 0.2822 0.2624 0.2865 0.5158 0.314  0.3654
+ 0.2722 0.4585 0.3089 0.687  0.2801 0.4773 0.3327 0.4    0.4956 0.3169
+ 0.558  0.2857 0.4584]
+Intersection solver times: [0.30133343 0.25969529 0.92648268 0.70097113 0.30729342 0.27573776
+ 0.30464697 0.51329422 0.34042072 0.3626864  0.27073812 0.45777583
+ 0.3076992  0.70274639 0.28880715 0.47920012 0.32568455 0.39620948
+ 0.4869945  0.3218112  0.54730725 0.2983675  0.45322418]
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 2
+num mcts simulations: 10
+Max solver time in mcts: 800
+Comments: 
+Date: 2020-09-02 01:02:48.269327
+
+Pool benchmarks/pool_20_5_3.pth.tar, Seed: 19
+Model: v56/model_train_200_19.pth.tar
+Score: 25, Time avg: 0.45164000000000004 (0.1832742513284395), Intersection time avg: 0.4116 (0.12676493137333747), Num steps avg: 1.0 (0.0) (25)
+Solver score: 31, Solver time avg: 1.370895178087296 (3.208539215916949), Intersection time avg: 0.4531607938849408 (0.13540803808664426),
+Solved: {'aabcZbaYbXaW=XWYZbaaabcba', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ababZcbcYXWcbbcccaV=ZVcbbYcccaabXWabcbc', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYXabcbW=aWbZXYcb', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW', 'ZabcbccaabbYbXWV=bWVXYcbccaabZabb'}
+Solver solved: {'ZYabXaaacaWcV=YaabacWVaacXZ', 'aabcZbaYbXaW=XWYZbaaabcba', 'ZYaXbaacWbV=XaZWaVbaYcb', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZYabaXccacaacacaW=abWXYaccacaacacaZ', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'abaaZYXWcbabaaaccV=VbacWbabaaaccaXYZa', 'aZbcaYXbaWV=VWXYbcaaaZb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYXabcbW=aWbZXYcb', 'ZaYabbccXWVbcbcb=WVXbYccababcbcbZ', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abZbbYbaacX=ZXYbbabaacb', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZabYXaccccbW=WYbXaZaccccb', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW'}
+Intersection: {'aabcZbaYbXaW=XWYZbaaabcba', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXabcbW=aWbZXYcb', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW'}
+Times: [0.3368 0.3146 0.2989 0.7223 0.3016 0.2953 0.3084 0.98   0.5219 0.3447
+ 0.3538 0.311  0.8442 0.5075 0.368  0.6986 0.3014 0.4926 0.3383 0.4233
+ 0.5145 0.3204 0.5905 0.3299 0.4725]
+Solver times: [ 0.80229092  0.38971758  0.30490804  0.35365701  0.77268696  1.13301778
+  0.33712411  8.91728139  0.31681347  0.69514966  0.32629943  0.5751307
+  0.38757086  0.39848399  1.76744127  0.35281944  0.53478074  0.39191365
+  0.77581573  0.32851505  0.57059765 16.87589049  0.3780899   0.45359349
+  0.55779505  0.42370939  0.61772418  1.50269103  0.35246587  0.52248597
+  0.38128972]
+Intersection times: [0.3368 0.3146 0.2989 0.7223 0.3016 0.2953 0.3084 0.5219 0.3447 0.3538
+ 0.311  0.5075 0.368  0.6986 0.3014 0.4926 0.3383 0.4233 0.5145 0.3204
+ 0.5905 0.3299 0.4725]
+Intersection solver times: [0.38971758 0.30490804 0.35365701 0.77268696 0.33712411 0.31681347
+ 0.32629943 0.5751307  0.38757086 0.39848399 0.35281944 0.53478074
+ 0.39191365 0.77581573 0.32851505 0.57059765 0.3780899  0.45359349
+ 0.55779505 0.42370939 0.61772418 0.35246587 0.52248597]
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 2
+num mcts simulations: 10
+Max solver time in mcts: 800
+Comments: 
+Date: 2020-09-02 04:46:32.121041
+
+Pool benchmarks/pool_20_5_3.pth.tar, Seed: 20
+Model: v56/model_train_200_20.pth.tar
+Score: 25, Time avg: 0.4522 (0.18503542579733212), Intersection time avg: 0.41076956521739133 (0.1238200673304776), Num steps avg: 1.0 (0.0) (25)
+Solver score: 31, Solver time avg: 1.3835262713893768 (3.2292684588342095), Intersection time avg: 0.46797245481739874 (0.1341760270127496),
+Solved: {'aabcZbaYbXaW=XWYZbaaabcba', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ababZcbcYXWcbbcccaV=ZVcbbYcccaabXWabcbc', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYXabcbW=aWbZXYcb', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW', 'ZabcbccaabbYbXWV=bWVXYcbccaabZabb'}
+Solver solved: {'ZYabXaaacaWcV=YaabacWVaacXZ', 'aabcZbaYbXaW=XWYZbaaabcba', 'ZYaXbaacWbV=XaZWaVbaYcb', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZYabaXccacaacacaW=abWXYaccacaacacaZ', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'abaaZYXWcbabaaaccV=VbacWbabaaaccaXYZa', 'aZbcaYXbaWV=VWXYbcaaaZb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYXabcbW=aWbZXYcb', 'ZaYabbccXWVbcbcb=WVXbYccababcbcbZ', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abZbbYbaacX=ZXYbbabaacb', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZabYXaccccbW=WYbXaZaccccb', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW'}
+Intersection: {'aabcZbaYbXaW=XWYZbaaabcba', 'abZbcbYaXbbcaWV=YWZVXcbabbcaabb', 'ZYXWaVbbbccaccbbaa=XVZbbbccacaYcbbaaW', 'ZaaYbXbbabacbcWV=XaYWVbbabacbcaZb', 'ZYXWabbaaVbacbabab=VZcbabXabWabbaabaY', 'ZYXabcbW=aWbZXYcb', 'aaZYbbXWVacaca=VYZcaaabXbacaW', 'abZacaccbcYXWV=VWZXabacaccbYc', 'ZYXWabbabcbVa=XYaVbWabbabcZ', 'abaccaZbaYXaW=YWXbaaaZabacc', 'abZbcaYabccabbX=ZYXbcaababccabb', 'aZbbYXWaacaccV=VYbaacaXcZcabW', 'ZYXabWaacababaacV=abaXZbaacWVabaacY', 'ZaaaabbYXcWabcaV=VcaWYZXcabaaaabb', 'ZabaYbcabccbaX=aXYbabcabccbaZ', 'ZYXaabacbbcbbaWcb=bacbbWcbaaYcbbaXZ', 'ZYXWVaaabbc=aXaVWZabbcY', 'ZabYcbXbWcbVbcaaaa=VXZWbcbabcbbcaaaaY', 'abccaabbZbaY=YZbaabccaabb', 'ZYabXccabccWacaVa=abccabWccVXacaZaY', 'ZYXaWbaaccacbcVabaa=acbbaVWaYabaaccZcaX', 'ZYXaaaWVbbccbcaaabb=XaabbVYaWaaabbccbcZ', 'ZYaXaWVbbcaacc=XVaZYabbcaaccW'}
+Times: [0.3376 0.3006 0.318  0.7125 0.2927 0.2982 0.3166 0.9988 0.5344 0.3409
+ 0.3825 0.3222 0.8585 0.5089 0.3475 0.6906 0.2811 0.4802 0.3345 0.424
+ 0.5205 0.3536 0.5661 0.3164 0.4681]
+Solver times: [ 0.78878832  0.41533732  0.3277185   0.37620258  0.77532077  1.13962221
+  0.356668    8.63629889  0.32253432  0.68377972  0.346349    0.56848574
+  0.41134691  0.40541124  1.82306385  0.37578416  0.55641174  0.39562321
+  0.77805424  0.3307364   0.57153559 17.15888596  0.4223969   0.48193192
+  0.57785225  0.40857863  0.66422677  1.51314521  0.35075116  0.54410911
+  0.3823638 ]
+Intersection times: [0.3376 0.3006 0.318  0.7125 0.2927 0.2982 0.3166 0.5344 0.3409 0.3825
+ 0.3222 0.5089 0.3475 0.6906 0.2811 0.4802 0.3345 0.424  0.5205 0.3536
+ 0.5661 0.3164 0.4681]
+Intersection solver times: [0.41533732 0.3277185  0.37620258 0.77532077 0.356668   0.32253432
+ 0.346349   0.56848574 0.41134691 0.40541124 0.37578416 0.55641174
+ 0.39562321 0.77805424 0.3307364  0.57153559 0.4223969  0.48193192
+ 0.57785225 0.40857863 0.66422677 0.35075116 0.54410911]
+SIDE_MAX_LEN: 20, num_vars: 5, num_letters: 3
+num_channels: 64, num_residual_blocks: 2
+num mcts simulations: 10
+Max solver time in mcts: 800
+Comments: 
+Date: 2020-09-02 08:30:47.785479
