@@ -169,11 +169,8 @@ class MCTS():
                     u = self.state_action_values[(state_w, a)]
                     u = u + UCT
                 else:
-                    if not self.args.oracle:
-                        u = 10.
-                    else:
-                        print('anomaly')
-                        u = 1.
+                    u = 10.
+
 
                 if u > cur_best:
                     cur_best = u
