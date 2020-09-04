@@ -57,6 +57,8 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
     if num_cpus == 1:
         results = individual_player_session((args, pool, model_folder, model_filename, mode, seed))
         results['sat_steps'] = results['num_actions_taken_if_successful']
+        results['eqs_solved_smt'] = results['eqs_solved_smt']
+
     else:
         p = Pool(num_cpus)
         chunk = ceil(len(pool)/num_cpus)
@@ -67,12 +69,12 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
             if i == 0:
                 results['eqs_solved'] = sr['eqs_solved']
                 results['sat_times'] = sr['sat_times']
-                results['eqs_solved_Z3'] = sr['eqs_solved_Z3']
+                results['eqs_solved_smt'] = sr['eqs_solved_smt']
                 results['num_actions_taken_if_successful'] = sr['num_actions_taken_if_successful']
             else:
                 results['eqs_solved'] += sr['eqs_solved']
                 results['sat_times'] += sr['sat_times']
-                results['eqs_solved_Z3'] += sr['eqs_solved_Z3']
+                results['eqs_solved_smt'] += sr['eqs_solved_smt']
                 results['num_actions_taken_if_successful'] += sr['num_actions_taken_if_successful']
     eqs_solved = set([x[1] for x in results['eqs_solved']])
     sc = np.array([x[1] for x in results['eqs_solved']])
@@ -85,15 +87,15 @@ def solve_pool(args, pool, model_folder, model_filename, mode, seed, num_cpus=1)
     steps_avg = np.mean(steps)
     steps_std = np.std(steps)
     if args.test_solver:
-        solver_eqs_solved = set([x[1] for x in results['eqs_solved_Z3']])
-        solver_score = len([x[1] for x in results['eqs_solved_Z3']])
-        solver_tm = np.array([x[-1] for x in results['eqs_solved_Z3']])
+        solver_eqs_solved = set([x[1] for x in results['eqs_solved_smt']])
+        solver_score = len([x[1] for x in results['eqs_solved_smt']])
+        solver_tm = np.array([x[-1] for x in results['eqs_solved_smt']])
         solver_time_avg = np.mean(solver_tm)
         solver_time_std = np.std(solver_tm)
 
         intersection = eqs_solved & solver_eqs_solved
         intersection_solved = np.array([x[-1] for x in results['eqs_solved'] if x[1] in intersection])
-        intersection_solver_solved = np.array([x[-1] for x in results['eqs_solved_Z3'] if x[1] in intersection])
+        intersection_solver_solved = np.array([x[-1] for x in results['eqs_solved_smt'] if x[1] in intersection])
 
         intersection_times = np.mean(intersection_solved)
         intersection_times_std = np.std(intersection_solved)
@@ -168,8 +170,9 @@ def individual_player_session(play_args):
     args.ALPHABET = [x for x in ascii_lowercase][0:num_alph]
     if 'track' not in args.pool_name:
         args.VARIABLES = [x for x in ascii_uppercase[::-1]]
-    args.ALPHABET = args.ALPHABET[:num_alph]
-    args.VARIABLES = args.VARIABLES[:num_vars]
+    if args.use_normal_forms:
+        args.ALPHABET = args.ALPHABET[:num_alph]
+        args.VARIABLES = args.VARIABLES[:num_vars]
     args.LEN_CORPUS = len(args.VARIABLES)+len(args.ALPHABET)
 
     args.update_symbol_index_dictionary()
@@ -194,9 +197,9 @@ def individual_player_session(play_args):
 
     player.play()
 
-    results['sat_times'] = player.execution_times_sat
+    #results['sat_times'] = player.execution_times_sat
     results['eqs_solved'] = player.eqs_solved
-    results['eqs_solved_Z3'] = player.eqs_solved_z3
-    results['num_actions_taken_if_successful'] = player.num_actions_taken_if_successful
+    results['eqs_solved_smt'] = player.eqs_solved_smt
+    #results['num_actions_taken_if_successful'] = player.num_actions_taken_if_successful
 
     return results
