@@ -7,6 +7,7 @@ Source code for the paper "Solving word equations via Monte Carlo Tree Search an
 Contact: garreta.a@gmail.com
 
 Directory description:
+  - we-uct.pdf : paper
   - uct: main code files
   - solver scripts: python scripts for integrating different string solvers into our algorithms
   - test: python script for training or testing algorithms, plus logs of results
