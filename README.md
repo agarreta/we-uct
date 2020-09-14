@@ -2,7 +2,7 @@
 
 **Important**: This repository is at the early stages of being cleaned up and documented. Please use with caution.
 
-Source code for the paper "[Solving word equations via Monte Carlo Tree Search and black-box solvers](https://github.com/agarreta/we-uct/blob/master/we-uct.pdf)"
+Source code for the paper "[Solving word equations via Monte Carlo Tree Search and black-box solvers](https://github.com/agarreta/we-uct/blob/master/we-uct.pdf)". To appear on [arXiv](https://arxiv.org/search/?searchtype=author&query=Garreta%2C+A) 
 
 Contact: garreta.a@gmail.com
 
